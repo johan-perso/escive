@@ -1,0 +1,300 @@
+{
+    "general": {
+        "unknownData": "Donnée inconnue",
+        "defaultName": "Sans nom",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "allow": "Autoriser",
+        "continue": "Continuer",
+        "debugWarn": "Cette fonctionnalité pour les développeurs permet de déboguer l'app plus facilement. Vous devriez sûrement ne pas y toucher si vous ne comprenez pas ce qui se passe.",
+        "askRestartApp": {
+            "dialogTitle": "Redémarrer l'application",
+            "dialogContent": "Vous devez redémarrer l'app pour que les modifications soient prises en compte.\nVoulez-vous le faire maintenant ?"
+        }
+    },
+    "bridges": {
+        "password": {
+            "incorrect": "Le mot de passe saisi est incorrect, veuillez réessayer",
+            "dialogTitle": "Mot de passe requis",
+            "dialogContent": "Pour continuer, vous devrez saisir le mot de passe de l'appareil auquel vous vous connectez."
+        },
+        "unknownConnectionError": {
+            "text": "Nous n'avons pas pu nous connecter à votre appareil, {additional}",
+            "tryAgain": "nous allons réessayer sous peu...",
+            "cannotTryAgain": "nous n'allons pas réessayer en raison de vos réglages de débogage"
+        }
+    },
+    "geolocator": {
+        "serviceDisabled": "Les services de localisations ne sont pas activés",
+        "cannotGetPosition": "Impossible de récupérer votre position : {error}",
+        "permissions": {
+            "denied": "Nous n'avons pas la permission d'accéder à votre position, vérifier vos réglages pour l'activer",
+            "deniedForever": "La permission d'accéder à votre position a été refusé, vérifier vos réglages pour l'activer"
+        }
+    },
+    "dateFormatter": {
+        "additional": {
+            "since": {
+                "label": "depuis",
+                "type": "prefix"
+            },
+            "ago": {
+                "label": "il y a",
+                "type": "prefix"
+            }
+        },
+        "justnow": "à l'instant",
+        "hour": {
+            "zero": "heure",
+            "one": "heure",
+            "other": "heures"
+        },
+        "yesterday": "hier",
+        "beforeYesterday": "avant-hier",
+        "day": {
+            "zero": "jour",
+            "one": "jour",
+            "other": "jours"
+        },
+        "week": {
+            "zero": "semaine",
+            "one": "semaine",
+            "other": "semaines"
+        },
+        "lastMonth": "le mois dernier",
+        "months": {
+            "zero": "mois",
+            "one": "mois",
+            "other": "mois"
+        }
+    },
+    "bluetoothPermission": {
+        "denied": "Cette app utilise le Bluetooth pour trouver et se connecter à vos appareils, vous devez autoriser l'app à y accéder avant de continuer",
+        "unsupported": "Votre appareil semble ne pas supporter le Bluetooth. L'app ne peut pas fonctionner sans ce support"
+    },
+    "changelog": {
+        "titlePrefix": "Nouveautés d'",
+        "heightMinUnrespected": "La hauteur de votre écran est trop faible pour afficher le récap de la dernière mise à jour"
+    },
+    "protocols": {
+        "iscooter": {
+            "title": "iScooter",
+            "subtitle": "Compatible avec les modèles iScooter i10 Max"
+        }
+    },
+    "musicPlayer": {
+        "idle": "Aucune écoute en cours",
+        "permissionMissing": "Le widget Musique a besoin de l'accès aux notifications pour fonctionner"
+    },
+    "onboarding": {
+        "welcome": "Bienvenue sur ",
+        "description": "Obtenez une meilleure expérience visuelle avec votre trottinette électrique compatible !",
+        "ctaButton": "Autoriser l'accès au Bluetooth",
+        "demo": {
+            "label": "Toucher pour associer un appareil de démo",
+            "dialogTitle": "Essayer eScive sans appareil",
+            "dialogContent": "L'application est faite pour être connectée à une trottinette électrique via le Bluetooth.\n\nSi vous n'en n'avez pas, ou qu'elle n'est pas compatible, vous pouvez ajouter un appareil virtuel pour découvrir comment fonctionne eScive !"
+        }
+    },
+    "settings": {
+        "pageTitle": "Réglages",
+        "footerDev": "Développé par Johan",
+        "display": {
+            "title": "AFFICHAGE",
+            "showInactivesWarnsLights": {
+                "title": "Afficher les voyants désactivés",
+                "subtitle": "Les voyants du compteur de vitesse seront affichés même lorsqu'ils ne sont pas actifs"
+            },
+            "keepScreenTurnedOn": {
+                "title": "Garder l'écran allumé",
+                "subtitle": "Votre téléphone n'entrera pas en veille tant que l'app est ouverte"
+            },
+            "forceScreenBrightnessMax": {
+                "title": "Forcer la luminosité de l'écran",
+                "subtitle": "Le niveau de luminosité de votre écran sera défini à 100%. Commencez à rouler pour activer cette fonctionnalité"
+            },
+            "maxRenderedSpeedKmh": {
+                "title": "Limite de vitesse du compteur",
+                "subtitle": "Les aiguilles du compteur de vitesse ne dépasseront pas cette vitesse maximale",
+                "warning": "Vous devez respecter les limites de vitesse imposées dans votre pays"
+            },
+            "language": {
+                "title": "Langue de l'interface",
+                "subtitle": "Sélectionnez la langue utilisée par l'app",
+                "values": {
+                    "default": "Par défaut",
+                    "defaultDescription": "Définit la langue appliquée en fonction de celle utilisée sur cet appareil",
+                    "english": "Anglais",
+                    "french": "Français"
+                }
+            }
+        },
+        "moves": {
+            "title": "SUIVI DE VOS TRAJETS",
+            "useAdvancedStats": {
+                "title": "Compter des données supplémentaires",
+                "subtitle": "Des statistiques seront calculées et ajoutés lorsque l'app est ouverte pendant vos trajets"
+            },
+            "usePosition": {
+                "title": "Précision des données",
+                "subtitle": "Votre position peut être utilisée pour obtenir des données plus précises",
+                "values": {
+                    "always": {
+                        "title": "Toujours",
+                        "subtitle": "Utilisée à chacun de vos trajets"
+                    },
+                    "auto": {
+                        "title": "Automatique",
+                        "subtitle": "Désactivée en dessous de 30%"
+                    },
+                    "never": {
+                        "title": "Jamais",
+                        "subtitle": "La position ne sera pas utilisée"
+                    }
+                }
+            },
+            "useSelfEstimatedSpeed": {
+                "title": "Compter la vitesse avec le GPS",
+                "subtitle": "Le compteur de vitesse calculé depuis votre téléphone peut être plus précis dans certains cas",
+                "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité"
+            }
+        },
+        "dashboard": {
+            "title": "TABLEAU DE BORD",
+            "enableDashboardWidgets": {
+                "title": "Activer les widgets",
+                "subtitle": "Des encadrés supplémentaires seront affichés pour vous permettre de gérer votre musique par exemple",
+                "platformCompatibility": "Cette fonctionnalité n'est pour l'instant disponible que sur Android",
+                "permissionMissing": {
+                    "dialogTitle": "Autoriser l'accès manquant",
+                    "dialogContent": "Pour permettre à eScive d'accéder aux musiques que vous écoutez, vous devrez autoriser l'accès aux notifications depuis les paramètres de votre téléphone."
+                }
+            }
+        },
+        "dangerZone": {
+            "title": "ZONE DANGEREUSE",
+            "resetStats": {
+                "title": "Effacer toutes les stats",
+                "confirmation": {
+                    "dialogTitle": "Effacer les statistiques",
+                    "dialogContent": "Toutes les données liés à vos trajets seront supprimées pour tous vos appareils. Cette action est irréversible."
+                }
+            },
+            "resetData": {
+                "title": "Effacer toutes les données",
+                "subtitle": "Vos appareils devront être associés à nouveau, et les statistiques seront réinitialisées",
+                "confirmation": {
+                    "dialogTitle": "Effacer les données",
+                    "dialogContent": "Tous vos réglages, statistiques et appareils associés seront supprimées. Cette action est irréversible."
+                }
+            }
+        }
+    },
+    "speedometer": {
+        "warningLights": {
+            "bridgeDisconnected": "Le véhicule n'est pas connecté à cet appareil",
+            "positionPrecisionDisabled": "Précision de la position désactivée",
+            "lowBattery": "Le niveau de batterie de votre véhicule ou de votre téléphone est faible",
+            "vehicleLightOn": "Phare allumé",
+            "vehicleLocked": "Véhicule verrouillé"
+        }
+    },
+    "addDevice": {
+        "pageTitle": "Ajouter un appareil",
+        "unknownDevice": "Appareil inconnu",
+        "address": "Adresse ",
+        "rssiSignal": "Signal ",
+        "selectProtocol": "Sélectionner un protocole de communication",
+        "clickToSearch": "Appuyez sur le bouton ci-dessous pour commencer la recherche d'appareils à proximité.",
+        "addSuccess": "Appareil ajouté avec succès",
+        "states": {
+            "readyBanner": "Prêt à rechercher",
+            "readyState": "Prêt à débuter le scan",
+            "scanning": "Recherche en cours...",
+            "stoppedState": "Recherche terminée",
+            "connecting": "Connexion à {name}...",
+            "connected": "Connecté à {name}",
+            "completing": "Finalisation de la connexion...",
+            "actions": {
+                "startScanShort": "Commencer",
+                "startScanLong": "Commencer la recherche",
+                "restartScanShort": "Recommencer",
+                "restartScanLong": "Recommencer la recherche",
+                "stopScanShort": "Arrêter",
+                "stopScanLong": "Arrêter la recherche"
+            }
+        },
+        "noDevicesFoundsHint": "Assurez-vous que votre appareil est allumé et à proximité, puis réessayez.",
+        "devicesFounds": {
+            "zero": "Aucun appareil trouvé",
+            "one": "1 appareil trouvé",
+            "other": "{count} appareils trouvés"
+        },
+        "warns": {
+            "compatibility": "eScive n'est actuellement compatible qu'avec les modèles suivants : "
+        },
+        "errors": {
+            "whileSearching": "Une erreur est survenue lors de la recherche d'appareils : {error}",
+            "stopScan": "Une erreur est survenue lors de l'arrêt du scan : {error}",
+            "communicationTestFailed": "Erreur de communication : impossible de tester la lisibilité d'un des caractéristique",
+            "noCharacteristic": "L'ajout n'a pas abouti : aucune caractéristique d'écriture ou de lecture trouvée",
+            "noMainService": "L'ajout n'a pas abouti : service principal non trouvé",
+            "connectionError": "Erreur de connexion : {error}"
+        }
+    },
+    "currentActivity": {
+        "state": {
+            "neverConnected": "Jamais connectée",
+            "none": "Hors de portée",
+            "connecting": "Tentative de connexion...",
+            "connected": "Connectée {since}"
+        }
+    },
+    "devicesPicker": {
+        "add": {
+            "label": "Associer un appareil"
+        },
+        "rename": {
+            "label": "Renommer cet appareil",
+            "dialogTitle": "Renommer cet appareil",
+            "dialogContent": "La modification sera uniquement visible dans l'app eScive.\nLaissez vide pour revenir au nom par défaut \"{bluetoothName}\"."
+        },
+        "delete": {
+            "label": "Supprimer cet appareil",
+            "dialogTitle": "Se déconnecter de cet appareil",
+            "dialogContent": "Les statistiques et la configuration supplémentaire appliquée à \"{name}\" sera effacée définitivement. Êtes-vous sûr de vouloir continuer ?"
+        }
+    },
+    "controls": {
+        "lock": "Verrouiller",
+        "unlock": "Déverrouiller",
+        "speed": "Vitesse",
+        "led": "Phare",
+        "stats": {
+            "tripDistanceKm": {
+                "title": "Distance parcours",
+                "hint": "Indique la distance parcourue depuis que la trotinette a été allumée"
+            },
+            "totalDistanceKm": {
+                "title": "Distance totale",
+                "hint": "Indique la distance parcourue depuis la dernière réinitialisation du compteur"
+            },
+            "todayDistanceKm": {
+                "title": "Distance aujrd.",
+                "hint": "Représente la distance parcourue depuis aujourd'hui à minuit"
+            },
+            "weekDistanceKm": {
+                "title": "Distance 7 jours",
+                "hint": "Représente la distance parcourue au cours des sept derniers jours"
+            },
+            "averageSpeedKmh": {
+                "title": "Vitesse moyenne",
+                "hint": "Représente l'allure moyenne à laquelle vous rouliez, compté à partir de 6 km/h"
+            },
+            "totalActivityTimeSecs": {
+                "title": "Temps d'activité",
+                "hint": "Représente la durée totale où la trotinette était en mouvement à plus de 4 km/h"
+            }
+        }
+    }
+}

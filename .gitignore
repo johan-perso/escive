@@ -1,0 +1,276 @@
+### Flutter Generated
+
+*.class
+*.lock
+*.log
+*.pyc
+*.swp
+.atom/
+.buildlog/
+.history
+.svn/
+hs_err_pid*
+
+.vscode/
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/release/app-release.aab
+**/android/app/release/app-release.apk
+**/android/app/.cxx
+
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+### https://raw.github.com/github/gitignore//Android.gitignore
+
+*.apk
+*.ap_
+*.dex
+bin/
+gen/
+proguard/
+.navigation/
+.idea/
+*.jks
+.externalNativeBuild
+google-services.json
+freeline.py
+freeline/
+freeline_project_description.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/Backup.gitignore
+
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/Emacs.gitignore
+
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+.org-id-locations
+*_archive
+*_flymake.*
+/eshell/history
+/eshell/lastdir
+/elpa/
+*.rel
+/auto/
+.cask/
+dist/
+flycheck_*.el
+/server/
+.projectile
+.dir-locals.el
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Gradle.gitignore
+
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Java.gitignore
+
+*.ctxt
+.mtj.tmp/
+*.nar
+*.ear
+*.tar.gz
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/JetBrains.gitignore
+
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+cmake-build-*/
+.idea/**/mongoSettings.xml
+*.iws
+*.ipr
+*.iml
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+.idea/replstate.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+.idea/httpRequests
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/JEnv.gitignore
+
+.java-version
+.jenv-version
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/Linux.gitignore
+
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/macOS.gitignore
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Maven.gitignore
+
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/SublimeText.gitignore
+
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+sftp-config.json
+Package Control.last-run
+Package Control.ca-list
+Package Control.ca-bundle
+Package Control.system-ca-bundle
+Package Control.cache/
+Package Control.ca-certs/
+Package Control.merged-ca-bundle
+Package Control.user-ca-bundle
+oscrypto-ca-bundle.crt
+bh_unicode_properties.cache
+GitHub.sublime-settings
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/Vim.gitignore
+
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+.netrwhist
+tags
+[._]*.un~
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/VisualStudioCode.gitignore
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### https://raw.github.com/github/gitignore/340e2fe08a2356c2e3760ff58c3a9e1fddf08060/Global/Windows.gitignore
+
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.lnk
+
+### Xcode et Objective C
+
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+Carthage/Build
+iOSInjectionProject/
+*.xcscmblueprint
+*.xccheckout
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+### FVM
+.fvm/

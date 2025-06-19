@@ -1,0 +1,300 @@
+{
+    "general": {
+        "unknownData": "Unknown data",
+        "defaultName": "Unnamed device",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "allow": "Allow",
+        "continue": "Continue",
+        "debugWarn": "This developer feature allows easier app debugging. You should probably not touch this if you don't know what you are doing.",
+        "askRestartApp": {
+            "dialogTitle": "Restart eScive",
+            "dialogContent": "You need to restart the app for the changes to take effect. Do you want to restart now?"
+        }
+    },
+    "bridges": {
+        "password": {
+            "incorrect": "The password you typed for this device is not valid, please try again",
+            "dialogTitle": "Password required",
+            "dialogContent": "To continue, you need to enter the passcode of the device you're trying to connect."
+        },
+        "unknownConnectionError": {
+            "text": "We could not connect to your device, {additional}",
+            "tryAgain": "we will try again shortly...",
+            "cannotTryAgain": "we will not try again due to debug settings enabled"
+        }
+    },
+    "geolocator": {
+        "serviceDisabled": "Location services are not enabled",
+        "cannotGetPosition": "Unable to get your position: {error}",
+        "permissions": {
+            "denied": "We do not have permission to access your position, check your settings to enable it",
+            "deniedForever": "Permission to access your position has been denied, check your settings to enable it"
+        }
+    },
+    "dateFormatter": {
+        "additional": {
+            "since": {
+                "label": "since",
+                "type": "prefix"
+            },
+            "ago": {
+                "label": "ago",
+                "type": "suffix"
+            }
+        },
+        "justnow": "just now",
+        "hour": {
+            "zero": "hour",
+            "one": "hour",
+            "other": "hours"
+        },
+        "yesterday": "yesterday",
+        "beforeYesterday": "the day before yesterday",
+        "day": {
+            "zero": "day",
+            "one": "day",
+            "other": "days"
+        },
+        "week": {
+            "zero": "week",
+            "one": "week",
+            "other": "weeks"
+        },
+        "lastMonth": "last month",
+        "months": {
+            "zero": "month",
+            "one": "month",
+            "other": "months"
+        }
+    },
+    "bluetoothPermission": {
+        "denied": "This app uses Bluetooth to find and connect to your devices, you must allow the app to access it before continuing",
+        "unsupported": "Your device does not seem to support Bluetooth. The app cannot continue without this support"
+    },
+    "changelog": {
+        "titlePrefix": "What's new in ",
+        "heightMinUnrespected": "Your screen height is too low to display the latest update summary"
+    },
+    "protocols": {
+        "iscooter": {
+            "title": "iScooter",
+            "subtitle": "Compatible with iScooter i10 Max models"
+        }
+    },
+    "musicPlayer": {
+        "idle": "No music playing",
+        "permissionMissing": "The Music widget need notification access to work"
+    },
+    "onboarding": {
+        "welcome": "Welcome to ",
+        "description": "Get a better visual experience with your compatible electric scooter!",
+        "ctaButton": "Allow Bluetooth access",
+        "demo": {
+            "label": "Tap to pair a demo device",
+            "dialogTitle": "Try eScive without a device",
+            "dialogContent": "The app is designed to connect to a physical electric scooter via Bluetooth.\n\nIf you don't have one, or it's not compatible, you can add a virtual device to discover how eScive works!"
+        }
+    },
+    "settings": {
+        "pageTitle": "Settings",
+        "footerDev": "Developed by Johan",
+        "display": {
+            "title": "DISPLAY",
+            "showInactivesWarnsLights": {
+                "title": "Show inactive warning lights",
+                "subtitle": "Speedometer lights will be displayed even when they are not active"
+            },
+            "keepScreenTurnedOn": {
+                "title": "Keep screen on",
+                "subtitle": "Your phone will not go to sleep while the app is open"
+            },
+            "forceScreenBrightnessMax": {
+                "title": "Force screen brightness",
+                "subtitle": "Your screen brightness level will be set at maximum. Start riding to enable"
+            },
+            "maxRenderedSpeedKmh": {
+                "title": "Speedometer limit",
+                "subtitle": "The needles from the speedometer will not exceed this maximum speed",
+                "warning": "You must comply with the speed limits imposed by local laws when riding"
+            },
+            "language": {
+                "title": "Language used",
+                "subtitle": "Select the language used by the app in the interface",
+                "values": {
+                    "default": "Default",
+                    "defaultDescription": "Sets the language applied based on the one used on this device",
+                    "english": "English",
+                    "french": "French"
+                }
+            }
+        },
+        "moves": {
+            "title": "TRIP TRACKING",
+            "useAdvancedStats": {
+                "title": "Calculate additional data",
+                "subtitle": "Statistics will be calculated and added when the app is open during your moves"
+            },
+            "usePosition": {
+                "title": "Data precision",
+                "subtitle": "Your position can be used to obtain more accurate data",
+                "values": {
+                    "always": {
+                        "title": "Always",
+                        "subtitle": "Used on all your moves"
+                    },
+                    "auto": {
+                        "title": "Automatic",
+                        "subtitle": "Disabled when phone battery is below 30%"
+                    },
+                    "never": {
+                        "title": "Never",
+                        "subtitle": "Position will not be used to gather data"
+                    }
+                }
+            },
+            "useSelfEstimatedSpeed": {
+                "title": "Use GPS to determine speed",
+                "subtitle": "The speed calculated from your phone can be more accurate in certain cases",
+                "usePositionMustBeEnabled": "Data precision must be enabled to enable this"
+            }
+        },
+        "dashboard": {
+            "title": "DASHBOARD",
+            "enableDashboardWidgets": {
+                "title": "Enable widgets",
+                "subtitle": "Additional panels will be displayed to provide easier access to essential infos",
+                "platformCompatibility": "This feature is currently only available on Android",
+                "permissionMissing": {
+                    "dialogTitle": "Allow missing access",
+                    "dialogContent": "To allow eScive to access the music you are listening to, you will need to authorize access to notifications from your phone settings."
+                }
+            }
+        },
+        "dangerZone": {
+            "title": "DANGER ZONE",
+            "resetStats": {
+                "title": "Clear all stats",
+                "confirmation": {
+                    "dialogTitle": "Clear statistics",
+                    "dialogContent": "All data related to your trips will be deleted for all of your saved devices. This action is irreversible."
+                }
+            },
+            "resetData": {
+                "title": "Clear all data",
+                "subtitle": "Your devices will need to be paired again, and all statistics will be reset",
+                "confirmation": {
+                    "dialogTitle": "Clear data",
+                    "dialogContent": "All your settings, statistics and paired devices will be deleted. This action is irreversible."
+                }
+            }
+        }
+    },
+    "speedometer": {
+        "warningLights": {
+            "bridgeDisconnected": "The vehicle is not connected to this device",
+            "positionPrecisionDisabled": "Position precision disabled",
+            "lowBattery": "Your vehicle or phone battery level is low",
+            "vehicleLightOn": "Lights are turned on",
+            "vehicleLocked": "Vehicle locked"
+        }
+    },
+    "addDevice": {
+        "pageTitle": "Add a new device",
+        "unknownDevice": "Unknown device",
+        "address": "Address",
+        "rssiSignal": "Signal",
+        "selectProtocol": "Select communication protocol",
+        "clickToSearch": "Tap the button below to start searching accross nearby devices.",
+        "addSuccess": "Device added successfully",
+        "states": {
+            "readyBanner": "Ready to search",
+            "readyState": "Waiting for scan start",
+            "scanning": "Searching...",
+            "stoppedState": "Search completed",
+            "connecting": "Connecting to {name}...",
+            "connected": "Connected to {name}",
+            "completing": "Completing connection...",
+            "actions": {
+                "startScanShort": "Start",
+                "startScanLong": "Start searching",
+                "restartScanShort": "Restart",
+                "restartScanLong": "Search again",
+                "stopScanShort": "Cancel",
+                "stopScanLong": "Cancel search"
+            }
+        },
+        "noDevicesFoundsHint": "Make sure your device is turned on and nearby, then try again.",
+        "devicesFounds": {
+            "zero": "No devices found",
+            "one": "1 device found",
+            "other": "{count} devices found"
+        },
+        "warns": {
+            "compatibility": "eScive is currently only compatible with the following models: "
+        },
+        "errors": {
+            "whileSearching": "An error occurred while searching for devices : {error}",
+            "stopScan": "An error occurred while stopping the scan: {error}",
+            "communicationTestFailed": "Communication error: unable to test readability of one of the characteristics",
+            "noCharacteristic": "Check failed: no write or read characteristics found",
+            "noMainService": "Check failed: main service is not found",
+            "connectionError": "Connection error: {error}"
+        }
+    },
+    "currentActivity": {
+        "state": {
+            "neverConnected": "Never connected",
+            "none": "Disconnected",
+            "connecting": "Connecting...",
+            "connected": "Connected {since}"
+        }
+    },
+    "devicesPicker": {
+        "add": {
+            "label": "Add new device"
+        },
+        "rename": {
+            "label": "Rename this device",
+            "dialogTitle": "Rename this device",
+            "dialogContent": "This modification will only be visible from the eScive app on this phone.\nKeep empty to apply the default name \"{bluetoothName}\"."
+        },
+        "delete": {
+            "label": "Delete this device",
+            "dialogTitle": "Delete this device",
+            "dialogContent": "All statistics and additional configuration applied to \"{name}\" will be permanently erased. Are you sure you want to continue?"
+        }
+    },
+    "controls": {
+        "lock": "Slide to Lock",
+        "unlock": "Slide to Unlock",
+        "speed": "Speed profile",
+        "led": "Light",
+        "stats": {
+            "tripDistanceKm": {
+                "title": "Trip distance",
+                "hint": "Shows the distance traveled since the scooter was turned on"
+            },
+            "totalDistanceKm": {
+                "title": "Total distance",
+                "hint": "Shows the distance traveled since the last counter reset"
+            },
+            "todayDistanceKm": {
+                "title": "Today distance",
+                "hint": "Represents the distance traveled since midnight"
+            },
+            "weekDistanceKm": {
+                "title": "7-days distance",
+                "hint": "Represents the distance traveled over the past seven days"
+            },
+            "averageSpeedKmh": {
+                "title": "Average speed",
+                "hint": "Represents the average speed at which you were riding, counted from 6 km/h"
+            },
+            "totalActivityTimeSecs": {
+                "title": "Activity time",
+                "hint": "Represents the total time you were moving at more than 4 km/h"
+            }
+        }
+    }
+}
