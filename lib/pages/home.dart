@@ -464,101 +464,142 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Center( // visible when no cover artwork is available
-                    child: Icon(LucideIcons.music, size: 32, color: Colors.grey[500]),
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                Center( // visible when no cover artwork is available
+                  child: Icon(LucideIcons.music, size: 32, color: Colors.grey[500]),
+                ),
+
+                ArtworkWidget(),
+
+                // Gradient under the text but over the cover to make the text more readable
+                globals.musicPlayerHelper.currentDetails['title'] == 'N/A' || globals.musicPlayerHelper.currentDetails['artist'] == 'N/A' || globals.musicPlayerHelper.currentDetails['title'] == null || globals.musicPlayerHelper.currentDetails['artist'] == null
+                  ? SizedBox()
+                  : Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.9),
+                        ],
+                        stops: [0.4, 1]
+                      ),
+                    ),
                   ),
 
-                  ArtworkWidget(),
-
-                  // Gradient under the text but over the cover to make the text more readable
-                  globals.musicPlayerHelper.currentDetails['title'] == 'N/A' || globals.musicPlayerHelper.currentDetails['artist'] == 'N/A' || globals.musicPlayerHelper.currentDetails['title'] == null || globals.musicPlayerHelper.currentDetails['artist'] == null
-                    ? SizedBox()
-                    : Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withValues(alpha: 0.9),
-                          ],
-                          stops: [0.4, 1]
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                color: Colors.grey.withValues(alpha: 0.1),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Haptic().light();
+                                if(globals.musicPlayerHelper.currentDetails['state'] == 'playing'){
+                                  globals.musicPlayerHelper.control('pause');
+                                } else {
+                                  globals.musicPlayerHelper.control('play');
+                                }
+                              },
+                              icon: Icon(
+                                globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? LucideIcons.pause : LucideIcons.play,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
 
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                  color: Colors.grey.withValues(alpha: 0.1),
-                                  width: 1.5,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  Haptic().light();
-                                  if(globals.musicPlayerHelper.currentDetails['state'] == 'playing'){
-                                    globals.musicPlayerHelper.control('pause');
-                                  } else {
-                                    globals.musicPlayerHelper.control('play');
-                                  }
-                                },
-                                icon: Icon(
-                                  globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? LucideIcons.pause : LucideIcons.play,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
+                    globals.musicPlayerHelper.currentDetails['title'] == 'N/A' || globals.musicPlayerHelper.currentDetails['artist'] == 'N/A' || globals.musicPlayerHelper.currentDetails['title'] == null || globals.musicPlayerHelper.currentDetails['artist'] == null
+                      ? SizedBox()
+                      : Container(
+                        constraints: BoxConstraints(minWidth: double.infinity),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 4, left: 12, right: 12, bottom: 12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text('${globals.musicPlayerHelper.currentDetails['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.right, style: TextStyle(fontFamily: 'Sora', color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15)),
+                              Text('${globals.musicPlayerHelper.currentDetails['artist']}', maxLines: 1, overflow: TextOverflow.clip, textAlign: TextAlign.right, style: TextStyle(fontFamily: 'Sora', color: Colors.grey[200], fontWeight: FontWeight.w500, fontSize: 13)),
+                            ],
                           ),
                         ),
                       ),
+                  ],
+                )
+              ]
+            )
+          ),
+        )
+      ),
+    );
+  }
 
-                      globals.musicPlayerHelper.currentDetails['title'] == 'N/A' || globals.musicPlayerHelper.currentDetails['artist'] == 'N/A' || globals.musicPlayerHelper.currentDetails['title'] == null || globals.musicPlayerHelper.currentDetails['artist'] == null
-                        ? SizedBox()
-                        : Container(
-                          constraints: BoxConstraints(minWidth: double.infinity),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 4, left: 12, right: 12, bottom: 12),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text('${globals.musicPlayerHelper.currentDetails['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.right, style: TextStyle(fontFamily: 'Sora', color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15)),
-                                Text('${globals.musicPlayerHelper.currentDetails['artist']}', maxLines: 1, overflow: TextOverflow.clip, textAlign: TextAlign.right, style: TextStyle(fontFamily: 'Sora', color: Colors.grey[200], fontWeight: FontWeight.w500, fontSize: 13)),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  )
-                ]
-              )
-            ),
+  Widget _buildMapWidget() {
+    return AspectRatio(
+      aspectRatio: 1/1,
+      child: GestureDetector(
+        onTap: () async {
+          Haptic().light();
+          await showCupertinoModalBottomSheet(
+            duration: const Duration(milliseconds: 300),
+            context: context,
+            builder: (context) {
+              return MusicPlayerScreen();
+            },
+          );
+          Haptic().light();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardTheme.color,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(2, 3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                Text('Maps')
+              ]
+            )
+          ),
         )
       ),
     );
@@ -730,7 +771,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.all(10),
-                          child: SizedBox() // soon
+                          child: _buildMapWidget()
                         ),
                       ),
                     ],
