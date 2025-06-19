@@ -11,6 +11,7 @@ import 'package:escive/utils/actions_dialog.dart';
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/units_converter.dart';
 import 'package:escive/widgets/artwork.dart';
 import 'package:escive/widgets/battery_indicator.dart';
 import 'package:escive/widgets/speed_mode_selector.dart';
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 showSnackBar(context, hint, icon: "info");
               },
               child: Container(
-                padding: contentType == 'text' ? EdgeInsets.symmetric(horizontal: 34, vertical: 18) : EdgeInsets.all(4),
+                padding: contentType == 'text' ? EdgeInsets.symmetric(horizontal: 16, vertical: 18) : EdgeInsets.all(4),
                 child: contentType == 'text'
                   ? Text(content.toString(), style: TextStyle(fontSize: 22, color: Colors.grey[800], fontWeight: FontWeight.normal), textAlign: TextAlign.center)
                   : content is Widget ? content : const SizedBox()
@@ -379,6 +380,8 @@ class _HomeScreenState extends State<HomeScreen> {
       } else if (event['type'] == 'databridge' && event['subtype'] == 'state') {
         if(mounted) setState(() {});
         redefinePositionWarn();
+      } else if (event['type'] == 'databridge' && event['subtype'] == 'distance') {
+        if(mounted) setState(() {});
       }
     });
 
@@ -734,7 +737,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.tripDistanceKm.title'.tr(),
-                            content: "14 km",
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['tripDistanceKm'] ?? 0, 'km') : '0 m',
                             hint: 'controls.stats.tripDistanceKm.hint'.tr()
                           ),
                         ),
@@ -746,7 +749,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.totalDistanceKm.title'.tr(),
-                            content: "380 km",
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, 'km') : '0 m',
                             hint: 'controls.stats.totalDistanceKm.hint'.tr()
                           ),
                         ),

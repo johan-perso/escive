@@ -87,7 +87,11 @@ Map generateDeviceMap(){
       "todayDistanceKm": 0,
       "weekDistanceKm": 0,
       "averageSpeedKmh": 0,
-      "totalActivityTimeSecs": 0
+      "totalActivityTimeSecs": 0,
+      "datas": {
+        "totalDistanceKmAtMidnight": 0,
+        "lastMidnightTime": null,
+      }
     }
   };
 }
@@ -202,6 +206,9 @@ void resetCurrentActivityData(){
       'state': true
     }
   });
+
+  currentDevice['currentActivity']['totalDistance'] = 0;
+  currentDevice['currentActivity']['tripDistance'] = 0;
 }
 
 void setSettings(String key, dynamic value) {

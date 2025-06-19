@@ -544,26 +544,23 @@ class IscooterBridge {
           handleStatusPacket(value);
           break;
         case 162: // ODO/TRIP packets
-          // if(value.length < 10) return;
+          if(value.length < 10) return;
 
-          // int tripRaw = value[4] + (value[5] << 8);
-          // double trip = tripRaw / 10.0;
+          int tripRaw = value[4] + (value[5] << 8);
+          double trip = tripRaw / 10.0;
 
-          // int odoRaw = (value[6] << 16) + (value[7] << 8) + value[8];
-          // double odo = odoRaw / 2560.0;
+          int odoRaw = (value[6] << 16) + (value[7] << 8) + value[8];
+          double odo = odoRaw / 2560.0;
+          logarte.log("iScooter bridge: handleScooterData: (ODO/TRIP): trip: $trip km ; odo: $odo km");
 
-          // // Update globals data
-          // globals.currentDevice['currentActivity']['totalDistance'] = odo;
-          // globals.currentDevice['currentActivity']['tripDistance'] = trip;
+          // Update globals data
+          globals.currentDevice['stats']['tripDistanceKm'] = trip;
+          globals.currentDevice['stats']['totalDistanceKm'] = odo;
 
-          // globals.socket.add({
-          //   'type': 'databridge',
-          //   'subtype': 'distance',
-          //   'data': {
-          //     'odo': odo,
-          //     'trip': trip
-          //   }
-          // });
+          globals.socket.add({
+            'type': 'databridge',
+            'subtype': 'distance'
+          });
           break;
       }
     }
