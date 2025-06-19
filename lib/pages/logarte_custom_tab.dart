@@ -9,7 +9,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:easy_localization/easy_localization.dart' as localization;
 
 JsonEncoder jsonEncoder = JsonEncoder.withIndent('  ');
 

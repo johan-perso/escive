@@ -83,7 +83,8 @@
         }
     },
     "musicPlayer": {
-        "idle": "Aucune écoute en cours",
+        "idleTitle": "À l'arrêt",
+        "idleSubtitle": "Aucune écoute en cours",
         "permissionMissing": "Le widget Musique a besoin de l'accès aux notifications pour fonctionner"
     },
     "onboarding": {

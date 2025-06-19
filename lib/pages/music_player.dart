@@ -254,7 +254,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
                 children: [
                   // Name of the song
                   Text(
-                    title == null || title == 'N/A' ? "À l'arrêt" : title,
+                    title == null || title == 'N/A' ? "musicPlayer.idleTitle".tr() : title,
                     style: TextStyle(
                       fontFamily: 'Sora',
                       fontSize: 18,
@@ -307,7 +307,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
                       // Artist name
                       Expanded(
                         child: Text(
-                          artist == null || artist == 'N/A' ? "musicPlayer.idle".tr() : artist,
+                          artist == null || artist == 'N/A' ? "musicPlayer.idleSubtitle".tr() : artist,
                           style: TextStyle(
                             fontFamily: 'Sora',
                             fontSize: 14,

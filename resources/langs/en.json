@@ -83,7 +83,8 @@
         }
     },
     "musicPlayer": {
-        "idle": "No music playing",
+        "idleTitle": "Inactive",
+        "idleSubtitle": "No music playing",
         "permissionMissing": "The Music widget need notification access to work"
     },
     "onboarding": {
