@@ -1,6 +1,57 @@
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
+int dayOfYear(DateTime date) {
+  DateTime startOfYear = DateTime(date.year, 1, 1);
+  return date.difference(startOfYear).inDays + 1;
+}
+
+String humanReadableTime(int seconds) {  
+  // Returns `12min`, `10h12`, `1j 12h, 30min`
+
+  int days = (seconds / 86400).floor();
+  int hours = ((seconds % 86400) / 3600).floor();
+  int minutes = (((seconds % 86400) % 3600) / 60).floor();
+
+  String daysTrad = 'dateFormatter.day.one'.tr().toLowerCase().substring(0, 1);
+  String hoursTrad = 'dateFormatter.hour.one'.tr().toLowerCase().substring(0, 1);
+
+  bool longerFormat = days > 0;
+  String readableTime = '';
+
+
+  if(days > 0) readableTime += "$days$daysTrad ";
+  if(hours > 0) readableTime += "$hours$hoursTrad${longerFormat ? ' ' : ''}";
+  if(minutes > 0) readableTime += "${minutes < 10 ? '0' : ''}$minutes${hours < 1 && !longerFormat ? ' min' : longerFormat ? 'm' : ''} ";
+  if(readableTime.isEmpty) readableTime = '0 min';
+
+  return readableTime;
+}
+
+String humanReadableDistance(dynamic distance, String fromUnit) {
+  if(distance.runtimeType != double){
+    try { // try to parse another way, in case if it's a string or a double
+      distance = double.parse(distance.toString());
+    } catch (e) {
+      distance = 0;
+    }
+  }
+  distance ??= 0; // set distance to 0 if still null
+
+  if(fromUnit == 'km') distance = distance * 1000; // unit of the distance, will be converted to meters
+
+  String? readableDistance;
+
+  if(distance < 1000){
+    readableDistance = "${distance.toStringAsFixed(0)} m";
+  } else {
+    readableDistance = "${(distance/1000).toStringAsFixed(1)} km";
+  }
+
+  if(readableDistance.contains('.0 ')) readableDistance = readableDistance.replaceAll('.0 ', ' ');
+  return readableDistance.replaceAll('.', ',');
+}
+
 String getRelativeTime(String locale, DateTime dateTime, String additional) {
   final now = DateTime.now();
   final difference = now.difference(dateTime);

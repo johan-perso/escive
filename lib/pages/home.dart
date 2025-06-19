@@ -9,9 +9,9 @@ import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/date_formatter.dart';
 import 'package:escive/utils/actions_dialog.dart';
 import 'package:escive/utils/haptic.dart';
+import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/utils/globals.dart' as globals;
-import 'package:escive/utils/units_converter.dart';
 import 'package:escive/widgets/artwork.dart';
 import 'package:escive/widgets/battery_indicator.dart';
 import 'package:escive/widgets/speed_mode_selector.dart';
@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLocked = false;
   late DateTime startTime;
   late Timer _everyDemiMinuteTimer;
+  late Timer _everyQuarterMinuteTimer;
   StreamSubscription? _streamSubscription;
 
   Widget buildBasicCard(BuildContext context, { String title = 'N/A', dynamic content = 'N/A', String? hint, String contentType = 'text', double? height, String animation = '', bool transparentBackground = false }) {
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 showSnackBar(context, hint, icon: "info");
               },
               child: Container(
-                padding: contentType == 'text' ? EdgeInsets.symmetric(horizontal: 16, vertical: 18) : EdgeInsets.all(4),
+                padding: contentType == 'text' ? EdgeInsets.symmetric(horizontal: 6, vertical: 18) : EdgeInsets.all(4),
                 child: contentType == 'text'
                   ? Text(content.toString(), style: TextStyle(fontSize: 22, color: Colors.grey[800], fontWeight: FontWeight.normal), textAlign: TextAlign.center)
                   : content is Widget ? content : const SizedBox()
@@ -149,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(device['name'] ?? "general.unknownData".tr(), style: TextStyle(color: Colors.grey[900], fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text('$stateText • ${device['stats']['totalDistanceKm'] ?? "general.unknownData".tr()} km', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
+                      Text('$stateText • ${device['stats'].containsKey('totalDistanceKm') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, 'km') : "general.unknownData".tr()}', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -372,10 +373,12 @@ class _HomeScreenState extends State<HomeScreen> {
       } else if (event['type'] == 'databridge' && event['subtype'] == 'state' && event['data'] == 'none') {
         logarte.log('Home: disconnected from device');
         if(mounted) setState(() {});
+        refreshAdvancedStats();
         redefinePositionWarn();
       } else if (event['type'] == 'databridge' && event['subtype'] == 'state' && event['data'] == 'connected') {
         startTime = DateTime.fromMillisecondsSinceEpoch(globals.currentDevice['currentActivity']['startTime'] ?? 0);
         if(mounted) setState(() {});
+        refreshAdvancedStats();
         redefinePositionWarn();
       } else if (event['type'] == 'databridge' && event['subtype'] == 'state') {
         if(mounted) setState(() {});
@@ -388,6 +391,15 @@ class _HomeScreenState extends State<HomeScreen> {
     _everyDemiMinuteTimer = Timer.periodic(Duration(seconds: 30), (timer) {
       startTime = DateTime.fromMillisecondsSinceEpoch(globals.currentDevice['currentActivity']['startTime'] ?? 0);
       if(mounted) setState(() {});
+    });
+    _everyQuarterMinuteTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+      if(globals.settings['useAdvancedStats'] == true && globals.currentDevice.containsKey('currentActivity') && globals.currentDevice['currentActivity']['state'] == 'connected'){
+        int speedkmh = globals.currentDevice['currentActivity']['speedKmh'] ?? 0;
+        if(speedkmh > 3){ // 4 km/h or +
+          (globals.currentDevice['stats']['datas']['lastSpeedsKmh'] ?? []).add(speedkmh);
+          if(globals.currentDevice['stats']['datas']['lastSpeedsKmh'].length > 1000) globals.currentDevice['stats']['datas']['lastSpeedsKmh'].removeAt(0);
+        }
+      }
     });
 
     globals.musicPlayerHelper.init();
@@ -408,6 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _streamSubscription?.cancel();
     _everyDemiMinuteTimer.cancel();
+    _everyQuarterMinuteTimer.cancel();
     _deviceNameController.dispose();
     globals.musicPlayerHelper.dispose();
     super.dispose();
@@ -769,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.todayDistanceKm.title'.tr(),
-                            content: "21 km",
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['todayDistanceKm'] ?? 0, 'km') : '0 m',
                             hint: 'controls.stats.todayDistanceKm.hint'.tr(),
                           ),
                         ),
@@ -781,7 +794,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.weekDistanceKm.title'.tr(),
-                            content: "74 km",
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['weekDistanceKm'] ?? 0, 'km') : '0 m',
                             hint: 'controls.stats.weekDistanceKm.hint'.tr(),
                           ),
                         ),
@@ -801,7 +814,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.averageSpeedKmh.title'.tr(),
-                            content: "35 km/h",
+                            content: "${globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['averageSpeedKmh'] ?? 0, 'km') : '0 m'}/h",
                             hint: 'controls.stats.averageSpeedKmh.hint'.tr(),
                           ),
                         ),
@@ -813,7 +826,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.totalActivityTimeSecs.title'.tr(),
-                            content: "10h12",
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableTime(globals.currentDevice['stats']['totalActivityTimeSecs'] ?? 0) : '0 min',
                             hint: 'controls.stats.totalActivityTimeSecs.hint'.tr(),
                           ),
                         ),

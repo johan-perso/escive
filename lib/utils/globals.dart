@@ -91,6 +91,9 @@ Map generateDeviceMap(){
       "datas": {
         "totalDistanceKmAtMidnight": 0,
         "lastMidnightTime": null,
+        "allDaysDistanceKm": {},
+        "lastSpeedsKmh": [],
+        "lastActivityTimeUpdate": null
       }
     }
   };

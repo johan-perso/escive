@@ -3,6 +3,7 @@ import 'package:escive/pages/onboarding.dart';
 import 'package:escive/pages/logarte_custom_tab.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:io';
@@ -204,12 +205,23 @@ class _MainAppState extends State<MainApp> {
     _streamSubscription = globals.socket.stream.listen((event) {
       logarte.log('Received event: ${jsonEncode(event)}');
 
+      if (event['type'] == 'databridge' && event['subtype'] == 'speed' && event['data']['speedKmh'] < 6 && event['data']['source'] == 'bridge') {
+        globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'] = null; // force reset of lastActivityTimeUpdate when speed start to be under 6km/h
+      }
+
       if(event['type'] == 'refreshStates' && event['value'].contains('main')){
         logarte.log('Main: refreshing states');
         if (mounted) setState(() {});
       } else if (event['type'] == 'databridge' && event['subtype'] == 'speed' && event['data']['speedKmh'] > 5 && event['data']['source'] == 'bridge') {
         hasDrivedOnce = true;
         refreshBrightness();
+        refreshAdvancedStats();
+
+        if(globals.settings['useAdvancedStats'] == true && globals.currentDevice.containsKey('stats')){
+          if(!globals.currentDevice['stats']['datas'].containsKey('lastActivityTimeUpdate') || globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'] == null) globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'] = DateTime.now().toIso8601String();
+          globals.currentDevice['stats']['totalActivityTimeSecs'] += DateTime.now().difference(DateTime.parse(globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'])).inSeconds; // add difference between now and last check
+          globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'] = DateTime.now().toIso8601String();
+        }
 
         // Start the GPS counting when the device start moving
         if(mounted && context.mounted && globals.positionEmitter.currentlyEmittingPositionRealTime == false && globals.settings['useSelfEstimatedSpeed'] == true){
