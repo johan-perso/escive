@@ -274,3 +274,5 @@ iOSInjectionProject/
 
 ### FVM
 .fvm/
+
+.env

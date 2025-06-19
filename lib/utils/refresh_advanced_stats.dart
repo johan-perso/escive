@@ -35,7 +35,11 @@ void refreshAdvancedStats(){
   for(int i = 1; i <= 7; i++){
     String currentDayInYear = dayOfYear(now.subtract(Duration(days: i))).toString();
     if(globalsStats['datas']['allDaysDistanceKm'].containsKey(currentDayInYear)){ // if we got a data for that day, add it
-      weekDistanceKm += int.tryParse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear]) ?? 0;
+      try {
+        weekDistanceKm += int.parse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString());
+      } catch(e){
+        weekDistanceKm += int.tryParse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString()) ?? 0;
+      }
     }
   }
   globalsStats['weekDistanceKm'] = weekDistanceKm;

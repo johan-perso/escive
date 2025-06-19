@@ -1,11 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:escive/main.dart';
 import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/widgets/artwork.dart';
 
+import 'dart:convert';
+import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

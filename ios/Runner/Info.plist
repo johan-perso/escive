@@ -48,9 +48,9 @@
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>eScive utilise votre position pour améliorer la précision des statistiques</string>
+		<string>eScive needs your position to enhance statistics and to use the navigation widget</string>
 		<key>NSBluetoothAlwaysUsageDescription</key>
-		<string>eScive a besoin de votre autorisation pour se connecter à votre trotinette</string>
+		<string>eScive needs your permission to connect to a Bluetooth device</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>CFBundleLocalizations</key>

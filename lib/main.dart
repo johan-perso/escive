@@ -18,6 +18,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 final Logarte logarte = Logarte(
@@ -59,6 +60,7 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await initializeDateFormatting(isUserLanguageSupported ? Platform.localeName : 'en_US', null);
 
+  await dotenv.load(fileName: ".env", isOptional: true);
   await GetStorage.init();
   await getAppVersion(); // establish cache at the start
 
