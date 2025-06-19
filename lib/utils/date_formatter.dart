@@ -28,7 +28,7 @@ String humanReadableTime(int seconds) {
   return readableTime;
 }
 
-String humanReadableDistance(dynamic distance, String fromUnit) {
+String humanReadableDistance(dynamic distance, { String fromUnit = 'm', int decimalPlaces = 1 }) {
   if(distance.runtimeType != double){
     try { // try to parse another way, in case if it's a string or a double
       distance = double.parse(distance.toString());
@@ -45,7 +45,7 @@ String humanReadableDistance(dynamic distance, String fromUnit) {
   if(distance < 1000){
     readableDistance = "${distance.toStringAsFixed(0)} m";
   } else {
-    readableDistance = "${(distance/1000).toStringAsFixed(1)} km";
+    readableDistance = "${(distance/1000).toStringAsFixed(decimalPlaces)} km";
   }
 
   if(readableDistance.contains('.0 ')) readableDistance = readableDistance.replaceAll('.0 ', ' ');

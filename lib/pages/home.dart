@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(device['name'] ?? "general.unknownData".tr(), style: TextStyle(color: Colors.grey[900], fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text('$stateText • ${device['stats'].containsKey('totalDistanceKm') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, 'km') : "general.unknownData".tr()}', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
+                      Text('$stateText • ${device['stats'].containsKey('totalDistanceKm') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, fromUnit: 'km') : "general.unknownData".tr()}', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -750,7 +750,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.tripDistanceKm.title'.tr(),
-                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['tripDistanceKm'] ?? 0, 'km') : '0 m',
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['tripDistanceKm'] ?? 0, fromUnit: 'km') : '0 m',
                             hint: 'controls.stats.tripDistanceKm.hint'.tr()
                           ),
                         ),
@@ -762,7 +762,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.totalDistanceKm.title'.tr(),
-                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, 'km') : '0 m',
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, fromUnit: 'km') : '0 m',
                             hint: 'controls.stats.totalDistanceKm.hint'.tr()
                           ),
                         ),
@@ -782,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.todayDistanceKm.title'.tr(),
-                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['todayDistanceKm'] ?? 0, 'km') : '0 m',
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['todayDistanceKm'] ?? 0, fromUnit: 'km') : '0 m',
                             hint: 'controls.stats.todayDistanceKm.hint'.tr(),
                           ),
                         ),
@@ -794,7 +794,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.weekDistanceKm.title'.tr(),
-                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['weekDistanceKm'] ?? 0, 'km') : '0 m',
+                            content: globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['weekDistanceKm'] ?? 0, fromUnit: 'km') : '0 m',
                             hint: 'controls.stats.weekDistanceKm.hint'.tr(),
                           ),
                         ),
@@ -814,7 +814,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: buildBasicCard(
                             context,
                             title: 'controls.stats.averageSpeedKmh.title'.tr(),
-                            content: "${globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['averageSpeedKmh'] ?? 0, 'km') : '0 m'}/h",
+                            content: "${globals.currentDevice.containsKey('stats') ? humanReadableDistance(globals.currentDevice['stats']['averageSpeedKmh'] ?? 0, fromUnit: 'km', decimalPlaces: 0) : '0 m'}/h",
                             hint: 'controls.stats.averageSpeedKmh.hint'.tr(),
                           ),
                         ),
