@@ -8,10 +8,11 @@ void showSelectModal({
   required BuildContext context,
   required String title,
   required List values,
+  bool isRadio = false,
   String? value,
   required Function(int) onChanged,
 }) async {
-  await showCupertinoModalBottomSheet(
+  await showMaterialModalBottomSheet(
     duration: const Duration(milliseconds: 300),
     context: context,
     builder: (context) {
@@ -46,19 +47,20 @@ void showSelectModal({
                 shrinkWrap: true,
                 itemCount: values.length,
                 physics: const ClampingScrollPhysics(),
+                padding: EdgeInsets.only(bottom: 26),
                 itemBuilder: (context, index) {
                   String subtitle = values[index]['subtitle'] ?? '';
 
                   return ListTile(
                     title: Text(values[index]['title']),
                     subtitle: subtitle == '' ? null : Text(subtitle),
-                    contentPadding: const EdgeInsets.all(0),
+                    contentPadding: isRadio ? const EdgeInsets.all(0) : const EdgeInsets.only(left: 14),
                     onTap: () {
                       Haptic().light();
                       onChanged(index);
                       Navigator.pop(context);
                     },
-                    leading: Radio(
+                    leading: !isRadio ? null : Radio(
                       value: index,
                       groupValue: currentValue,
                       onChanged: (value) {
@@ -174,6 +176,7 @@ class SettingsTile extends StatelessWidget {
           title: title,
           values: values,
           value: value,
+          isRadio: true,
           onChanged: (value) {
             onChanged(values[value]['id']);
           },

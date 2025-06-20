@@ -3,7 +3,22 @@
         "searchHint": "Search a place or type an address",
         "noResultsFound": "No results found",
         "cannotOpenNavigation": "No navigation app can be opened, you need to install one (e.g. Google Maps) to continue",
-        "cannotReverseGeocode": "Unable to get the address of the pinned location"
+        "cannotReverseGeocode": "Unable to get the address of the pinned location",
+        "favorite": {
+            "notDefined": "Empty favorite slot",
+            "noPinnedPoint": "Tap somewhere on the map to place a pin, and try to save this slot again",
+            "actions": {
+                "prompt": "Select an action",
+                "rename": {
+                    "label": "Rename this slot",
+                    "dialogTitle": "Rename this favorite",
+                    "dialogContent": "The name of this favorite will be shown on the map. Keep empty to reset it."
+                },
+                "changeicon": "Change the icon",
+                "repin": "Set pinned location",
+                "delete": "Remove this favorite"
+            }
+        }
     },
     "general": {
         "unknownData": "Unknown data",

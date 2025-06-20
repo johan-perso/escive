@@ -1,9 +1,27 @@
 {
     "maps": {
-        "searchHint": "Rechercher un lieu ou saisissez une adresse",
+        "searchHint": "Rechercher un lieu ou une adresse",
         "noResultsFound": "Aucun résultat trouvé",
         "cannotOpenNavigation": "Aucune app de navigation ne peut être ouverte, installez une app comme Google Maps pour continuer",
-        "cannotReverseGeocode": "Impossible de récupérer l'adresse de l'emplacement épinglé"
+        "cannotReverseGeocode": "Impossible de récupérer l'adresse de l'emplacement épinglé",
+        "favorite": {
+            "notDefined": "Ajouter un favori ici",
+            "noPinnedPoint": "Toucher un point de la carte pour définir une épingle à son emplacement, et essayez à nouveau",
+            "actions": {
+                "prompt": "Sélectionner une action",
+                "rename": {
+                    "label": "Renommer ce favori",
+                    "dialogTitle": "Renommer ce favori",
+                    "dialogContent": "Le nom affiché pour ce favori sera également affiché sur la carte. Laissez vide pour effacer le nom."
+                },
+                "changeicon": {
+                    "label": "Changer l'icône",
+                    "dialogTitle": "Sélectionner une nouvelle icône"
+                },
+                "repin": "Définir l'épingle",
+                "delete": "Effacer ce favori"
+            }
+        }
     },
     "general": {
         "unknownData": "Donnée inconnue",

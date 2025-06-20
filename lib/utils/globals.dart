@@ -118,6 +118,7 @@ Future<void> refreshSettings() async {
     { "key": "enableDashboardWidgets", "value": false, "type": bool },
     { "key": "disableAutoBluetoothReconnection", "value": false, "type": bool },
     { "key": "customUiLanguage", "value": '', "type": String },
+    { "key": "favoritesPlaces", "value": [], "type": List },
   ];
 
   for(var element in defaultSettings) {
@@ -216,7 +217,7 @@ void resetCurrentActivityData(){
 
 void setSettings(String key, dynamic value) {
   settings[key] = value;
-  refreshStates(['main', 'home', 'settings', 'speedometer']);
+  refreshStates(['main', 'home', 'settings', 'speedometer', 'maps']);
   logarte.log("Setting $key to $value");
   box.write('settings', settings);
 }

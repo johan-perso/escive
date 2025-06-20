@@ -11,6 +11,7 @@ import 'package:escive/utils/actions_dialog.dart';
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/show_snackbar.dart';
+import 'package:escive/utils/create_default_marker.dart';
 import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/widgets/artwork.dart';
 import 'package:escive/widgets/battery_indicator.dart';
@@ -52,6 +53,8 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
   bool isCurrentLocationAvailable = false;
   String street = '';
   String city = '';
+  PointAnnotationManager? pointAnnotationManager;
+  List<PointAnnotation> favoritesPlacesMarkers = [];
 
   CameraOptions defaultCameraOptions = CameraOptions(
     center: Point(coordinates: Position(2.3522, 48.8566)), // Paris
@@ -68,17 +71,50 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
   _onMapCreated(MapboxMap mapboxMap) async {
     this.mapboxMap = mapboxMap;
 
-    // Move camera to current position
-    Map currentPosition = await refreshPosition();
-    if(currentPosition['latitude'].toString() != '0' && currentPosition['longitude'].toString() != '0'){
-      mapboxMap.setCamera(CameraOptions(center: Point(coordinates: Position(currentPosition['longitude'], currentPosition['latitude'])), zoom: 12));
-    }
-
     mapboxMap.logo.updateSettings(LogoSettings(enabled: false)); // hide mapbox logo
     mapboxMap.attribution.updateSettings(AttributionSettings(enabled: false)); // hide info icon
     mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false)); // hide the scale bar
     mapboxMap.location.updateSettings(LocationComponentSettings(enabled: true)); // current user position indicator
     mapboxMap.style.setStyleImportConfigProperty("basemap", "show3dObjects", false); // disable 3D buildings
+
+    Map currentPosition = await refreshPosition();
+    if(currentPosition['latitude'].toString() != '0' && currentPosition['longitude'].toString() != '0'){
+      mapboxMap.setCamera(CameraOptions(center: Point(coordinates: Position(currentPosition['longitude'], currentPosition['latitude'])), zoom: 12));
+    }
+
+    pointAnnotationManager = await mapboxMap.annotations.createPointAnnotationManager();
+    setFavoritesPlacesMarkers();
+  }
+
+  void setFavoritesPlacesMarkers() async {
+    try {
+      for (var marker in favoritesPlacesMarkers) {
+        await pointAnnotationManager!.delete(marker);
+      }
+    } catch (e) {
+      logarte.log('setFavoritesPlacesMarkers from home: Cannot delete marker: $e');
+    }
+
+    final markerImage = await createDefaultMarker(Colors.yellow);
+
+    favoritesPlacesMarkers = [];
+    List favoritesPlaces = (globals.settings['favoritesPlaces']?? [{},{},{}]);
+    for (var favorite in favoritesPlaces) {
+      if(favorite['longitude'] == null || favorite['latitude'] == null) continue;
+      final pointAnnotationOptions = PointAnnotationOptions(
+        geometry: Point(coordinates: Position(favorite['longitude'], favorite['latitude'])),
+        image: markerImage,
+        iconSize: 0.8,
+        textField: favorite['name'],
+        textOffset: [0, 1.5],
+        textSize: 11,
+        isDraggable: false,
+        textMaxWidth: 14,
+        textEmissiveStrength: 1,
+      );
+      final marker = await pointAnnotationManager!.create(pointAnnotationOptions);
+      favoritesPlacesMarkers.add(marker);
+    }
   }
 
   Future<Map> refreshPosition() async {
@@ -87,7 +123,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
       currentPosition = await getCurrentPosition();
       this.currentPosition = currentPosition;
     } catch (e) {
-      logarte.log("refreshPosition(): Error while getting current position: $e");
+      logarte.log("refreshPosition() from home: Error while getting current position: $e");
       isCurrentLocationAvailable = false;
       return {
         'latitude': 0,
@@ -126,11 +162,11 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
           city = place.locality ?? '';
         });
       } else {
-        logarte.log("updateGeocodedPosition(): No placemark found");
+        logarte.log("updateGeocodedPosition() from home: No placemark found");
         resetCurrentLocation();
       }
     } catch (e) {
-      logarte.log("updateGeocodedPosition(): Error while getting placemark: $e");
+      logarte.log("updateGeocodedPosition() from home: Error while getting placemark: $e");
       resetCurrentLocation();
     }
 
@@ -149,6 +185,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
     if(forceRefreshPositionTimer != null) forceRefreshPositionTimer!.cancel();
     forceRefreshPositionTimer = Timer.periodic(Duration(minutes: 2), (timer) {
       refreshPosition();
+      setFavoritesPlacesMarkers();
     });
 
     if(refreshCameraTimer != null) refreshCameraTimer!.cancel();
@@ -187,7 +224,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
 
           Haptic().light();
           refreshPosition();
-          await showCupertinoModalBottomSheet(
+          await showMaterialModalBottomSheet(
             duration: const Duration(milliseconds: 300),
             context: context,
             builder: (context) {
@@ -688,7 +725,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: () async {
           Haptic().light();
-          await showCupertinoModalBottomSheet(
+          await showMaterialModalBottomSheet(
             duration: const Duration(milliseconds: 300),
             context: context,
             builder: (context) {
