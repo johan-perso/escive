@@ -225,14 +225,14 @@ class _MainAppState extends State<MainApp> {
           globals.currentDevice['stats']['datas']['lastActivityTimeUpdate'] = DateTime.now().toIso8601String();
         }
 
-        // Start the GPS counting when the device start moving
-        if(mounted && context.mounted && globals.positionEmitter.currentlyEmittingPositionRealTime == false && globals.settings['useSelfEstimatedSpeed'] == true){
+        // Start emitting position when the device start moving
+        if(mounted && context.mounted && globals.positionEmitter.currentlyEmittingPositionRealTime == false){
           globals.positionEmitter.emitCurrentPositionRealTime(context, action: 'start');
-        } else if(globals.positionEmitter.currentlyEmittingPositionRealTime == true && globals.settings['useSelfEstimatedSpeed'] == true) {
+        } else if(globals.positionEmitter.currentlyEmittingPositionRealTime == true) {
           globals.positionEmitter.cancelScheduledStop();
         }
       } else if (event['type'] == 'databridge' && ((event['subtype'] == 'speed' && event['data']['speedKmh'] < 1 && event['data']['source'] == 'bridge') || (event['subtype'] == 'state' && event['data'] != 'connected'))) {
-        // Stop the GPS counting when the device stop moving or get disconnected (restart counting when moves again or get connected again)
+        // Stop emitting position when the device stop moving or get disconnected (restart counting when moves again or get connected again)
         if(globals.positionEmitter.currentlyEmittingPositionRealTime == true){
           globals.positionEmitter.scheduleStop(delay: Duration(seconds: event['subtype'] == 'state' && event['data'] != 'connected' ? 0 : 60));
         }

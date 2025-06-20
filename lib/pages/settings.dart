@@ -232,7 +232,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     globals.positionEmitter.cancelScheduledStop();
                   }
                 } else { // never
-                  // Désactiver la vitesse via GPS puisque dépendant de usePosition
+                  // Disable the estimated speed using GPS because it depends on usePrecision
                   globals.setSettings('useSelfEstimatedSpeed', false);
                   logarte.log("Scheduling quick stop for position emitter because user disabled the option");
                   globals.positionEmitter.scheduleStop(delay: Duration(seconds: 0));

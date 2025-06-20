@@ -113,12 +113,6 @@ class PositionEmitter {
       return;
     }
 
-    if (globals.settings['useSelfEstimatedSpeed'] != true) {
-      logarte.log('PositionEmitter: emitting position to determine real time speed is disabled by user');
-      currentlyEmittingPositionRealTime = false;
-      return;
-    }
-
     var locationPermission = await checkLocationPermission();
     if (locationPermission != true) {
       if (context != null && context.mounted) showSnackBar(context, locationPermission.toString());
@@ -134,26 +128,36 @@ class PositionEmitter {
       return;
     }
 
-    logarte.log('PositionEmitter: Starting to use position to calculate real time speed');
+    logarte.log('PositionEmitter: Starting to use position in real time (self estimated speed is ${globals.settings['useSelfEstimatedSpeed'] == true ? 'enabled' : 'disabled'})');
 
     _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: locationSettings,
     ).listen(
       (Position position) {
-        double rawSpeedKmh = (position.speed.clamp(0.0, double.infinity)) * 3.6;
-        double filteredSpeedKmh = _filterSpeed(rawSpeedKmh, position.accuracy);
-
-        globals.socket.add({
-          'type': 'databridge',
-          'subtype': 'speed',
+        globals.socket.add({ // emit position to listeners
+          'type': 'locationchange',
           'data': {
-            'speedKmh': filteredSpeedKmh.round(),
-            'source': 'gps',
-            'precision': '±${position.accuracy.toStringAsFixed(1)}m'
+            'latitude': position.latitude,
+            'longitude': position.longitude,
           }
         });
-        logarte.log('PositionEmitter: Speed is $filteredSpeedKmh km/h');
-        logarte.log('PositionEmitter: Precision is ±${position.accuracy.toStringAsFixed(1)}m');
+
+        if (globals.settings['useSelfEstimatedSpeed'] == true) { // estimate speed if enabled
+          double rawSpeedKmh = (position.speed.clamp(0.0, double.infinity)) * 3.6;
+          double filteredSpeedKmh = _filterSpeed(rawSpeedKmh, position.accuracy);
+
+          globals.socket.add({
+            'type': 'databridge',
+            'subtype': 'speed',
+            'data': {
+              'speedKmh': filteredSpeedKmh.round(),
+              'source': 'gps',
+              'precision': '±${position.accuracy.toStringAsFixed(1)}m'
+            }
+          });
+          logarte.log('PositionEmitter: Speed is $filteredSpeedKmh km/h');
+          logarte.log('PositionEmitter: Precision is ±${position.accuracy.toStringAsFixed(1)}m');
+        }
       },
       onError: (error) {
         logarte.log('PositionEmitter: Error from stream: $error');

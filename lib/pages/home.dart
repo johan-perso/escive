@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:escive/main.dart';
 import 'package:escive/pages/add_device.dart';
 import 'package:escive/pages/maps.dart';
@@ -21,18 +19,267 @@ import 'package:escive/widgets/speedometer.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:io';
+import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' as flutter_rendering;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:action_slider/action_slider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart' as flutter_geolocator;
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 GlobalKey deviceNameWidget = GlobalKey();
 final TextEditingController _deviceNameController = TextEditingController();
+
+class EsciveMapWidget extends StatefulWidget {
+  const EsciveMapWidget({super.key});
+
+  @override
+  State<EsciveMapWidget> createState() => _EsciveMapWidgetState();
+}
+
+class _EsciveMapWidgetState extends State<EsciveMapWidget> {
+  flutter_geolocator.Position? currentPosition;
+  Timer? forceRefreshPositionTimer;
+  Timer? refreshCameraTimer;
+  bool isCurrentLocationAvailable = false;
+  String street = '';
+  String city = '';
+
+  CameraOptions defaultCameraOptions = CameraOptions(
+    center: Point(coordinates: Position(2.3522, 48.8566)), // Paris
+    zoom: 12,
+    padding: MbxEdgeInsets(
+      left: 16,
+      right: 16,
+      top: 16,
+      bottom: 16
+    )
+  );
+
+  MapboxMap? mapboxMap;
+  _onMapCreated(MapboxMap mapboxMap) async {
+    this.mapboxMap = mapboxMap;
+
+    // Move camera to current position
+    Map currentPosition = await refreshPosition();
+    if(currentPosition['latitude'].toString() != '0' && currentPosition['longitude'].toString() != '0'){
+      mapboxMap.setCamera(CameraOptions(center: Point(coordinates: Position(currentPosition['longitude'], currentPosition['latitude'])), zoom: 12));
+    }
+
+    mapboxMap.logo.updateSettings(LogoSettings(enabled: false)); // hide mapbox logo
+    mapboxMap.attribution.updateSettings(AttributionSettings(enabled: false)); // hide info icon
+    mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false)); // hide the scale bar
+    mapboxMap.location.updateSettings(LocationComponentSettings(enabled: true)); // current user position indicator
+    mapboxMap.style.setStyleImportConfigProperty("basemap", "show3dObjects", false); // disable 3D buildings
+  }
+
+  Future<Map> refreshPosition() async {
+    flutter_geolocator.Position? currentPosition;
+    try {
+      currentPosition = await getCurrentPosition();
+      this.currentPosition = currentPosition;
+    } catch (e) {
+      logarte.log("refreshPosition(): Error while getting current position: $e");
+      isCurrentLocationAvailable = false;
+      return {
+        'latitude': 0,
+        'longitude': 0,
+      };
+    }
+
+    updateGeocodedPosition(currentPosition.latitude, currentPosition.longitude);
+
+    return {
+      'latitude': currentPosition.latitude,
+      'longitude': currentPosition.longitude,
+    };
+  }
+
+  void resetCurrentLocation(){
+    setState(() {
+      street = '';
+      city = '';
+    });
+
+    setState(() { // one after the other, to make sure the animation is smooth
+      isCurrentLocationAvailable = false;
+    });
+  }
+
+  void updateGeocodedPosition(double? latitude, double? longitude) async { // will be called after socket data is received
+    if(latitude == null || longitude == null) return resetCurrentLocation();
+
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          street = place.street ?? '';
+          city = place.locality ?? '';
+        });
+      } else {
+        logarte.log("updateGeocodedPosition(): No placemark found");
+        resetCurrentLocation();
+      }
+    } catch (e) {
+      logarte.log("updateGeocodedPosition(): Error while getting placemark: $e");
+      resetCurrentLocation();
+    }
+
+    setState(() {
+      isCurrentLocationAvailable = city != '';
+    });
+  }
+
+  @override
+  void initState() {
+    if (dotenv.env['MAPBOX_PUBLIC_ACCESS_TOKEN'] == null) logarte.log("WARN dotenv MAPBOX_PUBLIC_ACCESS_TOKEN is null");
+    MapboxOptions.setAccessToken(dotenv.env['MAPBOX_PUBLIC_ACCESS_TOKEN']!);
+
+    super.initState();
+
+    if(forceRefreshPositionTimer != null) forceRefreshPositionTimer!.cancel();
+    forceRefreshPositionTimer = Timer.periodic(Duration(minutes: 2), (timer) {
+      refreshPosition();
+    });
+
+    if(refreshCameraTimer != null) refreshCameraTimer!.cancel();
+    refreshCameraTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      var layer = Platform.isAndroid ? await mapboxMap?.style.getLayer("mapbox-location-indicator-layer") : await mapboxMap?.style.getLayer("puck");
+      if(layer == null || (layer as LocationIndicatorLayer).location == null) return;
+      var loc = layer.location!;
+      if(loc.length < 2) return;
+      Position position = Position(loc[1]!, loc[0]!);
+      mapboxMap?.flyTo(CameraOptions(center: Point(coordinates: position)), MapAnimationOptions(duration: 500, startDelay: 0));
+    });
+  }
+
+  @override
+  void dispose() {
+    refreshCameraTimer?.cancel();
+    forceRefreshPositionTimer?.cancel();
+    mapboxMap?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1/1,
+      child: GestureDetector(
+        onTap: () async {
+          var locationPermission = await checkLocationPermission();
+          if(locationPermission != true) {
+            Haptic().warning();
+            if(context.mounted) showSnackBar(context, locationPermission, icon: 'warning');
+            return;
+          }
+
+          if(!context.mounted) return;
+
+          Haptic().light();
+          refreshPosition();
+          await showCupertinoModalBottomSheet(
+            duration: const Duration(milliseconds: 300),
+            context: context,
+            builder: (context) {
+              return MapsScreen();
+            },
+          );
+          Haptic().light();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardTheme.color,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(2, 3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              fit: flutter_rendering.StackFit.expand,
+              children: [
+                // Map
+                AbsorbPointer( // disable interactions on the map
+                  child: MapWidget(
+                    key: ValueKey("mapWidget"),
+                    onMapCreated: _onMapCreated,
+                    cameraOptions: defaultCameraOptions,
+                  ),
+                ),
+
+                // Current location name
+                AnimatedOpacity(
+                  opacity: isCurrentLocationAvailable ? 1 : 0,
+                  duration: Duration(milliseconds: 200),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.grey.withValues(alpha: 0.1),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(street, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Sora', color: Colors.grey[200], fontWeight: FontWeight.w500, fontSize: street.length > 20 ? 12 : 13)),
+                                    Text(city, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Sora', color: Colors.white, fontWeight: FontWeight.w600, fontSize: city.length > 12 ? 14 : 15))
+                                  ]
+                                )
+                              )
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                  ),
+                ),
+              ]
+            )
+          ),
+        )
+      ),
+    );
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,6 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _everyDemiMinuteTimer;
   late Timer _everyQuarterMinuteTimer;
   StreamSubscription? _streamSubscription;
+  final GlobalKey<_EsciveMapWidgetState> _mapWidgetKey = GlobalKey<_EsciveMapWidgetState>();
 
   Widget buildBasicCard(BuildContext context, { String title = 'N/A', dynamic content = 'N/A', String? hint, String contentType = 'text', double? height, String animation = '', bool transparentBackground = false }) {
     return Column(
@@ -354,6 +602,12 @@ class _HomeScreenState extends State<HomeScreen> {
       if(event['type'] == 'refreshStates' && event['value'].contains('home')){
         logarte.log('Home: refreshing states');
         if (mounted) setState(() {});
+      } else if(event['type'] == 'locationchange'){
+        logarte.log('Home: location change received ; lat = ${event['data']['latitude']}, lng = ${event['data']['longitude']}');
+        _mapWidgetKey.currentState?.updateGeocodedPosition(
+          event['data']['latitude'], 
+          event['data']['longitude']
+        );
       } else if (event['type'] == 'databridge' && event['subtype'] == 'light') {
         ledTurnedOn = event['data'] as bool;
 
@@ -566,56 +820,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMapWidget() {
-    return AspectRatio(
-      aspectRatio: 1/1,
-      child: GestureDetector(
-        onTap: () async {
-          var locationPermission = await checkLocationPermission();
-          if(locationPermission != true) {
-            Haptic().warning();
-            if(mounted) showSnackBar(context, locationPermission, icon: 'warning');
-            return;
-          }
-
-          if(!mounted) return;
-
-          Haptic().light();
-          await showCupertinoModalBottomSheet(
-            duration: const Duration(milliseconds: 300),
-            context: context,
-            builder: (context) {
-              return MapsScreen();
-            },
-          );
-          Haptic().light();
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardTheme.color,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(2, 3),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Stack(
-              children: [
-                Text('Maps')
-              ]
-            )
-          ),
-        )
-      ),
-    );
-  }
-
   Widget _buildSheet({ ScrollController? scrollController }) {
     final paddingHeight = kToolbarHeight + MediaQuery.of(context).padding.top + MediaQuery.of(context).padding.bottom;
     double additionalPaddingTop = 18;
@@ -782,7 +986,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.all(10),
-                          child: _buildMapWidget()
+                          child: EsciveMapWidget(key: _mapWidgetKey)
                         ),
                       ),
                     ],
@@ -933,7 +1137,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if(globals.isLandscape){
               final RenderBox renderBox = deviceNameWidget.currentContext?.findRenderObject() as RenderBox;
               final Offset topLeft = renderBox.localToGlobal(Offset.zero);
-              final Size widgetSize = renderBox.size;
+              final flutter_rendering.Size widgetSize = renderBox.size;
               final Offset widgetPosition = Offset(topLeft.dx + widgetSize.width, topLeft.dy);
 
               showContextMenu(context, widgetPosition);
