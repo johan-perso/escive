@@ -1,4 +1,10 @@
 {
+    "maps": {
+        "searchHint": "Search a place or type an address",
+        "noResultsFound": "No results found",
+        "cannotOpenNavigation": "No navigation app can be opened, you need to install one (e.g. Google Maps) to continue",
+        "cannotReverseGeocode": "Unable to get the address of the pinned location"
+    },
     "general": {
         "unknownData": "Unknown data",
         "defaultName": "Unnamed device",

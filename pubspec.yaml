@@ -18,13 +18,16 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_native_splash: ^2.4.6
   flutter_phoenix: ^1.1.1
+  geocoding: ^4.0.0
   geolocator: ^14.0.0
   get_storage: ^2.1.1
   haptic_feedback: ^0.5.1+1
+  http: ^1.4.0
   installed_apps: ^1.6.0
   intl: ^0.19.0
   logarte: ^1.0.0
   lucide_icons_flutter: ^3.0.3
+  mapbox_maps_flutter: ^2.9.0
   material_symbols_icons: ^4.2815.0
   modal_bottom_sheet: ^3.0.0
   package_info_plus: ^8.3.0

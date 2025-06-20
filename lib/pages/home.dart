@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:escive/main.dart';
 import 'package:escive/pages/add_device.dart';
+import 'package:escive/pages/maps.dart';
 import 'package:escive/pages/music_player.dart';
 import 'package:escive/pages/settings.dart';
 import 'package:escive/utils/changelog.dart';
+import 'package:escive/utils/geolocator.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/date_formatter.dart';
 import 'package:escive/utils/actions_dialog.dart';
@@ -245,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         late String finalName;
                         if(_deviceNameController.text.trim().isEmpty){
-                          finalName = globals.currentDevice['bluetoothName'] ?? globals.currentDevice['name']?? "";
+                          finalName = globals.currentDevice['bluetoothName'] ?? globals.currentDevice['name'] ?? "";
                         } else {
                           finalName = _deviceNameController.text;
                         }
@@ -569,12 +571,21 @@ class _HomeScreenState extends State<HomeScreen> {
       aspectRatio: 1/1,
       child: GestureDetector(
         onTap: () async {
+          var locationPermission = await checkLocationPermission();
+          if(locationPermission != true) {
+            Haptic().warning();
+            if(mounted) showSnackBar(context, locationPermission, icon: 'warning');
+            return;
+          }
+
+          if(!mounted) return;
+
           Haptic().light();
           await showCupertinoModalBottomSheet(
             duration: const Duration(milliseconds: 300),
             context: context,
             builder: (context) {
-              return MusicPlayerScreen();
+              return MapsScreen();
             },
           );
           Haptic().light();
