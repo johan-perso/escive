@@ -226,6 +226,8 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
           refreshPosition();
           await showMaterialModalBottomSheet(
             duration: const Duration(milliseconds: 300),
+            clipBehavior: Clip.hardEdge,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
             context: context,
             builder: (context) {
               return MapsScreen();
@@ -727,6 +729,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Haptic().light();
           await showMaterialModalBottomSheet(
             duration: const Duration(milliseconds: 300),
+            clipBehavior: Clip.hardEdge,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
             context: context,
             builder: (context) {
               return MusicPlayerScreen();

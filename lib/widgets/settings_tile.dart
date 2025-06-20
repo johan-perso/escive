@@ -14,6 +14,8 @@ void showSelectModal({
 }) async {
   await showMaterialModalBottomSheet(
     duration: const Duration(milliseconds: 300),
+    clipBehavior: Clip.hardEdge,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
     context: context,
     builder: (context) {
       int currentValue = values.indexWhere((element) => element['id'] == value);

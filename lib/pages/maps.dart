@@ -169,6 +169,8 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
 
       await showMaterialModalBottomSheet(
         duration: const Duration(milliseconds: 300),
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
         context: context,
         builder: (context) {
           return Material(
