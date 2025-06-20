@@ -82,7 +82,7 @@ class MusicPlayerHelper {
 
       hasRefreshedOnce = true;
     } catch (e) {
-      logarte.log("Unable to call platform method 'getCurrentMusicStatus': $e");
+      logarte.log("Unable to call platform method 'getCurrentMusicStatus': $e"); // "type 'Null is not a subtype ..." is normal when no music playing
     }
   }
 
@@ -189,6 +189,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
 
     return Material(
       child: SafeArea(
+        top: false,
         child: Container(
           padding: const EdgeInsets.only(left: 18, right: 18, top: 14, bottom: 16),
           child: Column(
