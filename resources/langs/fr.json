@@ -1,6 +1,6 @@
 {
     "maps": {
-        "searchHint": "Rechercher un lieu ou une adresse",
+        "searchHint": "Rechercher un lieu, une adresse",
         "noResultsFound": "Aucun résultat trouvé",
         "cannotOpenNavigation": "Aucune app de navigation ne peut être ouverte, installez une app comme Google Maps pour continuer",
         "cannotReverseGeocode": "Impossible de récupérer l'adresse de l'emplacement épinglé",

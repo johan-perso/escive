@@ -3,11 +3,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 Map iconsMap = {
   "home": LucideIcons.house,
+  "hotel": LucideIcons.hotel,
   "sofa": LucideIcons.sofa,
 
   "work": LucideIcons.briefcaseBusiness,
   "school": LucideIcons.school,
   "university": LucideIcons.university,
+  "church": LucideIcons.church,
 
   "book": LucideIcons.bookOpen,
   "library": LucideIcons.library,
@@ -23,6 +25,7 @@ Map iconsMap = {
   "keys": LucideIcons.keySquare,
   "store": LucideIcons.store,
   "shoppingcart": LucideIcons.shoppingCart,
+  "package": LucideIcons.package,
 
   "cake": LucideIcons.cake,
   "pizza": LucideIcons.pizza,
@@ -50,6 +53,7 @@ Map iconsMap = {
   "panda": LucideIcons.panda,
 
   "forest": LucideIcons.trees,
+  "treepalm": LucideIcons.treePalm,
 
   "bus": LucideIcons.busFront,
   "car": LucideIcons.carFront,
