@@ -23,7 +23,12 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
   final GetStorage box = GetStorage();
 
   void showDetails({ String title = 'Details', dynamic content }) {
-    String finalContent = content.runtimeType == String ? content : jsonEncoder.convert(content);
+    String finalContent;
+    try {
+      finalContent = content.runtimeType == String ? content : jsonEncoder.convert(content);
+    } catch(e) {
+      finalContent = '${content.toString()} (failed to stringify)';
+    }
 
     Clipboard.setData(ClipboardData(text: finalContent));
     actionsDialog(
@@ -46,7 +51,11 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
       settings[key] = values[index];
     }
 
-    return jsonEncoder.convert(settings);
+    try {
+      return jsonEncoder.convert(settings);
+    } catch(e) {
+      return "${settings.toString()} (Failed to stringify preferences)";
+    }
   }
 
   @override
@@ -154,7 +163,15 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  String stringified = globals.devices.map((device) => "${device['name']} (${device['id']}):\n\n```\n${jsonEncoder.convert(device)}\n```").join("\n\n");
+                  String stringified = globals.devices.map((device) {
+                    String deviceProperties;
+                    try {
+                      deviceProperties = jsonEncoder.convert(device);
+                    } catch(e) {
+                      deviceProperties = "${device.toString()} (failed to stringify)";
+                    }
+                    return "${device['name']} (${device['id']}):\n\n```\n$deviceProperties\n```";
+                }).join("\n\n");
                   showDetails(title: 'All devices', content: stringified);
                 },
                 child: const Text("Show all devices"),
