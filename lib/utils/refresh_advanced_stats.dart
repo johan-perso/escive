@@ -31,14 +31,16 @@ void refreshAdvancedStats(){
   globalsStats['datas']['allDaysDistanceKm'][dayOfYear(now).toString()] = globalsStats['todayDistanceKm'];
 
   // Define the distance traveled in the last 7 days
-  int weekDistanceKm = 0;
-  for(int i = 1; i <= 7; i++){
+  double weekDistanceKm = 0;
+  for(int i = 0; i <= 6; i++){
     String currentDayInYear = dayOfYear(now.subtract(Duration(days: i))).toString();
     if(globalsStats['datas']['allDaysDistanceKm'].containsKey(currentDayInYear)){ // if we got a data for that day, add it
       try {
-        weekDistanceKm += int.parse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString());
+        weekDistanceKm += double.parse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString());
+        print("Added ${globalsStats['datas']['allDaysDistanceKm'][currentDayInYear]}km to week distance");
       } catch(e){
-        weekDistanceKm += int.tryParse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString()) ?? 0;
+        weekDistanceKm += double.tryParse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString()) ?? 0;
+        print("Added ${globalsStats['datas']['allDaysDistanceKm'][currentDayInYear]}km to week distance");
       }
     }
   }
@@ -53,6 +55,7 @@ void refreshAdvancedStats(){
     averageSpeedKmh += lastSpeedsKmh[i];
   }
   averageSpeedKmh = averageSpeedKmh / lastSpeedsKmh.length;
+  if(averageSpeedKmh.isNaN || averageSpeedKmh.isNegative || averageSpeedKmh.isInfinite) averageSpeedKmh = 0;
 
   globalsStats['averageSpeedKmh'] = averageSpeedKmh;
   stopwatch.stop();
