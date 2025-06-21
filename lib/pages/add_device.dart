@@ -191,7 +191,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> with SingleTickerProv
             Icon(LucideIcons.bluetoothSearching, color: colorScheme.primary),
             SizedBox(width: 8),
             Text(
-              'addDevice.devicesFounds'.plural(scannedDevices.length),
+              'addDevice.devicesFounds'.plural(scannedDevices.length, namedArgs: {'count': scannedDevices.length.toString()}),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
