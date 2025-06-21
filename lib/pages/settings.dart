@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:escive/main.dart';
+import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/widgets/classic_app_bar.dart';
 import 'package:escive/widgets/settings_tile.dart';
 import 'package:escive/widgets/warning_light.dart';
@@ -12,6 +11,7 @@ import 'package:escive/utils/geolocator.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/globals.dart' as globals;
 
+import 'dart:io';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -188,6 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (bool? value) {
                 Haptic().light();
                 globals.setSettings('useAdvancedStats', value);
+                if(value == true) refreshAdvancedStats();
               },
             ),
             SettingsTile.select(
@@ -228,14 +229,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     logarte.log("Scheduling quick stop for position emitter because user changed precision with position and they don't match anymore");
                     globals.positionEmitter.scheduleStop(delay: Duration(seconds: 0));
                   }
-                  else if(value == 'always') {
+                  else if(value == 'always') { // cancel scheduled stop (if scheduled)
                     globals.positionEmitter.cancelScheduledStop();
                   }
                 } else { // never
-                  // Disable the estimated speed using GPS because it depends on usePrecision
-                  globals.setSettings('useSelfEstimatedSpeed', false);
                   logarte.log("Scheduling quick stop for position emitter because user disabled the option");
                   globals.positionEmitter.scheduleStop(delay: Duration(seconds: 0));
+
+                  // Disable options that depends on usePrecision
+                  globals.setSettings('useSelfEstimatedSpeed', false);
+                  globals.setSettings('logsPositionHistory', false);
                 }
 
                 globals.setSettings('usePosition', value);
@@ -255,17 +258,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return;
                 }
 
-                if(value == false && globals.positionEmitter.currentlyEmittingPositionRealTime) {
-                  logarte.log("Scheduling quick stop for position emitter because user disabled the option");
-                  globals.positionEmitter.scheduleStop(delay: Duration(seconds: 0));
+                Haptic().light();
+                globals.setSettings('useSelfEstimatedSpeed', value);
+                redefinePositionWarn();
+              },
+            ),
+            SettingsTile.toggle(
+              context: context,
+              title: "settings.moves.logsPositionHistory.title".tr(),
+              subtitle: "settings.moves.logsPositionHistory.subtitle".tr(),
+              value: globals.settings['logsPositionHistory'] ?? false,
+              onChanged: (bool? value) {
+                if(value == true && globals.settings['usePosition'] == 'never') {
+                  Haptic().warning();
+                  showSnackBar(context, "settings.moves.logsPositionHistory.usePositionMustBeEnabled".tr(), icon: 'warning');
+                  redefinePositionWarn();
+                  return;
                 }
-                if(value == true && globals.positionEmitter.currentlyEmittingPositionRealTime) {
-                  logarte.log("Cancelling scheduled stop for position emitter because user re-enabled back the option");
-                  globals.positionEmitter.cancelScheduledStop();
+                if(value == true && globals.settings['enableDashboardWidgets'] == false) {
+                  Haptic().warning();
+                  showSnackBar(context, "settings.moves.logsPositionHistory.widgetsMustBeEnabled".tr(), icon: 'warning');
+                  redefinePositionWarn();
+                  return;
                 }
 
                 Haptic().light();
-                globals.setSettings('useSelfEstimatedSpeed', value);
+                globals.setSettings('logsPositionHistory', value);
                 redefinePositionWarn();
               },
             ),

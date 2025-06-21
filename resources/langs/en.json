@@ -179,6 +179,12 @@
                 "title": "Use GPS to determine speed",
                 "subtitle": "The speed calculated from your phone can be more accurate in certain cases",
                 "usePositionMustBeEnabled": "Data precision must be enabled to enable this"
+            },
+            "logsPositionHistory": {
+                "title": "Show your trips on the map",
+                "subtitle": "Your trips from the past 20 hours will be displayed on the map",
+                "usePositionMustBeEnabled": "Data precision must be enabled to enable this",
+                "widgetsMustBeEnabled": "Enable widgets to use the map widget"
             }
         },
         "dashboard": {

@@ -644,9 +644,10 @@ class _HomeScreenState extends State<HomeScreen> {
       } else if(event['type'] == 'locationchange'){
         logarte.log('Home: location change received ; lat = ${event['data']['latitude']}, lng = ${event['data']['longitude']}');
         _mapWidgetKey.currentState?.updateGeocodedPosition(
-          event['data']['latitude'], 
+          event['data']['latitude'],
           event['data']['longitude']
         );
+        addNewPositionOnMap(latitude: event['data']['latitude'], longitude: event['data']['longitude'], speedKmh: globals.currentDevice.containsKey('currentActivity') ? globals.currentDevice['currentActivity']['speedKmh'] : 0);
       } else if (event['type'] == 'databridge' && event['subtype'] == 'light') {
         ledTurnedOn = event['data'] as bool;
 

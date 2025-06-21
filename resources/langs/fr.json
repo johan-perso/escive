@@ -182,6 +182,12 @@
                 "title": "Compter la vitesse avec le GPS",
                 "subtitle": "Le compteur de vitesse calculé depuis votre téléphone peut être plus précis dans certains cas",
                 "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité"
+            },
+            "logsPositionHistory": {
+                "title": "Afficher vos parcours sur la carte",
+                "subtitle": "Votre position sera utilisée pour afficher vos trajets des 20 dernières heures",
+                "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité",
+                "widgetsMustBeEnabled": "Les widgets du tableau de bord doivent être activés pour utiliser cette fonctionnalité"
             }
         },
         "dashboard": {

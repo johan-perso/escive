@@ -95,7 +95,8 @@ Map generateDeviceMap(){
         "lastSpeedsKmh": [],
         "lastActivityTimeUpdate": null
       }
-    }
+    },
+    "positionHistory": []
   };
 }
 

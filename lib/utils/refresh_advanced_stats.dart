@@ -37,10 +37,8 @@ void refreshAdvancedStats(){
     if(globalsStats['datas']['allDaysDistanceKm'].containsKey(currentDayInYear)){ // if we got a data for that day, add it
       try {
         weekDistanceKm += double.parse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString());
-        print("Added ${globalsStats['datas']['allDaysDistanceKm'][currentDayInYear]}km to week distance");
       } catch(e){
         weekDistanceKm += double.tryParse(globalsStats['datas']['allDaysDistanceKm'][currentDayInYear].toString()) ?? 0;
-        print("Added ${globalsStats['datas']['allDaysDistanceKm'][currentDayInYear]}km to week distance");
       }
     }
   }
@@ -64,4 +62,35 @@ void refreshAdvancedStats(){
   globals.currentDevice['stats'] = globalsStats;
   globals.saveInBox();
   isRefreshingAdvancedStats = false;
+}
+
+void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh }){
+  if(longitude == null || latitude == null) return; // check we received a position
+  if(globals.settings['useAdvancedStats'] != true) return; // check if advanced stats are enabled
+  if(globals.settings['logsPositionHistory'] != true) return; // check if position history is enabled
+  if(globals.currentDevice.isEmpty) return; // check if we're connected
+  if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none') return; // check if we're connected
+
+  if(!globals.currentDevice.containsKey('positionHistory')) globals.currentDevice['positionHistory'] = [];
+
+  // Check if last element wasn't at the same coordinates
+  if(globals.currentDevice['positionHistory'].length > 0){
+    Map lastPosition = globals.currentDevice['positionHistory'].last;
+    if(lastPosition['longitude'] == longitude && lastPosition['latitude'] == latitude) return;
+  }
+
+  // Add to position history
+  if(globals.currentDevice['positionHistory'].length > 1000) globals.currentDevice['positionHistory'].removeAt(0);
+  globals.currentDevice['positionHistory'].add({
+    'longitude': longitude,
+    'latitude': latitude,
+    'speedKmh': speedKmh ?? 0,
+    'time': DateTime.now().toIso8601String()
+  });
+
+  // Filter to remove old positions (older than 20 hours)
+  globals.currentDevice['positionHistory'].removeWhere((element) => DateTime.parse(element['time']).difference(DateTime.now()).inHours > 20);
+
+  // Save in box
+  globals.saveInBox();
 }
