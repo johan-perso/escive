@@ -692,7 +692,7 @@ class _HomeScreenState extends State<HomeScreen> {
         int speedkmh = globals.currentDevice['currentActivity']['speedKmh'] ?? 0;
         if(speedkmh > 3){ // 4 km/h or +
           (globals.currentDevice['stats']['datas']['lastSpeedsKmh'] ?? []).add(speedkmh);
-          if(globals.currentDevice['stats']['datas']['lastSpeedsKmh'].length > 1000) globals.currentDevice['stats']['datas']['lastSpeedsKmh'].removeAt(0);
+          if(globals.currentDevice['stats']['datas']['lastSpeedsKmh'].length > 720) globals.currentDevice['stats']['datas']['lastSpeedsKmh'].removeAt(0);
         }
       }
     });

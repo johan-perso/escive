@@ -3,12 +3,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 Map iconsMap = {
   "home": LucideIcons.house,
-  "hotel": LucideIcons.hotel,
   "sofa": LucideIcons.sofa,
+  "hotel": LucideIcons.hotel,
 
   "work": LucideIcons.briefcaseBusiness,
-  "school": LucideIcons.school,
   "university": LucideIcons.university,
+  "school": LucideIcons.school,
   "church": LucideIcons.church,
 
   "book": LucideIcons.bookOpen,
