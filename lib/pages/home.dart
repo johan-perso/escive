@@ -713,6 +713,8 @@ class _HomeScreenState extends State<HomeScreen> {
       globals.box.write('appBuild', value['buildNumber']);
 
       if(kIsWeb){
+        // TODO: permettre d'effacer les stats depuis les réglages (et faire que désactiver vite fait les parcours sur la carte ça les efface pas)
+        // TODO: faire que le bridge debug émette une vitesse en fonction du mode de vitesse activé
         actionsDialog(
           context,
           title: "onboarding.webPlatformWarn.dialogTitle".tr(),

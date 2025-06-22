@@ -99,9 +99,9 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
 
   String positionHistoryToGeoJson() {
     // Prevent trying to parse empty history
-    if (!globals.currentDevice.containsKey('positionHistory') || globals.currentDevice['positionHistory'].isEmpty) return '{"type": "FeatureCollection", "features": []}';
+    if (!globals.currentDevice.containsKey('stats') || !globals.currentDevice['stats'].containsKey('positionHistory') || globals.currentDevice['stats']['positionHistory'].isEmpty) return '{"type": "FeatureCollection", "features": []}';
 
-    List<Map> positions = List<Map>.from(globals.currentDevice['positionHistory']);
+    List<Map> positions = List<Map>.from(globals.currentDevice['stats']['positionHistory']);
     if (positions.length < 2) return '{"type": "FeatureCollection", "features": []}'; // at least 2 points are needed to create a line
 
     // Create segments of points (based on their distances)
@@ -158,7 +158,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
 
   Future<void> displayTrackOnMap(MapboxMap mapboxMap) async {
     // Check if we have a position history
-    if (!globals.currentDevice.containsKey('positionHistory') || globals.currentDevice['positionHistory'].isEmpty) return;
+    if (!globals.currentDevice.containsKey('stats') || !globals.currentDevice['stats'].containsKey('positionHistory') || globals.currentDevice['stats']['positionHistory'].isEmpty) return;
 
     String geoJsonData = positionHistoryToGeoJson();
 
@@ -172,7 +172,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     }
 
     if (hasTrackSource) { // if we already have a track source, update it
-      List<Position> positions = globals.currentDevice['positionHistory'].map<Position>((point) => 
+      List<Position> positions = globals.currentDevice['stats']['positionHistory'].map<Position>((point) => 
         Position(point['longitude'], point['latitude'])
       ).toList();
 

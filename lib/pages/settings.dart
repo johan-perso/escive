@@ -241,7 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     // Disable options that depends on usePrecision
                     globals.setSettings('useSelfEstimatedSpeed', false);
                     globals.setSettings('logsPositionHistory', false);
-                    globals.currentDevice['positionHistory'] = [];
+                    if(globals.currentDevice.containsKey('stats')) globals.currentDevice['stats']['positionHistory'] = [];
                     globals.saveInBox();
                   }
 
@@ -266,11 +266,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     showSnackBar(context, "settings.moves.logsPositionHistory.widgetsMustBeEnabled".tr(), icon: 'warning');
                     redefinePositionWarn();
                     return;
-                  }
-
-                  if(value == false){
-                    globals.currentDevice['positionHistory'] = [];
-                    globals.saveInBox();
                   }
 
                   Haptic().light();
@@ -376,10 +371,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: TextButton.styleFrom(foregroundColor: Colors.red[500]),
                         child: Text("general.confirm".tr()),
                         onPressed: () {
-                          // box.erase();
-                          // setState(() {});
+                          isRefreshingAdvancedStats = true; // interrupt changes to datas while erasing them
+
+                          for (var device in globals.devices) {
+                            device['stats'] = globals.defaultStats;
+                          }
+
+                          globals.saveInBox();
+                          globals.refreshStates(['main', 'home', 'settings', 'maps']);
                           Haptic().success();
                           Navigator.of(context).pop();
+                          isRefreshingAdvancedStats = false;
                         },
                       ),
                     ]

@@ -73,6 +73,22 @@ Map get defaultCurrentActivity => {
   "locked": false,
   "light": false,
 };
+Map get defaultStats => {
+    "tripDistanceKm": 0,
+    "totalDistanceKm": 0,
+    "todayDistanceKm": 0,
+    "weekDistanceKm": 0,
+    "averageSpeedKmh": 0,
+    "totalActivityTimeSecs": 0,
+    "datas": {
+      "totalDistanceKmAtMidnight": 0,
+      "lastMidnightTime": null,
+      "allDaysDistanceKm": {},
+      "lastSpeedsKmh": [],
+      "lastActivityTimeUpdate": null
+    },
+    "positionHistory": []
+  };
 Map generateDeviceMap(){
   return {
     "id": uuid.v4(),
@@ -86,22 +102,7 @@ Map generateDeviceMap(){
     "protocol": "debug",
     "passwordProtection": null,
     "currentActivity": defaultCurrentActivity,
-    "stats": {
-      "tripDistanceKm": 0,
-      "totalDistanceKm": 0,
-      "todayDistanceKm": 0,
-      "weekDistanceKm": 0,
-      "averageSpeedKmh": 0,
-      "totalActivityTimeSecs": 0,
-      "datas": {
-        "totalDistanceKmAtMidnight": 0,
-        "lastMidnightTime": null,
-        "allDaysDistanceKm": {},
-        "lastSpeedsKmh": [],
-        "lastActivityTimeUpdate": null
-      }
-    },
-    "positionHistory": []
+    "stats": defaultStats
   };
 }
 

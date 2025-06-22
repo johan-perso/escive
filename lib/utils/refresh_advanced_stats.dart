@@ -3,7 +3,7 @@ import 'package:escive/utils/date_formatter.dart';
 import 'package:escive/utils/globals.dart' as globals;
 
 bool isRefreshingAdvancedStats = false;
-DateTime lastAdvancedStatsRefresh = DateTime.fromMillisecondsSinceEpoch(0);
+DateTime _lastAdvancedStatsRefresh = DateTime.fromMillisecondsSinceEpoch(0);
 
 void refreshAdvancedStats(){
   if(globals.settings['useAdvancedStats'] != true) return; // check if advanced stats are enabled
@@ -14,11 +14,11 @@ void refreshAdvancedStats(){
   DateTime now = DateTime.now();
   Map globalsStats = globals.currentDevice['stats'];
 
-  if(isRefreshingAdvancedStats && now.difference(lastAdvancedStatsRefresh).inMinutes < 5) return; // avoid refreshing if already refreshing, we check time in case there's a bug and we never redefine the refresh state
-  if(now.difference(lastAdvancedStatsRefresh).inSeconds < 55) return; // check if we're not refreshing too often (55 seconds)
+  if(isRefreshingAdvancedStats && now.difference(_lastAdvancedStatsRefresh).inMinutes < 5) return; // avoid refreshing if already refreshing, we check time in case there's a bug and we never redefine the refresh state
+  if(now.difference(_lastAdvancedStatsRefresh).inSeconds < 55) return; // check if we're not refreshing too often (55 seconds)
 
   isRefreshingAdvancedStats = true;
-  lastAdvancedStatsRefresh = now;
+  _lastAdvancedStatsRefresh = now;
 
   // If we don't have the last midnight time, or it was not today, set it to now
   if(globalsStats['datas']['lastMidnightTime'] == null || DateTime.parse(globalsStats['datas']['lastMidnightTime']).day != now.day){
@@ -70,12 +70,13 @@ void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh
   if(globals.settings['logsPositionHistory'] != true) return; // check if position history is enabled
   if(globals.currentDevice.isEmpty) return; // check if we're connected
   if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none') return; // check if we're connected
+  if(!globals.currentDevice.containsKey('stats')) return; // stats map should always be defined
 
-  if(!globals.currentDevice.containsKey('positionHistory')) globals.currentDevice['positionHistory'] = [];
+  if(!globals.currentDevice['stats'].containsKey('positionHistory')) globals.currentDevice['stats']['positionHistory'] = [];
 
   // Check last element
-  if(globals.currentDevice['positionHistory'].length > 0){
-    Map lastPosition = globals.currentDevice['positionHistory'].last;
+  if(globals.currentDevice['stats']['positionHistory'].length > 0){
+    Map lastPosition = globals.currentDevice['stats']['positionHistory'].last;
 
     if(lastPosition['longitude'] == longitude && lastPosition['latitude'] == latitude) return; // last element should not be at the same coordinates
     if(DateTime.now().difference(DateTime.parse(lastPosition['time'])).inSeconds < 10) return; // last element should be at least 10 seconds ago
@@ -83,8 +84,8 @@ void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh
   }
 
   // Add to position history
-  if(globals.currentDevice['positionHistory'].length > 1000) globals.currentDevice['positionHistory'].removeAt(0);
-  globals.currentDevice['positionHistory'].add({
+  if(globals.currentDevice['stats']['positionHistory'].length > 1000) globals.currentDevice['stats']['positionHistory'].removeAt(0);
+  globals.currentDevice['stats']['positionHistory'].add({
     'longitude': longitude,
     'latitude': latitude,
     'speedKmh': speedKmh ?? 0,
@@ -92,7 +93,7 @@ void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh
   });
 
   // Filter to remove old positions (older than 20 hours)
-  globals.currentDevice['positionHistory'].removeWhere((element) => DateTime.parse(element['time']).difference(DateTime.now()).inHours > 20);
+  globals.currentDevice['stats']['positionHistory'].removeWhere((element) => DateTime.parse(element['time']).difference(DateTime.now()).inHours > 20);
 
   // Save in box
   globals.saveInBox();
