@@ -115,7 +115,7 @@ Future<void> refreshSettings() async {
   settings = box.read('settings') ?? {};
 
   List defaultSettings = [
-    { "key": "useAdvancedStats", "value": false, "type": bool },
+    { "key": "useAdvancedStats", "value": true, "type": bool },
     { "key": "usePosition", "value": 'never', "type": String },
     { "key": "useSelfEstimatedSpeed", "value": false, "type": bool },
     { "key": "showInactivesWarnsLights", "value": true, "type": bool },
