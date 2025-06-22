@@ -647,7 +647,7 @@ class _HomeScreenState extends State<HomeScreen> {
           event['data']['latitude'],
           event['data']['longitude']
         );
-        addNewPositionOnMap(latitude: event['data']['latitude'], longitude: event['data']['longitude'], speedKmh: globals.currentDevice.containsKey('currentActivity') ? globals.currentDevice['currentActivity']['speedKmh'] : 0);
+        addNewPositionOnMap(latitude: event['data']['latitude'], longitude: event['data']['longitude'], speedKmh: globals.currentDevice.containsKey('currentActivity') && globals.currentDevice['currentActivity']['speedKmh'] != null ? globals.currentDevice['currentActivity']['speedKmh'].toDouble() : 0.0);
       } else if (event['type'] == 'databridge' && event['subtype'] == 'light') {
         ledTurnedOn = event['data'] as bool;
 

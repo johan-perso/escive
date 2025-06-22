@@ -62,6 +62,159 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
   late AnimationController _pressAnimationController;
   late Animation<double> _scaleAnimation;
 
+  List<List<Map>> createTrackSegments(List<Map> positions) {
+    List<List<Map>> segments = [];
+    List<Map> currentSegment = [];
+
+    const double maxDistanceThreshold = 1000; // Max distance between two points (= 1 km)
+
+    for (int i = 0; i < positions.length; i++) {
+      currentSegment.add(positions[i]);
+
+      if (i < positions.length - 1) {
+        var current = positions[i];
+        var next = positions[i + 1];
+
+        // Determine distance between current and next point
+        double distance = flutter_geolocator.Geolocator.distanceBetween(
+          current['latitude'], current['longitude'],
+          next['latitude'], next['longitude']
+        );
+
+        // If distance is greater than the threshold, create a new segment
+        if (distance > maxDistanceThreshold) {
+          if (currentSegment.length > 1) {
+            segments.add(List.from(currentSegment));
+          }
+          currentSegment.clear();
+        }
+      }
+    }
+
+    // Add the last segment if it's not empty
+    if (currentSegment.length > 1) segments.add(currentSegment);
+
+    return segments;
+  }
+
+  String positionHistoryToGeoJson() {
+    // Prevent trying to parse empty history
+    if (!globals.currentDevice.containsKey('positionHistory') || globals.currentDevice['positionHistory'].isEmpty) return '{"type": "FeatureCollection", "features": []}';
+
+    List<Map> positions = List<Map>.from(globals.currentDevice['positionHistory']);
+    if (positions.length < 2) return '{"type": "FeatureCollection", "features": []}'; // at least 2 points are needed to create a line
+
+    // Create segments of points (based on their distances)
+    List<List<Map>> segments = createTrackSegments(positions);
+    List<Map<String, dynamic>> features = [];
+
+    // Create a list of features with coordinates and speed
+    for (int segmentIndex = 0; segmentIndex < segments.length; segmentIndex++) {
+      List<Map> segment = segments[segmentIndex];
+
+      if (segment.length < 2) continue;
+
+      // Create a list of coordinates for this segment
+      List<List<double>> coordinates = [];
+      for (var position in segment) {
+        coordinates.add([position['longitude'], position['latitude']]);
+      }
+
+      // Average speed for this segment
+      double avgSpeed = 0;
+      if (segment.isNotEmpty && segment[0].containsKey('speedKmh')) {
+        double totalSpeed = 0;
+        int validSpeedCount = 0;
+
+        for (var pos in segment) {
+          if (pos.containsKey('speedKmh') && pos['speedKmh'] != null) {
+            totalSpeed += pos['speedKmh'];
+            validSpeedCount++;
+          }
+        }
+
+        if (validSpeedCount > 0) avgSpeed = totalSpeed / validSpeedCount;
+      }
+
+      features.add({
+        "type": "Feature",
+        "properties": {
+          "speed": avgSpeed,
+          "segmentIndex": segmentIndex,
+          "pointCount": segment.length,
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": coordinates
+        }
+      });
+    }
+
+    return jsonEncode({
+      "type": "FeatureCollection",
+      "features": features
+    });
+  }
+
+  Future<void> displayTrackOnMap(MapboxMap mapboxMap) async {
+    // Check if we have a position history
+    if (!globals.currentDevice.containsKey('positionHistory') || globals.currentDevice['positionHistory'].isEmpty) return;
+
+    String geoJsonData = positionHistoryToGeoJson();
+
+    // Check if source is existing
+    bool hasTrackSource = false;
+    try {
+      await mapboxMap.style.getSource("track-source");
+      hasTrackSource = true;
+    } catch (e) {
+      // source isn't existing
+    }
+
+    if (hasTrackSource) { // if we already have a track source, update it
+      List<Position> positions = globals.currentDevice['positionHistory'].map<Position>((point) => 
+        Position(point['longitude'], point['latitude'])
+      ).toList();
+
+      var feature = Feature(
+        id: "track-feature-id", // Unique ID for the feature
+        geometry: LineString(coordinates: positions)
+      );
+
+      await mapboxMap.style.updateGeoJSONSourceFeatures(
+        "track-source",
+        "track-data",
+        [feature]
+      );
+    } else {
+      // Else, we need to create one
+      await mapboxMap.style.addSource(GeoJsonSource(
+        id: "track-source",
+        data: geoJsonData,
+      ));
+
+      // Add a layer with speed-based colors
+      await mapboxMap.style.addLayer(LineLayer(
+        id: "track-layer",
+        sourceId: "track-source",
+        lineJoin: LineJoin.ROUND,
+        lineCap: LineCap.ROUND,
+        lineWidth: 4.0,
+        lineColorExpression: [
+          'interpolate',
+          ['linear'],
+          ['get', 'speed'], // Based on speed property
+          0, ['rgb', 76, 175, 80],    // Colors.green
+          9, ['rgb', 205, 220, 57],   // Colors.lime  
+          18, ['rgb', 255, 235, 59],  // Colors.yellow
+          24, ['rgb', 255, 152, 0],   // Colors.orange
+          34, ['rgb', 255, 87, 34],   // Colors.deepOrange
+          40, ['rgb', 244, 67, 54]    // Colors.red
+        ],
+      ));
+    }
+  }
+
   void editFavorite(BuildContext context, String? name, int index, String? action) async {
     setState(() { searchInputError = ''; });
     Haptic().light();
@@ -516,6 +669,10 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     mapboxMap.addInteraction(tapInteraction);
   }
 
+  _onStyleLoadedCallback(StyleLoadedEventData data) async {
+    await displayTrackOnMap(mapboxMap!);
+  }
+
   CameraOptions cameraOptions = CameraOptions(
     center: Point(coordinates: Position(2.3522, 48.8566)), // Paris
     zoom: 12,
@@ -579,15 +736,15 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     return [];
   }
 
-  void resetCamera({ bool instant = false }) async {
+  void resetCamera({ bool instant = false, double zoom = 12 }) async {
     var currentPosition = await getCurrentPosition();
     this.currentPosition = currentPosition;
 
     if (instant) {
-      mapboxMap?.setCamera(CameraOptions(center: Point(coordinates: Position(currentPosition.longitude, currentPosition.latitude)), zoom: 12));
+      mapboxMap?.setCamera(CameraOptions(center: Point(coordinates: Position(currentPosition.longitude, currentPosition.latitude)), zoom: zoom));
     } else {
       mapboxMap?.flyTo(
-        CameraOptions(center: Point(coordinates: Position(currentPosition.longitude, currentPosition.latitude)), zoom: 12),
+        CameraOptions(center: Point(coordinates: Position(currentPosition.longitude, currentPosition.latitude)), zoom: zoom),
         MapAnimationOptions(duration: 700, startDelay: 0)
       );
     }
@@ -659,7 +816,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
 
   Future<List> debouncedAutocompleteSearch(String query) async {
     final Completer<List> completer = Completer<List>();
-    
+
     _searchDebouncer.run(() async {
       try {
         final results = await autocompleteSearch(query);
@@ -668,7 +825,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
         if (!completer.isCompleted) completer.complete([]);
       }
     });
-    
+
     return completer.future;
   }
 
@@ -954,6 +1111,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
                         child: MapWidget(
                           key: ValueKey("mapScreen"),
                           onMapCreated: _onMapCreated,
+                          onStyleLoadedListener: _onStyleLoadedCallback,
                           cameraOptions: cameraOptions,
                           gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                             Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
@@ -974,7 +1132,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
                             child: Icon(Icons.my_location, color: Colors.white, size: 20),
                             onPressed: () {
                               Haptic().light();
-                              resetCamera(instant: false);
+                              resetCamera(instant: false, zoom: 18);
                             }
                           ),
                         ),

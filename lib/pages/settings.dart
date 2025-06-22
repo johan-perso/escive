@@ -239,27 +239,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Disable options that depends on usePrecision
                   globals.setSettings('useSelfEstimatedSpeed', false);
                   globals.setSettings('logsPositionHistory', false);
+                  globals.currentDevice['positionHistory'] = [];
+                  globals.saveInBox();
                 }
 
                 globals.setSettings('usePosition', value);
-                redefinePositionWarn();
-              },
-            ),
-            SettingsTile.toggle(
-              context: context,
-              title: "settings.moves.useSelfEstimatedSpeed.title".tr(),
-              subtitle: "settings.moves.useSelfEstimatedSpeed.subtitle".tr(),
-              value: globals.settings['useSelfEstimatedSpeed'] ?? false,
-              onChanged: (bool? value) {
-                if(value == true && globals.settings['usePosition'] == 'never') {
-                  Haptic().warning();
-                  showSnackBar(context, "settings.moves.useSelfEstimatedSpeed.usePositionMustBeEnabled".tr(), icon: 'warning');
-                  redefinePositionWarn();
-                  return;
-                }
-
-                Haptic().light();
-                globals.setSettings('useSelfEstimatedSpeed', value);
                 redefinePositionWarn();
               },
             ),
@@ -282,8 +266,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return;
                 }
 
+                if(value == false){
+                  globals.currentDevice['positionHistory'] = [];
+                  globals.saveInBox();
+                }
+
                 Haptic().light();
                 globals.setSettings('logsPositionHistory', value);
+                redefinePositionWarn();
+              },
+            ),
+            SettingsTile.toggle(
+              context: context,
+              title: "settings.moves.useSelfEstimatedSpeed.title".tr(),
+              subtitle: "settings.moves.useSelfEstimatedSpeed.subtitle".tr(),
+              value: globals.settings['useSelfEstimatedSpeed'] ?? false,
+              onChanged: (bool? value) {
+                if(value == true && globals.settings['usePosition'] == 'never') {
+                  Haptic().warning();
+                  showSnackBar(context, "settings.moves.useSelfEstimatedSpeed.usePositionMustBeEnabled".tr(), icon: 'warning');
+                  redefinePositionWarn();
+                  return;
+                }
+
+                Haptic().light();
+                globals.setSettings('useSelfEstimatedSpeed', value);
                 redefinePositionWarn();
               },
             ),
