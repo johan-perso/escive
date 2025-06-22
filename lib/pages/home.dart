@@ -441,7 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(device['name'] ?? "general.unknownData".tr(), style: TextStyle(color: Colors.grey[900], fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text('$stateText • ${device['stats'].containsKey('totalDistanceKm') ? humanReadableDistance(globals.currentDevice['stats']['totalDistanceKm'] ?? 0, fromUnit: 'km') : "general.unknownData".tr()}', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
+                      Text('$stateText • ${device['stats'].containsKey('totalDistanceKm') ? humanReadableDistance(device['stats']['totalDistanceKm'] ?? 0, fromUnit: 'km') : "general.unknownData".tr()}', style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
