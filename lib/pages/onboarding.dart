@@ -7,6 +7,7 @@ import 'package:escive/utils/check_bluetooth_permission.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/widgets/web_viewport_wrapper.dart';
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -132,223 +133,225 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
     final primaryColor = Theme.of(context).colorScheme.primary;
     final screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Gradient in the top background
-          Container(
-            decoration: BoxDecoration(
-              gradient: globals.isLandscape ? null : RadialGradient(
-                center: Alignment.topCenter,
-                focal: Alignment.topCenter,
-                focalRadius: 0.1,
-                radius: 3,
-                colors: [
-                  primaryColor.withValues(alpha: 0.5),
-                  // primaryColor.withValues(alpha: 0.3),
-                  Colors.white.withValues(alpha: 0.4),
-                  Colors.white,
-                ],
-                stops: [0, 0.3, 0.4],
-                // stops: [0, 0.1, 0.3, 0.4],
+    return WebViewportWrapper(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Gradient in the top background
+            Container(
+              decoration: BoxDecoration(
+                gradient: globals.isLandscape ? null : RadialGradient(
+                  center: Alignment.topCenter,
+                  focal: Alignment.topCenter,
+                  focalRadius: 0.1,
+                  radius: 3,
+                  colors: [
+                    primaryColor.withValues(alpha: 0.5),
+                    // primaryColor.withValues(alpha: 0.3),
+                    Colors.white.withValues(alpha: 0.4),
+                    Colors.white,
+                  ],
+                  stops: [0, 0.3, 0.4],
+                  // stops: [0, 0.1, 0.3, 0.4],
+                ),
               ),
             ),
-          ),
 
-          // Animated pattern in background
-          CustomPaint(
-            size: Size(screenSize.width, screenSize.height),
-            painter: DiamondPainter(
-              color: primaryColor.withValues(alpha: backgroundPatternAlpha),
-              thickness: backgroundPatternThickness,
-              gap: 20,
+            // Animated pattern in background
+            CustomPaint(
+              size: Size(screenSize.width, screenSize.height),
+              painter: DiamondPainter(
+                color: primaryColor.withValues(alpha: backgroundPatternAlpha),
+                thickness: backgroundPatternThickness,
+                gap: 20,
+              ),
             ),
-          ),
 
-          // Main content
-          SafeArea(
-            child: Column(
-              children: [
-                // Upper section
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          globals.isLandscape ? SizedBox() : Image.asset(
-                            'lib/assets/semitransparent_scooter.png',
-                            height: 200,
-                            width: 200,
-                            fit: BoxFit.contain,
-                          ),
+            // Main content
+            SafeArea(
+              child: Column(
+                children: [
+                  // Upper section
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            globals.isLandscape ? SizedBox() : Image.asset(
+                              'lib/assets/semitransparent_scooter.png',
+                              height: 200,
+                              width: 200,
+                              fit: BoxFit.contain,
+                            ),
 
-                          SizedBox(height: globals.isLandscape ? 0 : 40),
-                          _buildTitleText(primaryColor),
-                          const SizedBox(height: 12),
+                            SizedBox(height: globals.isLandscape ? 0 : 40),
+                            _buildTitleText(primaryColor),
+                            const SizedBox(height: 12),
 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                            child: Text(
-                              'onboarding.description'.tr(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[600],
-                                height: 1.4,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                              child: Text(
+                                'onboarding.description'.tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                  height: 1.4,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Lower section
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      AnimatedBuilder(
-                        animation: _buttonScaleAnimation,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _buttonScaleAnimation.value,
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxWidth: 500,
-                              ),
-                              width: double.infinity,
-                              height: 55,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    primaryColor,
-                                    primaryColor.withValues(alpha: 0.8),
-                                  ],
+                  // Lower section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      children: [
+                        AnimatedBuilder(
+                          animation: _buttonScaleAnimation,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: _buttonScaleAnimation.value,
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 500,
                                 ),
-                                borderRadius: BorderRadius.circular(64),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  _buttonAnimationController.forward().then((_) {
-                                    _buttonAnimationController.reverse();
-                                  });
-
-                                  Haptic().light();
-                                  bool hasPermission = await checkBluetoothPermission(context);
-
-                                  if (hasPermission && context.mounted){
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const AddDeviceScreen()),
-                                      (Route<dynamic> route) => false
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(27.5),
+                                width: double.infinity,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      primaryColor,
+                                      primaryColor.withValues(alpha: 0.8),
+                                    ],
                                   ),
+                                  borderRadius: BorderRadius.circular(64),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.bluetooth,
-                                      color: Colors.white,
-                                      size: 20,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    _buttonAnimationController.forward().then((_) {
+                                      _buttonAnimationController.reverse();
+                                    });
+
+                                    Haptic().light();
+                                    bool hasPermission = await checkBluetoothPermission(context);
+
+                                    if (hasPermission && context.mounted){
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const AddDeviceScreen()),
+                                        (Route<dynamic> route) => false
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(27.5),
                                     ),
-                                    SizedBox(width: 7),
-                                    Text(
-                                      "onboarding.ctaButton".tr(),
-                                      style: TextStyle(
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        LucideIcons.bluetooth,
                                         color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                                        size: 20,
                                       ),
+                                      SizedBox(width: 7),
+                                      Text(
+                                        "onboarding.ctaButton".tr(),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 22),
+
+                        GestureDetector(
+                          onTap: () => attachLogarteButton(context),
+                          child: Text(
+                            'Version $appVersion - Build ${kReleaseMode ? '' : '(Debug) '}#$appBuild',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[500],
+                              height: 1.3,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        GestureDetector(
+                          onTap: () {
+                            actionsDialog(
+                              context,
+                              title: "onboarding.demo.dialogTitle".tr(),
+                              content: "onboarding.demo.dialogContent".tr(),
+                              haptic: 'light',
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(foregroundColor: Colors.grey[800]),
+                                      child: Text("general.cancel".tr()),
+                                      onPressed: () {
+                                        Haptic().light();
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(foregroundColor: Colors.blue[500]),
+                                      child: Text("general.confirm".tr()),
+                                      onPressed: () {
+                                        Haptic().light();
+                                        addSavedDevice(context);
+                                        Navigator.of(context).pop();
+                                      },
                                     ),
                                   ],
                                 ),
-                              ),
+                              ]
+                            );
+                          },
+                          child: Text(
+                            'onboarding.demo.label'.tr(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[500],
+                              height: 1.3,
                             ),
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 22),
-
-                      GestureDetector(
-                        onTap: () => attachLogarteButton(context),
-                        child: Text(
-                          'Version $appVersion - Build ${kReleaseMode ? '' : '(Debug) '}#$appBuild',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[500],
-                            height: 1.3,
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 4),
-
-                      GestureDetector(
-                        onTap: () {
-                          actionsDialog(
-                            context,
-                            title: "onboarding.demo.dialogTitle".tr(),
-                            content: "onboarding.demo.dialogContent".tr(),
-                            haptic: 'light',
-                            actions: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    style: TextButton.styleFrom(foregroundColor: Colors.grey[800]),
-                                    child: Text("general.cancel".tr()),
-                                    onPressed: () {
-                                      Haptic().light();
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    style: TextButton.styleFrom(foregroundColor: Colors.blue[500]),
-                                    child: Text("general.confirm".tr()),
-                                    onPressed: () {
-                                      Haptic().light();
-                                      addSavedDevice(context);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ]
-                          );
-                        },
-                        child: Text(
-                          'onboarding.demo.label'.tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[500],
-                            height: 1.3,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-                    ],
+                        const SizedBox(height: kIsWeb ? 18 : 8),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

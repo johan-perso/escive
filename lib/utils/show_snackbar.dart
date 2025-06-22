@@ -1,3 +1,6 @@
+import 'package:escive/main.dart';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -34,7 +37,7 @@ void showSnackBar(BuildContext context, String message, { String icon = 'info' }
     duration: Duration(milliseconds: message.length * 70 > 2500 ? message.length * 70 : 2500),
     backgroundColor: Theme.of(context).colorScheme.onSecondary,
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    width: MediaQuery.of(context).size.width > 600 ? 600 : MediaQuery.of(context).size.width - 20,
+    width: kIsWeb ? webMaxWidth - 20 : MediaQuery.of(context).size.width > 600 ? 600 : MediaQuery.of(context).size.width - 20,
   );
 
   ScaffoldMessenger.of(context).showSnackBar(snackBar);

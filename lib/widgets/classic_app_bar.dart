@@ -1,8 +1,8 @@
 import 'package:escive/utils/attach_logarte_button.dart';
 
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_io/io.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 PreferredSizeWidget classicAppBar(BuildContext context, String title, { bool showDebugButton = false }) {

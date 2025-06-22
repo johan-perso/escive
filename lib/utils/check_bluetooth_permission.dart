@@ -1,9 +1,9 @@
 import 'package:escive/main.dart';
 import 'package:escive/utils/show_snackbar.dart';
 
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;

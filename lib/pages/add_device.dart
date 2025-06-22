@@ -8,11 +8,12 @@ import 'package:escive/bridges/iscooter.dart';
 import 'package:escive/widgets/banner_message.dart';
 import 'package:escive/widgets/classic_app_bar.dart';
 import 'package:escive/widgets/settings_tile.dart';
+import 'package:escive/widgets/web_viewport_wrapper.dart';
 
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
@@ -105,7 +106,10 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> with SingleTickerProv
     logarte.log("Starting scan...");
     late Timer timeout;
     try {
-      FlutterBluePlus.startScan(timeout: const Duration(seconds: 30));
+      FlutterBluePlus.startScan(
+        timeout: const Duration(seconds: 30),
+        webOptionalServices: globals.webOptionalServices,
+      );
       timeout = Timer(const Duration(seconds: 30), () {
         if(scanState == 'scanning'){
           logarte.log("30 seconds after starting scan: still scanning, stopping now.");
@@ -631,68 +635,70 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: classicAppBar(context, 'addDevice.pageTitle'.tr(), showDebugButton: true),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: globals.isLandscape ? null : LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.grey[50]!],
-          ),
-        ),
-        child: SafeArea(
-          bottom: globals.isLandscape ? true : false,
-          child: globals.isLandscape
-            ? Row( // landscape
-              children: [
-                Expanded(
-                  flex: 65, // 65%
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    physics: ClampingScrollPhysics(),
-                    children: [
-                      ..._buildDevicesList(colorScheme)
-                    ],
-                  )
-                ),
-                Expanded(
-                  flex: 35, // 35%
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                        physics: ClampingScrollPhysics(),
-                        children : [
-                          _buildScanContent(colorScheme: colorScheme, includeVerticalMargin: true, parentWidth: constraints.maxWidth),
-                          const SizedBox(height: 24),
-                          _buildCompatibilityWarn(),
-                        ],
-                      );
-                    }
-                  ),
-                ),
-              ],
-            ) : Column( // portrait
-              children: [
-                // Main content of the page
-                Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    physics: ClampingScrollPhysics(),
-                    children: [
-                      _buildCompatibilityWarn(),
-                      const SizedBox(height: 24),
-                      ..._buildDevicesList(colorScheme)
-                    ],
-                  ),
-                ),
-
-                // Scan state in the bottom
-                _buildScanContent(colorScheme: colorScheme, includeBackground: true, parentWidth: MediaQuery.of(context).size.width),
-              ],
+    return WebViewportWrapper(
+      child: Scaffold(
+        appBar: classicAppBar(context, 'addDevice.pageTitle'.tr(), showDebugButton: true),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: globals.isLandscape ? null : LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.white, Colors.grey[50]!],
             ),
-        ),
+          ),
+          child: SafeArea(
+            bottom: globals.isLandscape ? true : false,
+            child: globals.isLandscape
+              ? Row( // landscape
+                children: [
+                  Expanded(
+                    flex: 65, // 65%
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      physics: ClampingScrollPhysics(),
+                      children: [
+                        ..._buildDevicesList(colorScheme)
+                      ],
+                    )
+                  ),
+                  Expanded(
+                    flex: 35, // 35%
+                    child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        return ListView(
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                          physics: ClampingScrollPhysics(),
+                          children : [
+                            _buildScanContent(colorScheme: colorScheme, includeVerticalMargin: true, parentWidth: constraints.maxWidth),
+                            const SizedBox(height: 24),
+                            _buildCompatibilityWarn(),
+                          ],
+                        );
+                      }
+                    ),
+                  ),
+                ],
+              ) : Column( // portrait
+                children: [
+                  // Main content of the page
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      physics: ClampingScrollPhysics(),
+                      children: [
+                        _buildCompatibilityWarn(),
+                        const SizedBox(height: 24),
+                        ..._buildDevicesList(colorScheme)
+                      ],
+                    ),
+                  ),
+
+                  // Scan state in the bottom
+                  _buildScanContent(colorScheme: colorScheme, includeBackground: true, parentWidth: MediaQuery.of(context).size.width),
+                ],
+              ),
+          ),
+        )
       )
     );
   }

@@ -3,6 +3,7 @@ import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/globals.dart' as globals;
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
@@ -62,7 +63,7 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final buttonWidth = constraints.maxWidth / 4;
-          final buttonHeight = constraints.maxHeight - 6;
+          final buttonHeight = constraints.maxHeight - (kIsWeb ? 0 : 6);
 
           return Stack(
             children: [

@@ -1,5 +1,7 @@
+import 'package:escive/main.dart';
 import 'package:escive/utils/haptic.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
@@ -12,25 +14,35 @@ void actionsDialog(BuildContext context, { bool canBeIgnored = true, String titl
 
   double minWidth = MediaQuery.of(context).size.width * 0.8;
 
+  AlertDialog dialog = AlertDialog(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    backgroundColor: Colors.white,
+    titleTextStyle: TextStyle(color: Colors.grey[900], fontSize: 18, fontWeight: FontWeight.w600),
+    shadowColor: Colors.grey[500],
+    title: Text(title),
+    content: ConstrainedBox(
+      constraints: BoxConstraints(minWidth: minWidth < 500 ? minWidth : 500, maxWidth: 500),
+      child: SingleChildScrollView(
+        child: Text(content)
+      ),
+    ),
+    actionsPadding: actionsPadding ?? const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 14),
+    actions: actions
+  );
+
   showDialog(
     context: context,
     barrierDismissible: canBeIgnored,
     builder: (context) => PopScope(
       canPop: canBeIgnored,
-      child: AlertDialog(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        backgroundColor: Colors.white,
-        titleTextStyle: TextStyle(color: Colors.grey[900], fontSize: 18, fontWeight: FontWeight.w600),
-        shadowColor: Colors.grey[500],
-        title: Text(title),
-        content: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: minWidth < 500 ? minWidth : 500, maxWidth: 500),
-          child: SingleChildScrollView(
-            child: Text(content)
+      child: !kIsWeb ? dialog : Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: webMaxWidth,
+            maxHeight: webMaxHeight,
           ),
-        ),
-        actionsPadding: actionsPadding ?? const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 14),
-        actions: actions
+          child: dialog
+        )
       )
     )
   );

@@ -2,8 +2,8 @@ import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/utils/globals.dart' as globals;
 
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cupertino_onboarding/cupertino_onboarding.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -21,6 +21,8 @@ Map currentChangelog = { // example
 };
 
 void showChangelogModal(BuildContext context) async {
+  return; // we're still in beta
+
   if(globals.screenHeight < 500) {
     showSnackBar(context, "changelog.heightMinUnrespected".tr(), icon: "warning");
     Haptic().warning();

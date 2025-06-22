@@ -18,14 +18,16 @@ import 'package:escive/widgets/battery_indicator.dart';
 import 'package:escive/widgets/speed_mode_selector.dart';
 import 'package:escive/widgets/speedometer.dart';
 import 'package:escive/widgets/warning_light.dart';
+import 'package:escive/widgets/web_viewport_wrapper.dart';
 
-import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as flutter_rendering;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_io/io.dart';
 import 'package:action_slider/action_slider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -709,6 +711,30 @@ class _HomeScreenState extends State<HomeScreen> {
       showChangelogModal(context);
       globals.box.write('appVersion', value['version']);
       globals.box.write('appBuild', value['buildNumber']);
+
+      if(kIsWeb){
+        actionsDialog(
+          context,
+          title: "onboarding.webPlatformWarn.dialogTitle".tr(),
+          content: "onboarding.webPlatformWarn.dialogContent".tr(),
+          haptic: 'warning',
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: Colors.blue[500]),
+                  child: Text("general.confirm".tr()),
+                  onPressed: () {
+                    Haptic().light();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ]
+        );
+      }
     });
   }
 
@@ -1250,83 +1276,85 @@ class _HomeScreenState extends State<HomeScreen> {
       globals.initBridge(context);
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white,
-            Color(0xFFB7C0E2),
-            Color(0xFFB3BAD9),
-          ],
-          stops: [0.0, 0.80, 1.0],
+    return WebViewportWrapper(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Color(0xFFB7C0E2),
+              Color(0xFFB3BAD9),
+            ],
+            stops: [0.0, 0.80, 1.0],
+          ),
         ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        // Top app bar only on portrait mode
-        appBar: globals.isLandscape ? _buildAppBar(emptyContent: true) : _buildAppBar(emptyContent: false),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          // Top app bar only on portrait mode
+          appBar: globals.isLandscape ? _buildAppBar(emptyContent: true) : _buildAppBar(emptyContent: false),
 
-        // App content
-        body: SafeArea(
-          bottom: globals.isLandscape,
-          child: globals.isLandscape
-          ? Row( // in landscape
-            children: [
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 4, right: 4, top: Platform.isIOS ? 12 : 4, bottom: 4),
-                  child: Center(
-                    child: Speedometer()
+          // App content
+          body: SafeArea(
+            bottom: globals.isLandscape,
+            child: globals.isLandscape
+            ? Row( // in landscape
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 4, right: 4, top: Platform.isIOS ? 12 : 4, bottom: 4),
+                    child: Center(
+                      child: Speedometer()
+                    ),
                   ),
                 ),
-              ),
 
-              Expanded(
-                flex: 1,
-                child: ListView(
-                  physics: ClampingScrollPhysics(),
-                  children: [
-                    Platform.isIOS ? SizedBox(height: 10) : SizedBox(),
-                    _buildAppBar(emptyContent: false), // app bar, but not in the top
-                    _buildSheet()
-                  ]
-                )
-              ),
-            ]
-          ) : Stack( // in portrait mode
-            children: [
-              // Main content (outside of sheet)
-              Container(
-                padding: EdgeInsets.all(30),
-                child: Column(
-                  children: [
-                    SizedBox(height: 4),
-                    Speedometer(),
-                    SizedBox(height: 20),
-                    BatteryIndicator()
-                  ],
+                Expanded(
+                  flex: 1,
+                  child: ListView(
+                    physics: ClampingScrollPhysics(),
+                    children: [
+                      Platform.isIOS ? SizedBox(height: 10) : SizedBox(),
+                      _buildAppBar(emptyContent: false), // app bar, but not in the top
+                      _buildSheet()
+                    ]
+                  )
                 ),
-              ),
+              ]
+            ) : Stack( // in portrait mode
+              children: [
+                // Main content (outside of sheet)
+                Container(
+                  padding: EdgeInsets.all(30),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 4),
+                      Speedometer(),
+                      SizedBox(height: 20),
+                      BatteryIndicator()
+                    ],
+                  ),
+                ),
 
-              // Sheet
-              DraggableScrollableSheet(
-                initialChildSize: 0.36, // initial height
-                minChildSize: 0.36, // min height
-                maxChildSize: 0.975, // max height
-                snap: true,
-                snapSizes: [0.36, 0.975],
-                snapAnimationDuration: Duration(milliseconds: 200),
-                builder: (BuildContext context, scrollController) {
-                  return _buildSheet(scrollController: scrollController);
-                },
-              ),
-            ],
-          ),
-        )
-      ),
+                // Sheet
+                DraggableScrollableSheet(
+                  initialChildSize: 0.36, // initial height
+                  minChildSize: 0.36, // min height
+                  maxChildSize: 0.975, // max height
+                  snap: true,
+                  snapSizes: [0.36, 0.975],
+                  snapAnimationDuration: Duration(milliseconds: 200),
+                  builder: (BuildContext context, scrollController) {
+                    return _buildSheet(scrollController: scrollController);
+                  },
+                ),
+              ],
+            ),
+          )
+        ),
+      )
     );
   }
 }

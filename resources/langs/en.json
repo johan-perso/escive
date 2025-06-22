@@ -116,6 +116,10 @@
             "label": "Tap to pair a demo device",
             "dialogTitle": "Try eScive without a device",
             "dialogContent": "The app is designed to connect to a physical electric scooter via Bluetooth.\n\nIf you don't have one, or it's not compatible, you can add a virtual device to discover how eScive works!"
+        },
+        "webPlatformWarn": {
+            "dialogTitle": "You're trying eScive!",
+            "dialogContent": "Welcome to eScive, you're actually trying a demo version from your browser. You will encounter a limited number of features, and some major bugs will surely occur.\n\nRest assured, the mobile app is even better and even prettier, you can download it for free from the Google Play Store.\n\nKnown bugs are:\n• You need to retry connecting to your Bluetooth scooter at every start.\n• No widgets are available (fullscreen map and music control).\n• Unable to extend the advanced scooter controls from the home page using a mouse.\n• Some UIs may be rendered with some visuals problems.\n• Cannot change the language from the settings page."
         }
     },
     "settings": {
@@ -142,7 +146,7 @@
             },
             "language": {
                 "title": "Language used",
-                "subtitle": "Select the language used by the app in the interface",
+                "subtitle": "Select the language used by the app",
                 "values": {
                     "default": "Default",
                     "defaultDescription": "Sets the language applied based on the one used on this device",
@@ -191,7 +195,7 @@
             "title": "DASHBOARD",
             "enableDashboardWidgets": {
                 "title": "Enable widgets",
-                "subtitle": "Additional panels will be displayed to provide easier access to essential infos",
+                "subtitle": "Additional panels will be displayed to provide easier access to essential infos like your music and a fullscreen map",
                 "platformCompatibility": "This feature is currently only available on Android",
                 "permissionMissing": {
                     "dialogTitle": "Allow missing access",

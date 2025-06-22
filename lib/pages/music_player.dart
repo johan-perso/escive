@@ -4,11 +4,11 @@ import 'package:escive/utils/haptic.dart';
 import 'package:escive/widgets/artwork.dart';
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:universal_io/io.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:system_media_controller/system_media_controller.dart';
 import 'package:volume_controller/volume_controller.dart';

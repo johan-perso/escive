@@ -5,9 +5,10 @@ import 'package:escive/bridges/debug.dart';
 import 'package:escive/bridges/iscooter.dart';
 import 'package:escive/pages/music_player.dart';
 import 'package:escive/utils/geolocator.dart';
-import 'package:flutter/material.dart';
 
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -33,6 +34,10 @@ late Map<String, dynamic> settings;
 late String selectedDeviceId;
 late List devices;
 Map currentDevice = {};
+
+final List<Guid> webOptionalServices = [ // web browsers deny requests without this property
+  Guid('6d581e70-15c6-11ec-82a8-0002a5d5c51b') // iScooter service
+];
 
 dynamic bridge;
 void initBridge(BuildContext context) async {

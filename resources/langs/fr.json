@@ -119,6 +119,10 @@
             "label": "Toucher pour associer un appareil de démo",
             "dialogTitle": "Essayer eScive sans appareil",
             "dialogContent": "L'application est faite pour être connectée à une trottinette électrique via le Bluetooth.\n\nSi vous n'en n'avez pas, ou qu'elle n'est pas compatible, vous pouvez ajouter un appareil virtuel pour découvrir comment fonctionne eScive !"
+        },
+        "webPlatformWarn": {
+            "dialogTitle": "Bienvenue sur eScive !",
+            "dialogContent": "Vous êtes en train d'essayer une version de démonstration depuis votre navigateur : vous allez sûrement rencontrer un nombre important de problèmes et les fonctionnalités seront réduites.\n\nSoyez rassuré, l'appli pour Android est encore meilleure et encore plus belle, et vous pouvez la télécharger gratuitement depuis le Google Play Store.\n\nLes bugs actuellement connus sont :\n• Reconnexion obligatoire à votre appareil Bluetooth à chaque démarrage.\n• Aucun widget n'est disponible (cartographie et contrôle de la musique)\n• Impossible d'étendre les contrôles avancés de la page d'accueil avec une souris.\n• Certains aspects de l'interface peuvent être mal affichées."
         }
     },
     "settings": {
@@ -194,7 +198,7 @@
             "title": "TABLEAU DE BORD",
             "enableDashboardWidgets": {
                 "title": "Activer les widgets",
-                "subtitle": "Des encadrés supplémentaires seront affichés pour vous permettre de gérer votre musique par exemple",
+                "subtitle": "Des encadrés supplémentaires seront affichés pour vous permettre une meilleure vue d'ensemble",
                 "platformCompatibility": "Cette fonctionnalité n'est pour l'instant disponible que sur Android",
                 "permissionMissing": {
                     "dialogTitle": "Autoriser l'accès manquant",

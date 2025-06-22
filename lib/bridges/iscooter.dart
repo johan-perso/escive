@@ -5,11 +5,11 @@ import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/show_snackbar.dart';
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:universal_io/io.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
@@ -465,7 +465,8 @@ class IscooterBridge {
 
     await FlutterBluePlus.startScan(
       timeout: Duration(seconds: 30),
-      androidUsesFineLocation: false
+      androidUsesFineLocation: false,
+      webOptionalServices: globals.webOptionalServices,
     );
 
     _searchDeviceTimer = Timer(Duration(seconds: 35), () async {

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:universal_io/io.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 
 bool supported = Platform.isIOS || Platform.isAndroid;

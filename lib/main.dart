@@ -1,16 +1,19 @@
 import 'package:escive/pages/home.dart';
 import 'package:escive/pages/onboarding.dart';
 import 'package:escive/pages/logarte_custom_tab.dart';
+import 'package:escive/utils/actions_dialog.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/widgets/warning_light.dart';
 
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_io/io.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logarte/logarte.dart';
@@ -20,6 +23,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
+
+double webMaxWidth = 414;
+double webMaxHeight = 896;
 
 final Logarte logarte = Logarte(
   ignorePassword: true,
@@ -177,9 +183,9 @@ class _MainAppState extends State<MainApp> {
     super.didChangeDependencies();
 
     final size = MediaQuery.of(context).size;
-    globals.screenWidth = size.width;
-    globals.screenHeight = size.height;
-    globals.isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    globals.screenWidth = kIsWeb ? webMaxWidth : size.width;
+    globals.screenHeight = kIsWeb ? webMaxHeight : size.height;
+    globals.isLandscape = kIsWeb ? false : MediaQuery.of(context).orientation == Orientation.landscape;
     globals.refreshStates(['home', 'onboarding', 'addDevice']);
 
     logarte.log("Screen size: ${globals.screenWidth}x${globals.screenHeight} (${globals.isLandscape ? 'landscape' : 'portrait'})");
