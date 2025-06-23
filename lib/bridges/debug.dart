@@ -30,7 +30,21 @@ class DebugBridge {
         'data': globals.currentDevice['currentActivity']['battery']
       });
 
-      globals.currentDevice['currentActivity']['speedKmh'] = Random().nextInt(30);
+      switch(globals.currentDevice['currentActivity']['speedMode']){
+        case 0: // 1-10 km/h
+          globals.currentDevice['currentActivity']['speedKmh'] = Random().nextInt(10) + 1;
+          break;
+        case 1: // 10-20 km/h
+          globals.currentDevice['currentActivity']['speedKmh'] = Random().nextInt(10) + 10;
+          break;
+        case 2: // 20-30 km/h
+          globals.currentDevice['currentActivity']['speedKmh'] = Random().nextInt(10) + 20;
+          break;
+        case 3: // 30-40 km/h
+          globals.currentDevice['currentActivity']['speedKmh'] = Random().nextInt(10) + 30;
+          break;
+      }
+
       globals.socket.add({
         'type': 'databridge',
         'subtype': 'speed',
