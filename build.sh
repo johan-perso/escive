@@ -31,3 +31,5 @@ echo "Android (AAB):    $(pwd)/build/eScive-android-$DATE-store.aab"
 echo "Android (APK):    $(pwd)/build/eScive-android-$DATE-store.apk"
 echo "Folder:                 $(pwd)/build"
 echo "================="
+
+echo "!!!!! WEB Support isn't built automatically !!!!!"
