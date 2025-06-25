@@ -47,7 +47,7 @@ class _SpeedometerState extends State<Speedometer> {
         highSpeed = (maxSpeed * 0.85).round().toDouble();
         setState(() {});
       } else if (event['type'] == 'databridge' && event['subtype'] == 'speed') {
-        if(event['data']['source'] == 'bridge' && globals.positionEmitter.currentlyEmittingPositionRealTime){
+        if(event['data']['source'] == 'bridge' && globals.positionEmitter.currentlyEmittingPositionRealTime && globals.settings['useSelfEstimatedSpeed'] == true){
           logarte.log('Speedometer: received speed from bridge while still being connected to position emitter, ignoring this data');
           return;
         }
