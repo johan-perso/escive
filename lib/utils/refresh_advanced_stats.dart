@@ -79,7 +79,7 @@ void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh
     Map lastPosition = globals.currentDevice['stats']['positionHistory'].last;
 
     if(lastPosition['longitude'] == longitude && lastPosition['latitude'] == latitude) return; // last element should not be at the same coordinates
-    if(DateTime.now().difference(DateTime.parse(lastPosition['time'])).inSeconds < 10) return; // last element should be at least 10 seconds ago
+    if(DateTime.now().difference(DateTime.parse(lastPosition['time'])).inSeconds < 4) return; // last element should be at least 4 seconds ago
     if(speedKmh != null && speedKmh < 0.5) return; // speed should be at least 0.5 km/h (user should be moving)
   }
 
