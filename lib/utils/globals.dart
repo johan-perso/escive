@@ -124,6 +124,7 @@ Future<void> refreshSettings() async {
     { "key": "forceScreenBrightnessMax", "value": false, "type": bool },
     { "key": "enableDashboardWidgets", "value": false, "type": bool },
     { "key": "disableAutoBluetoothReconnection", "value": false, "type": bool },
+    { "key": "showDebugTrackPoints", "value": false, "type": bool },
     { "key": "customUiLanguage", "value": '', "type": String },
     { "key": "favoritesPlaces", "value": [], "type": List },
   ];

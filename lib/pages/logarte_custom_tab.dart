@@ -22,13 +22,17 @@ class LogarteCustomTab extends StatefulWidget {
 class _LogarteCustomTabState extends State<LogarteCustomTab> {
   final GetStorage box = GetStorage();
 
-  void showDetails({ String title = 'Details', dynamic content }) {
+  void showDetails({ String title = 'Details', dynamic content, String? additional }) {
     String finalContent;
     try {
       finalContent = content.runtimeType == String ? content : jsonEncoder.convert(content);
     } catch(e) {
       finalContent = '${content.toString()} (failed to stringify)';
     }
+
+    // if(additional != null) {
+    //   finalContent = "$finalContent\n\n$additional";
+    // }
 
     Clipboard.setData(ClipboardData(text: finalContent));
     actionsDialog(
@@ -245,6 +249,16 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
           onChanged: (bool? value) {
             globals.setSettings('disableAutoBluetoothReconnection', value);
             globals.refreshWakelock();
+            setState(() {}); // setSettings doesn't auto refresh on this page
+          },
+        ),
+        SettingsTile.toggle(
+          context: context,
+          title: "Show track points on map",
+          subtitle: "Up to 60 points will be shown on the map when displaying a segment from the positions history",
+          value: globals.settings['showDebugTrackPoints'] ?? false,
+          onChanged: (bool? value) {
+            globals.setSettings('showDebugTrackPoints', value);
             setState(() {}); // setSettings doesn't auto refresh on this page
           },
         ),

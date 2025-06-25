@@ -58,6 +58,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
   PointAnnotationManager? pointAnnotationManager;
   PointAnnotation? currentlyPinnedMarker;
   List<PointAnnotation> favoritesPlacesMarkers = [];
+  List<PointAnnotation> trackPointMarkers = [];
   int? _animatingFavoriteIndex;
   late AnimationController _pressAnimationController;
   late Animation<double> _scaleAnimation;
@@ -66,7 +67,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     List<List<Map>> segments = [];
     List<Map> currentSegment = [];
 
-    const double maxDistanceThreshold = 1000; // Max distance between two points (= 1 km)
+    const double maxDistanceThreshold = 200; // Max distance between two points (200m)
 
     for (int i = 0; i < positions.length; i++) {
       currentSegment.add(positions[i]);
@@ -161,6 +162,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     if (!globals.currentDevice.containsKey('stats') || !globals.currentDevice['stats'].containsKey('positionHistory') || globals.currentDevice['stats']['positionHistory'].isEmpty) return;
 
     String geoJsonData = positionHistoryToGeoJson();
+    if(globals.settings['showDebugTrackPoints'] == true) await displayTrackPointsAsMarkers();
 
     // Check if source is existing
     bool hasTrackSource = false;
@@ -205,13 +207,47 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
           ['linear'],
           ['get', 'speed'], // Based on speed property
           0, ['rgb', 76, 175, 80],    // Colors.green
-          9, ['rgb', 205, 220, 57],   // Colors.lime  
+          9, ['rgb', 205, 220, 57],   // Colors.lime
           18, ['rgb', 255, 235, 59],  // Colors.yellow
           24, ['rgb', 255, 152, 0],   // Colors.orange
           34, ['rgb', 255, 87, 34],   // Colors.deepOrange
           40, ['rgb', 244, 67, 54]    // Colors.red
         ],
       ));
+    }
+  }
+
+  Future<void> displayTrackPointsAsMarkers() async {
+    // Remove existing markers
+    try {
+      for (var marker in trackPointMarkers) {
+        await pointAnnotationManager!.delete(marker);
+      }
+      trackPointMarkers.clear();
+    } catch (e) {
+      logarte.log('Cannot delete track point markers: $e');
+    }
+
+    List<Map> positions = List<Map>.from(globals.currentDevice['stats']['positionHistory']);
+
+    // Create a new marker for each coordinate (max 60 to avoid performance issues)
+    int step = positions.length > 60 ? (positions.length / 60).ceil() : 1;
+
+    for (int i = 0; i < positions.length; i += step) {
+      var position = positions[i];
+
+      final pointAnnotationOptions = PointAnnotationOptions(
+        geometry: Point(coordinates: Position(position['longitude'], position['latitude'])),
+        iconSize: 1,
+        isDraggable: false,
+        textField: '${i + 1}', // Display the index + 1
+        textOffset: [0, -1.5],
+        textSize: 15,
+        textColor: Colors.black.toARGB32(),
+      );
+      
+      final marker = await pointAnnotationManager!.create(pointAnnotationOptions);
+      trackPointMarkers.add(marker);
     }
   }
 
