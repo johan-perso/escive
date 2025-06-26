@@ -187,6 +187,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
     if(forceRefreshPositionTimer != null) forceRefreshPositionTimer!.cancel();
     forceRefreshPositionTimer = Timer.periodic(Duration(minutes: 2), (timer) {
       refreshPosition();
+      refreshAdvancedStats();
       setFavoritesPlacesMarkers();
     });
 
@@ -199,6 +200,8 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
       Position position = Position(loc[1]!, loc[0]!);
       mapboxMap?.flyTo(CameraOptions(center: Point(coordinates: position)), MapAnimationOptions(duration: 500, startDelay: 0));
     });
+
+    refreshAdvancedStats();
   }
 
   @override

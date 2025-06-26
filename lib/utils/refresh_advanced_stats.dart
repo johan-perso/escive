@@ -7,8 +7,7 @@ DateTime _lastAdvancedStatsRefresh = DateTime.fromMillisecondsSinceEpoch(0);
 
 void refreshAdvancedStats(){
   if(globals.settings['useAdvancedStats'] != true) return; // check if advanced stats are enabled
-  if(globals.currentDevice.isEmpty) return; // check if we're connected
-  if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none') return; // check if we're connected
+  if(globals.currentDevice.isEmpty) return; // check if we have a device
   if(!globals.currentDevice.containsKey('stats')) return; // check if current device has stats map
 
   DateTime now = DateTime.now();
@@ -24,7 +23,11 @@ void refreshAdvancedStats(){
   if(globalsStats['datas']['lastMidnightTime'] == null || DateTime.parse(globalsStats['datas']['lastMidnightTime']).day != now.day){
     globalsStats['datas']['lastMidnightTime'] = now.toIso8601String();
     globalsStats['datas']['totalDistanceKmAtMidnight'] = globalsStats['totalDistanceKm'];
+    globalsStats['todayDistanceKm'] = 0;
   }
+
+  // Check if we're connected before others actions
+  if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none') return;
 
   // Define the distance traveled since last midnight
   globalsStats['todayDistanceKm'] = globalsStats['totalDistanceKm'] - globalsStats['datas']['totalDistanceKmAtMidnight'];

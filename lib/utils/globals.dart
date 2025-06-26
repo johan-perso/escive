@@ -165,6 +165,8 @@ Future<void> refreshDevices() async {
 }
 
 void resetCurrentActivityData(){
+  currentDevice['stats']['tripDistanceKm'] = 0;
+
   socket.add({
     'type': 'databridge',
     'subtype': 'state',
@@ -218,9 +220,6 @@ void resetCurrentActivityData(){
       'state': true
     }
   });
-
-  currentDevice['currentActivity']['totalDistance'] = 0;
-  currentDevice['currentActivity']['tripDistance'] = 0;
 }
 
 void setSettings(String key, dynamic value) {

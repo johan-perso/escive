@@ -210,7 +210,7 @@ void _bondingKeyGenerate() {
 
 class IscooterBridge {
   List supportedDevicesList = ['iScooter i10Max'];
-  bool hasGotFirstLockPacket = false; // useful when we will be integrating homescreen widgets
+  bool hasGotFirstLockPacket = false;
   BuildContext? context;
 
   String _encryptNonce(String hexNonce) {
@@ -246,6 +246,8 @@ class IscooterBridge {
       'data': 'connecting'
     });
     globals.currentDevice['currentActivity']['state'] = 'connecting';
+
+    globals.currentDevice['stats']['tripDistanceKm'] = 0; // should be done when disconnecting, but in case app was closed without proper dispose
 
     bool gotBluetoothPermission = await checkBluetoothPermission(context);
     if(!gotBluetoothPermission){
