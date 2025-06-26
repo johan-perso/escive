@@ -26,6 +26,7 @@ import 'package:easy_localization/easy_localization.dart' as localization;
 
 double webMaxWidth = 414;
 double webMaxHeight = 896;
+final mesureStopwatch = Stopwatch()..start();
 
 final Logarte logarte = Logarte(
   ignorePassword: true,
@@ -40,6 +41,8 @@ final Logarte logarte = Logarte(
 );
 
 void main() async {
+  debugPrint("TimeMesuring: main.dart: main() was called, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms (start)");
+
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -62,13 +65,19 @@ void main() async {
     userLanguage = 'en';
   }
 
+  debugPrint("TimeMesuring: main.dart: start of firsts async operations, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
+
   await localization.EasyLocalization.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  await initializeDateFormatting(isUserLanguageSupported ? Platform.localeName : 'en_US', null);
+  initializeDateFormatting(isUserLanguageSupported ? Platform.localeName : 'en_US', null);
+
+  debugPrint("TimeMesuring: main.dart: start of secondary async operations, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
 
   await dotenv.load(fileName: ".env", isOptional: true);
   await GetStorage.init();
   await getAppVersion(); // establish cache at the start
+
+  debugPrint("TimeMesuring: main.dart: async operations has finished, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
 
   runApp(
     Phoenix(
@@ -195,6 +204,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   void initState(){
+    debugPrint("TimeMesuring: main.dart: initState() was called, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
     super.initState();
 
     _initializationFuture = refreshSettingsThenStates();
@@ -254,8 +264,6 @@ class _MainAppState extends State<MainApp> {
       }
     });
 
-    initDeepLinks();
-
     batteryPlus.onBatteryStateChanged.listen((BatteryState state) async {
       logarte.log('Battery state: $state');
       globals.userDeviceBatteryLevel = await batteryPlus.batteryLevel;
@@ -269,6 +277,9 @@ class _MainAppState extends State<MainApp> {
 
       redefineBatteryWarn();
     });
+
+    initDeepLinks();
+    debugPrint("TimeMesuring: main.dart: initState() finished his tasks, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
   }
 
   @override
@@ -384,6 +395,7 @@ class _MainAppState extends State<MainApp> {
         if(!finishedFirstBuild){
           finishedFirstBuild = true;
           logarte.log('Main: finished first build');
+          debugPrint("TimeMesuring: main.dart: finished first build, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms (end)");
 
           if(globals.settings['customUiLanguage'] != null && globals.settings['customUiLanguage'] != ''){
             logarte.log('Main: custom UI language settings is set to ${globals.settings['customUiLanguage']}');
@@ -396,6 +408,7 @@ class _MainAppState extends State<MainApp> {
           }
 
           FlutterNativeSplash.remove();
+          mesureStopwatch.stop();
         }
 
         return MaterialApp(
