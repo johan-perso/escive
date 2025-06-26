@@ -1,7 +1,6 @@
 import 'package:escive/pages/home.dart';
 import 'package:escive/pages/onboarding.dart';
 import 'package:escive/pages/logarte_custom_tab.dart';
-import 'package:escive/utils/actions_dialog.dart';
 import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
@@ -22,6 +21,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:app_links/app_links.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 double webMaxWidth = 414;
@@ -97,6 +97,8 @@ class _MainAppState extends State<MainApp> {
   bool forcedBrightnessChangeState = false;
   double forcedBrightnessChangeValue = 0;
   bool hasDrivedOnce = false;
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
 
   final Battery batteryPlus = Battery();
 
@@ -252,6 +254,8 @@ class _MainAppState extends State<MainApp> {
       }
     });
 
+    initDeepLinks();
+
     batteryPlus.onBatteryStateChanged.listen((BatteryState state) async {
       logarte.log('Battery state: $state');
       globals.userDeviceBatteryLevel = await batteryPlus.batteryLevel;
@@ -270,7 +274,82 @@ class _MainAppState extends State<MainApp> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    _linkSubscription?.cancel();
     super.dispose();
+  }
+
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    // Listen to new links executions
+    _linkSubscription = _appLinks.uriLinkStream.listen(
+      (uri) { handleIncomingLink(uri); },
+      onError: (err) { logarte.log('DeepLinking: Failed to listen to incoming links: $err'); },
+    );
+
+    // Check if the app was opened with a link
+    try {
+      final uri = await _appLinks.getInitialLink();
+      if (uri != null) handleIncomingLink(uri);
+    } catch (e) {
+      logarte.log('DeepLinking: Failed to check the initial link: $e');
+    }
+  }
+
+  void handleIncomingLink(Uri uri) {
+    List pathSegments = uri.toString().replaceAll('${uri.scheme}://', '').split('/');
+    logarte.log("DeepLinking: Received a new link: uri = $uri ; pathSegments = ${pathSegments.join(' , ')}");
+
+    if(uri.scheme != 'escive') return logarte.log("DeepLinking: Received a link that isn't on the valid scheme (${uri.scheme}): $uri");
+    if(pathSegments.isEmpty) return logarte.log("DeepLinking: Cancelling because link is empty");
+
+    switch(pathSegments[0]) {
+      case 'app':
+        Haptic().success();
+        break;
+      case 'controls':
+        // TODO: wait for bridge to be fully initialized
+        switchControlLink(pathSegments);
+      default:
+        logarte.log("DeepLinking: No action associated with the position 0 of pathSegments: ${pathSegments[0]}");
+        Haptic().error();
+        break;
+    }
+  }
+
+  void switchControlLink(List pathSegments) async {
+    switch(pathSegments[1]) {
+      case 'lock':
+        try {
+          await globals.bridge.setLock(
+            pathSegments[2] == 'on' ? true :
+            pathSegments[2] == 'off' ? false :
+            pathSegments[2] == 'toggle' ? !(globals.currentDevice['currentActivity']?['locked'] ?? false) :
+            false
+          );
+          Haptic().success();
+        } catch (e) { Haptic().error(); }
+        break;
+      case 'led':
+        try {
+          await globals.bridge.turnLight(
+            pathSegments[2] == 'on' ? true :
+            pathSegments[2] == 'off' ? false :
+            pathSegments[2] == 'toggle' ? !(globals.currentDevice['currentActivity']?['light'] ?? false) :
+            false
+          );
+          Haptic().success();
+        } catch (e) { Haptic().error(); }
+        break;
+      case 'speed':
+        try {
+          await globals.bridge.setSpeedMode(int.parse(pathSegments[2]));
+          Haptic().success();
+        } catch (e) { Haptic().error(); }
+        break;
+      default:
+        logarte.log("DeepLinking: No action associated with the position 1 of pathSegments: ${pathSegments[1]}");
+    }
   }
 
   @override

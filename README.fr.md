@@ -24,6 +24,24 @@ Vous pouvez suivre les commits ici pour être au courant de l'avancement du dév
 L'application n'est pas encore disponible sur iOS, et ne le sera sûrement pas pour quelque temps : j'ai préféré privilégier un support Android pour réduire le temps de développement, surtout en raison des fonctionnalités natives (widgets, bluetooth, ...), plus compliquées à implémenter et à tester.
 Cependant, l'app peut être compilée et installée sur un iPhone/iPad en exécutant un premier build via Xcode puis en faisant un build final via la commande `flutter build ios` : certaines fonctionnalités seront restreintes et les autres ne seront pas aussi optimisées.
 
+## Protocole
+
+Il est possible d'ouvrir l'app avec une action qui s'effectuera dès que possible depuis une URL débutant par `escive://`, cela permet par exemple la création d'automatisations *(KWGT, Automate / Raccourcis)* pour faciliter encore plus l'utilisation d'eScive.
+
+| Chemin                                                      | Description                                                         |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| [app](escive://app)                                         | Ouvre l'app sans action                                             |
+| [controls/lock](escive://controls/lock)                     | Verrouille le véhicule actuellement associé                         |
+| [controls/unlock](escive://controls/unlock)                 | Déverrouille le véhicule actuellement associé                       |
+| [controls/toggle](escive://controls/toggle)                 | Verrouille ou déverrouille selon l'état actuel                      |
+| [controls/led/on](escive://controls/led/on)                 | Allume le phare                                                     |
+| [controls/led/off](escive://controls/led/off)               | Éteint le phare                                                     |
+| [controls/led/toggle](escive://controls/led/toggle)         | Bascule l'état du phare                                             |
+| [controls/speed/1](escive://controls/speed/1)               | Définit le mode de vitesse sur le mode n°1                          |
+| [controls/speed/2](escive://controls/speed/2)               | Définit le mode de vitesse sur le mode n°2                          |
+| [controls/speed/3](escive://controls/speed/3)               | Définit le mode de vitesse sur le mode n°3                          |
+| [controls/speed/4](escive://controls/speed/4)               | Définit le mode de vitesse sur le mode n°4                          |
+
 ## Licence
 
 MIT © [Johan](https://johanstick.fr). [Soutenez ce projet](https://johanstick.fr/#donate) si vous souhaitez m'aider 💙

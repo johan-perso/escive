@@ -24,6 +24,24 @@ You can follow the commits on this repository to be up-to-date with the developm
 The app is not yet available for iOS, and will probably not be for a while. I put a priority on supporting Android to reduce development time, mainly because of the native features (widgets, Bluetooth...) that are more complex to implement and test.
 However, the app can be compiled and installed on an iPhone/iPad by first running a build using Xcode on a Mac, and then by using the command `flutter build ios`. Some features will be limited or not available, and others will not be as optimized as on Android.
 
+## Protocole
+
+You can directly open the app on your phone from a URL starting with `escive://`. Depending on the URL, you can choose any predefined actions from the list below that will be done as soon as possible.
+
+| Path                                                        | Description                                                         |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| [app](escive://app)                                         | Open the app without any actions                                    |
+| [controls/lock/on](escive://controls/lock/on)               | Lock the current associated device                                  |
+| [controls/lock/off](escive://controls/lock/off)             | Unlock the current associated device                                |
+| [controls/lock/toggle](escive://controls/lock/toggle)       | Lock or unlock depending on the current state                       |
+| [controls/led/on](escive://controls/led/on)                 | Turn on the LED                                                     |
+| [controls/led/off](escive://controls/led/off)               | Turn off the LED                                                    |
+| [controls/led/toggle](escive://controls/led/toggle)         | Toggle the LED                                                      |
+| [controls/speed/0](escive://controls/speed/0)               | Set speed profile on the mode #1                                    |
+| [controls/speed/1](escive://controls/speed/1)               | Set speed profile on the mode #2                                    |
+| [controls/speed/2](escive://controls/speed/2)               | Set speed profile on the mode #3                                    |
+| [controls/speed/3](escive://controls/speed/3)               | Set speed profile on the mode #4                                    |
+
 ## License
 
 MIT © [Johan](https://johanstick.fr/). [Support this project](https://johanstick.fr/#donate) if you want to help me 💙
