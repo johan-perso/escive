@@ -92,7 +92,8 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () => showSnackBar(context, "Long press to continue", icon: "info"),
+                onLongPress: () {
                   box.remove("settings");
                   showSnackBar(context, "Settings have been erased", icon: "success");
                 },
@@ -115,7 +116,8 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () => showSnackBar(context, "Long press to continue", icon: "info"),
+                onLongPress: () {
                   box.erase();
                   showSnackBar(context, "All of preferences have been erased", icon: "success");
                 },
@@ -139,7 +141,8 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
 
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () => showSnackBar(context, "Long press to continue", icon: "info"),
+                onLongPress: () {
                   showSnackBar(context, "Deleting \"${globals.currentDevice['id']}\" (${globals.devices.length} devices total)...");
 
                   globals.devices.removeWhere((element) => element['id'] == globals.currentDevice['id']);
@@ -183,7 +186,8 @@ class _LogarteCustomTabState extends State<LogarteCustomTab> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () => showSnackBar(context, "Long press to continue", icon: "info"),
+                onLongPress: () {
                   box.remove("devices");
                   box.remove("selectedDeviceId");
                   showSnackBar(context, "All devices have been deleted", icon: "success");
