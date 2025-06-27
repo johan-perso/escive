@@ -371,7 +371,7 @@ class _MainAppState extends State<MainApp> {
           Haptic().success();
         } catch (e) { Haptic().error(); }
         break;
-      case 'led':
+      case 'light':
         try {
           await waitForState('light');
           await globals.bridge.turnLight(

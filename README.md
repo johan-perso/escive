@@ -34,9 +34,9 @@ You can directly open the app on your phone from a URL starting with `escive://`
 | [controls/lock/on](escive://controls/lock/on)               | Lock the current associated device                                  |
 | [controls/lock/off](escive://controls/lock/off)             | Unlock the current associated device                                |
 | [controls/lock/toggle](escive://controls/lock/toggle)       | Lock or unlock depending on the current state                       |
-| [controls/led/on](escive://controls/led/on)                 | Turn on the LED                                                     |
-| [controls/led/off](escive://controls/led/off)               | Turn off the LED                                                    |
-| [controls/led/toggle](escive://controls/led/toggle)         | Toggle the LED                                                      |
+| [controls/light/on](escive://controls/light/on)             | Turn on the LED                                                     |
+| [controls/light/off](escive://controls/light/off)           | Turn off the LED                                                    |
+| [controls/light/toggle](escive://controls/light/toggle)     | Toggle the LED                                                      |
 | [controls/speed/0](escive://controls/speed/0)               | Set speed profile on the mode #1                                    |
 | [controls/speed/1](escive://controls/speed/1)               | Set speed profile on the mode #2                                    |
 | [controls/speed/2](escive://controls/speed/2)               | Set speed profile on the mode #3                                    |

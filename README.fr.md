@@ -34,9 +34,9 @@ Il est possible d'ouvrir l'app avec une action qui s'effectuera dès que possibl
 | [controls/lock](escive://controls/lock)                     | Verrouille le véhicule actuellement associé                         |
 | [controls/unlock](escive://controls/unlock)                 | Déverrouille le véhicule actuellement associé                       |
 | [controls/toggle](escive://controls/toggle)                 | Verrouille ou déverrouille selon l'état actuel                      |
-| [controls/led/on](escive://controls/led/on)                 | Allume le phare                                                     |
-| [controls/led/off](escive://controls/led/off)               | Éteint le phare                                                     |
-| [controls/led/toggle](escive://controls/led/toggle)         | Bascule l'état du phare                                             |
+| [controls/light/on](escive://controls/light/on)             | Allume le phare                                                     |
+| [controls/light/off](escive://controls/light/off)           | Éteint le phare                                                     |
+| [controls/light/toggle](escive://controls/light/toggle)     | Bascule l'état du phare                                             |
 | [controls/speed/1](escive://controls/speed/1)               | Définit le mode de vitesse sur le mode n°1                          |
 | [controls/speed/2](escive://controls/speed/2)               | Définit le mode de vitesse sur le mode n°2                          |
 | [controls/speed/3](escive://controls/speed/3)               | Définit le mode de vitesse sur le mode n°3                          |
