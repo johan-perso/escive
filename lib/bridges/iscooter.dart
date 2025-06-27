@@ -210,8 +210,8 @@ void _bondingKeyGenerate() {
 
 class IscooterBridge {
   List supportedDevicesList = ['iScooter i10Max'];
-  bool hasGotFirstLockPacket = false;
   BuildContext? context;
+  final Map<String, Timer> _setReadyStateTimers = {};
 
   String _encryptNonce(String hexNonce) {
     // Convert the hexadecimal nonce to a list of bytes
@@ -442,6 +442,8 @@ class IscooterBridge {
             await sendCommand(utf8.encode("+HLGT=?").toList());
             await sendCommand(utf8.encode("+LOCK=?").toList());
 
+            _setReadyState('speed');
+
             // We're in!
             globals.currentDevice['currentActivity']['startTime'] = DateTime.now().millisecondsSinceEpoch;
             globals.currentDevice['lastConnection'] = globals.currentDevice['currentActivity']['startTime'];
@@ -604,21 +606,30 @@ class IscooterBridge {
     bool lightOn = pos5 == 1;
 
     switch (pos3) {
-        case 4:
-            // Same state: lock == led
-            debugPrint("iScooter bridge: _determineLockStatus: same state pos3=4 ; lock=$lightOn");
-            hasGotFirstLockPacket = true;
-            return lightOn;
-        case 2:
-            // Opposed state: lock != led
-            debugPrint("iScooter bridge: _determineLockStatus: opposed states pos3=2 ; lock=${!lightOn}");
-            hasGotFirstLockPacket = true;
-            return !lightOn;
-        default:
-            debugPrint("iScooter bridge: _determineLockStatus: unknown pos3 value: $pos3");
-            return false;
+      case 4:
+        // Same state: lock == led
+        debugPrint("iScooter bridge: _determineLockStatus: same state pos3=4 ; lock=$lightOn");
+        _setReadyState('lock');
+        return lightOn;
+      case 2:
+        // Opposed state: lock != led
+        debugPrint("iScooter bridge: _determineLockStatus: opposed states pos3=2 ; lock=${!lightOn}");
+        _setReadyState('lock');
+        return !lightOn;
+      default:
+        debugPrint("iScooter bridge: _determineLockStatus: unknown pos3 value: $pos3");
+        return false;
     }
-}
+  }
+
+  void _setReadyState(String state) {
+    if(globals.bridgeReadyStates[state] == true) return;
+    if(_setReadyStateTimers[state] != null && _setReadyStateTimers[state]!.isActive) return;
+
+    _setReadyStateTimers[state] = Timer(Duration(milliseconds: 200), () {
+      globals.bridgeReadyStates[state] = true;
+    });
+  }
 
   void handleStatusPacket(List<int> value) {
     // value[3] seems to be the battery level
@@ -673,6 +684,8 @@ class IscooterBridge {
 
       if(globals.currentDevice['currentActivity']['speedMode'] != speedMode) setSpeedMode(speedMode, emitToDevice: false); // Speed profile
       if(globals.currentDevice['currentActivity']['light'] != isLedOn) turnLight(isLedOn, emitToDevice: false); // State of led
+
+      _setReadyState('light');
     }
   }
 
@@ -717,6 +730,11 @@ class IscooterBridge {
     _connectionSubscription?.cancel();
     _dataSubscription?.cancel();
     await FlutterBluePlus.stopScan();
+
+    if (_setReadyStateTimers.isNotEmpty) {
+      _setReadyStateTimers.forEach((key, timer) => timer.cancel());
+      _setReadyStateTimers.clear();
+    }
 
     if (connectedDevice != null) {
       try {

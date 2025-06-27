@@ -333,7 +333,6 @@ class _MainAppState extends State<MainApp> {
         Haptic().success();
         break;
       case 'controls':
-        // TODO: wait for bridge to be fully initialized
         switchControlLink(pathSegments);
       default:
         logarte.log("DeepLinking: No action associated with the position 0 of pathSegments: ${pathSegments[0]}");
@@ -342,10 +341,27 @@ class _MainAppState extends State<MainApp> {
     }
   }
 
+  Future<void> waitForState(String state, { int timeout = 25 }) async {
+    int waitInterval = 400;
+    int waitAttempts = 0; // new attempt every 400ms, so if timeout = 25, we will wait for 25 * 400ms = 10 seconds
+    while (globals.bridgeReadyStates[state] != true && waitAttempts < timeout) {
+      logarte.log("DeepLinking: Waiting for bridge $state state to be ready... (attempt ${waitAttempts + 1}/$timeout)");
+      await Future.delayed(Duration(milliseconds: waitInterval));
+      waitAttempts++;
+    }
+
+    if (globals.bridgeReadyStates[state] != true) {
+      logarte.log("DeepLinking: Bridge $state state not ready after timeout, proceeding anyway");
+    } else {
+      logarte.log("DeepLinking: Bridge $state state is ready after ${waitAttempts * waitInterval}ms");
+    }
+  }
+
   void switchControlLink(List pathSegments) async {
     switch(pathSegments[1]) {
       case 'lock':
         try {
+          await waitForState('lock');
           await globals.bridge.setLock(
             pathSegments[2] == 'on' ? true :
             pathSegments[2] == 'off' ? false :
@@ -357,6 +373,7 @@ class _MainAppState extends State<MainApp> {
         break;
       case 'led':
         try {
+          await waitForState('light');
           await globals.bridge.turnLight(
             pathSegments[2] == 'on' ? true :
             pathSegments[2] == 'off' ? false :
@@ -367,6 +384,7 @@ class _MainAppState extends State<MainApp> {
         } catch (e) { Haptic().error(); }
         break;
       case 'speed':
+        await waitForState('speed');
         try {
           await globals.bridge.setSpeedMode(int.parse(pathSegments[2]));
           Haptic().success();

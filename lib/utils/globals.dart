@@ -40,6 +40,7 @@ final List<Guid> webOptionalServices = [ // web browsers deny requests without t
   Guid('6d581e70-15c6-11ec-82a8-0002a5d5c51b') // iScooter service
 ];
 
+Map bridgeReadyStates = defaultReadyStates;
 dynamic bridge;
 void initBridge(BuildContext context) async {
   logarte.log("Initializing bridge (from globals)...");
@@ -95,6 +96,11 @@ Map get defaultStats => {
     "lastActivityTimeUpdate": null
   },
   "positionHistory": []
+};
+Map get defaultReadyStates => {
+  "lock": false,
+  "speed": false,
+  "light": false,
 };
 Map generateDeviceMap(){
   return {
@@ -173,6 +179,7 @@ Future<void> refreshDevices() async {
 }
 
 void resetCurrentActivityData(){
+  bridgeReadyStates = defaultReadyStates;
   currentDevice['stats']['tripDistanceKm'] = 0;
 
   socket.add({
