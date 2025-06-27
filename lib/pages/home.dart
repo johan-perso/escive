@@ -343,6 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _everyQuarterMinuteTimer;
   StreamSubscription? _streamSubscription;
   final GlobalKey<_EsciveMapWidgetState> _mapWidgetKey = GlobalKey<_EsciveMapWidgetState>();
+  Map supportedProperties = globals.defaultSupportedProperties;
 
   Widget buildBasicCard(BuildContext context, { String title = 'N/A', dynamic content = 'N/A', String? hint, String contentType = 'text', double? height, String animation = '', bool transparentBackground = false }) {
     return Column(
@@ -640,6 +641,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    supportedProperties = globals.currentDevice['supportedProperties'] ?? globals.defaultSupportedProperties;
     super.initState();
 
     _streamSubscription = globals.socket.stream.listen((event) {
@@ -943,7 +945,7 @@ class _HomeScreenState extends State<HomeScreen> {
             delegate: SliverChildListDelegate(
               [
                 // Slide to Lock/Unlock
-                Padding(
+                supportedProperties['lock'] != true ? SizedBox(height: 10) : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 48, vertical: 22),
                   child: ActionSlider.standard(
                     onTap: (controller, state, pos) {
@@ -979,19 +981,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                !globals.isLandscape ? SizedBox() : Padding(
+                !globals.isLandscape || supportedProperties['battery'] != true ? SizedBox() : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   child: BatteryIndicator()
                 ),
 
                 // Row 2/1 with 2 cards
-                Padding(
+                supportedProperties['speedModeLength'] < 1 && supportedProperties['light'] != true ? SizedBox() : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        flex: 5,
+                      supportedProperties['speedModeLength'] < 1 ? SizedBox() : Expanded(
+                        flex: supportedProperties['speedModeLength'] > 3 ? 5 : 3,
                         child: Padding(
                           padding: EdgeInsets.all(10),
                           child: buildBasicCard(
@@ -1005,7 +1007,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      Expanded(
+                      supportedProperties['light'] != true ? Expanded(flex: supportedProperties['speedModeLength'] > 3 ? 2 : 3, child: SizedBox()) : Expanded(
                         flex: 3,
                         child: Padding(
                           padding: EdgeInsets.all(10),
@@ -1335,19 +1337,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       SizedBox(height: 4),
                       Speedometer(),
-                      SizedBox(height: 20),
-                      BatteryIndicator()
+                      SizedBox(height: supportedProperties['battery'] == true ? 20 : 0),
+                      supportedProperties['battery'] == true ? BatteryIndicator() : SizedBox()
                     ],
                   ),
                 ),
 
                 // Sheet
                 DraggableScrollableSheet(
-                  initialChildSize: 0.36, // initial height
-                  minChildSize: 0.36, // min height
+                  initialChildSize: supportedProperties['battery'] != true ? 0.45 : 0.37, // initial height
+                  minChildSize: supportedProperties['battery'] != true ? 0.45 : 0.37, // min height
                   maxChildSize: 0.975, // max height
                   snap: true,
-                  snapSizes: [0.36, 0.975],
+                  snapSizes: [supportedProperties['battery'] != true ? 0.45 : 0.37, 0.975],
                   snapAnimationDuration: Duration(milliseconds: 200),
                   builder: (BuildContext context, scrollController) {
                     return _buildSheet(scrollController: scrollController);

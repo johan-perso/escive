@@ -17,9 +17,11 @@ class SpeedModeSelector extends StatefulWidget {
 class _SpeedModeSelectorState extends State<SpeedModeSelector> {
   StreamSubscription? _streamSubscription;
   int speedMode = 0;
+  Map supportedProperties = globals.defaultSupportedProperties;
 
   @override
   void initState() {
+    supportedProperties = globals.currentDevice['supportedProperties'] ?? globals.defaultSupportedProperties;
     super.initState();
 
     _streamSubscription = globals.socket.stream.listen((event) {
@@ -62,7 +64,7 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
     return Card(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final buttonWidth = constraints.maxWidth / 4;
+          final buttonWidth = constraints.maxWidth / supportedProperties['speedModeLength'];
           final buttonHeight = constraints.maxHeight - (kIsWeb ? 0 : 6);
 
           return Stack(
@@ -94,7 +96,7 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
+                  supportedProperties['speedModeLength'] > 0 ? Expanded(
                     child: IconButton.filled(
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -113,9 +115,9 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
                         Haptic().click();
                       },
                     ),
-                  ),
+                  ) : SizedBox(),
 
-                  Expanded(
+                  supportedProperties['speedModeLength'] > 1 ? Expanded(
                     child: IconButton.filled(
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -134,9 +136,9 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
                         Haptic().click();
                       },
                     ),
-                  ),
+                  ) : SizedBox(),
 
-                  Expanded(
+                  supportedProperties['speedModeLength'] > 2 ? Expanded(
                     child: IconButton.filled(
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -155,9 +157,9 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
                         Haptic().click();
                       },
                     ),
-                  ),
+                  ) : SizedBox(),
 
-                  Expanded(
+                  supportedProperties['speedModeLength'] > 3 ? Expanded(
                     child: IconButton.filled(
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -175,7 +177,7 @@ class _SpeedModeSelectorState extends State<SpeedModeSelector> {
                         Haptic().click();
                       },
                     ),
-                  ),
+                  ) : SizedBox(),
                 ],
               ),
             ],
