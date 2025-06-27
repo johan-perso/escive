@@ -19,15 +19,19 @@ void refreshAdvancedStats(){
   isRefreshingAdvancedStats = true;
   _lastAdvancedStatsRefresh = now;
 
-  // If we don't have the last midnight time, or it was not today, set it to now
-  if(globalsStats['datas']['lastMidnightTime'] == null || DateTime.parse(globalsStats['datas']['lastMidnightTime']).day != now.day){
+  // If we don't have the last midnight time, or it was not today, or it was defined when we didn't got the total distance km : we reset it now
+  if(globalsStats['datas']['lastMidnightTime'] == null || DateTime.parse(globalsStats['datas']['lastMidnightTime']).day != now.day || globalsStats['datas']['totalDistanceKmAtMidnight'] == null || (globalsStats['datas']['totalDistanceKmAtMidnight'] is int && globalsStats['datas']['totalDistanceKmAtMidnight'] == 0)){
+    logarte.log('Resetting last midnight time and total distance km at midnight');
     globalsStats['datas']['lastMidnightTime'] = now.toIso8601String();
     globalsStats['datas']['totalDistanceKmAtMidnight'] = globalsStats['totalDistanceKm'];
     globalsStats['todayDistanceKm'] = 0;
   }
 
   // Check if we're connected before others actions
-  if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none') return;
+  if(!globals.currentDevice.containsKey('currentActivity') || globals.currentDevice['currentActivity']['state'] == 'none'){
+    isRefreshingAdvancedStats = false;
+    return;
+  }
 
   // Define the distance traveled since last midnight
   globalsStats['todayDistanceKm'] = globalsStats['totalDistanceKm'] - globalsStats['datas']['totalDistanceKmAtMidnight'];
@@ -96,7 +100,9 @@ void addNewPositionOnMap({ double? longitude, double? latitude, double? speedKmh
   });
 
   // Filter to remove old positions (older than 20 hours)
-  globals.currentDevice['stats']['positionHistory'].removeWhere((element) => DateTime.parse(element['time']).difference(DateTime.now()).inHours > 20);
+  globals.currentDevice['stats']['positionHistory'].removeWhere((element) => 
+    DateTime.now().difference(DateTime.parse(element['time'])).inHours > 20
+  );
 
   // Save in box
   globals.saveInBox();
