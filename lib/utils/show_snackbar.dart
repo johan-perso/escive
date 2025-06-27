@@ -1,10 +1,14 @@
 import 'package:escive/main.dart';
+import 'package:escive/utils/globals.dart' as globals;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 void showSnackBar(BuildContext context, String message, { String icon = 'info' }) {
+  logarte.log("showSnackBar: icon = $icon ; message = $message");
+  if(!globals.appIsInForeground) return logarte.log("showSnackBar: App is in background, not showing snackbar");
+
   Color textColor = Theme.of(context).colorScheme.secondary;
   Color iconColor = icon == 'error' ? Colors.red : icon == 'warning' ? Colors.deepOrangeAccent : icon == 'success' ? Colors.green : textColor;
 

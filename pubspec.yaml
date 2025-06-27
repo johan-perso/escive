@@ -17,6 +17,7 @@ dependencies:
     sdk: flutter
   flutter_blue_plus: ^1.35.5
   flutter_dotenv: ^5.2.1
+  flutter_fgbg: ^0.7.1
   flutter_native_splash: ^2.4.6
   flutter_phoenix: ^1.1.1
   geocoding: ^4.0.0

@@ -186,7 +186,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
 
     if(forceRefreshPositionTimer != null) forceRefreshPositionTimer!.cancel();
     forceRefreshPositionTimer = Timer.periodic(Duration(minutes: 2), (timer) {
-      refreshPosition();
+      if(globals.appIsInForeground) refreshPosition();
       refreshAdvancedStats();
       setFavoritesPlacesMarkers();
     });

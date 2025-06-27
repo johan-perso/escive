@@ -24,6 +24,7 @@ double screenWidth = 0;
 double screenHeight = 0;
 bool largeScreenW = screenWidth > 700;
 bool isLandscape = false;
+bool appIsInForeground = true;
 
 final box = GetStorage();
 Map cache = {};

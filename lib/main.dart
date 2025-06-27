@@ -22,6 +22,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:app_links/app_links.dart';
+import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 double webMaxWidth = 414;
@@ -101,13 +102,18 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   StreamSubscription? _streamSubscription;
+
   late Future<void> _initializationFuture;
   bool finishedFirstBuild = false;
+
   bool forcedBrightnessChangeState = false;
   double forcedBrightnessChangeValue = 0;
   bool hasDrivedOnce = false;
+
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
+
+  StreamSubscription<FGBGType>? fgbgSubscription;
 
   final Battery batteryPlus = Battery();
 
@@ -278,6 +284,13 @@ class _MainAppState extends State<MainApp> {
       redefineBatteryWarn();
     });
 
+    globals.appIsInForeground = FGBGEvents.last == FGBGType.foreground;
+    logarte.log('FGBG: Initial event: ${globals.appIsInForeground ? 'foreground' : 'background'}');
+    fgbgSubscription = FGBGEvents.instance.stream.listen((event) {
+      globals.appIsInForeground = event == FGBGType.foreground;
+      logarte.log('FGBG: Received event: ${globals.appIsInForeground ? 'foreground' : 'background'}');
+    });
+
     initDeepLinks();
     debugPrint("TimeMesuring: main.dart: initState() finished his tasks, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
   }
@@ -286,6 +299,7 @@ class _MainAppState extends State<MainApp> {
   void dispose() {
     _streamSubscription?.cancel();
     _linkSubscription?.cancel();
+    fgbgSubscription?.cancel();
     super.dispose();
   }
 
