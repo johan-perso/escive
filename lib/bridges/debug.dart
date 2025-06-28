@@ -1,9 +1,11 @@
 import 'package:escive/main.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/send_kustom_variable.dart';
 
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart' as localization;
 
 late Timer _randomDataTimer;
 late Timer _saveInBoxTimer;
@@ -12,12 +14,18 @@ class DebugBridge {
   void init(BuildContext context){
     logarte.log("Debug bridge: initializing...");
 
+    sendKustomVariable(variableName: 'id', variableValue: (globals.currentDevice['id'] ?? 'unknown').toString());
+    sendKustomVariable(variableName: 'name', variableValue: (globals.currentDevice['name'] ?? "general.defaultName".tr()).toString());
+    sendKustomVariable(variableName: 'bluetoothName', variableValue: (globals.currentDevice['bluetoothName'] ?? "general.defaultName".tr()).toString());
+    sendKustomVariable(variableName: 'protocol', variableValue: (globals.currentDevice['protocol'] ?? "unknown").toString());
+
     globals.socket.add({
       'type': 'databridge',
       'subtype': 'state',
       'data': 'connecting'
     });
     globals.currentDevice['currentActivity']['state'] = 'connecting';
+    sendKustomVariable(variableName: 'state', variableValue: 'connecting');
 
     globals.currentDevice['currentActivity']['startTime'] = DateTime.now().millisecondsSinceEpoch;
     globals.currentDevice['lastConnection'] = globals.currentDevice['currentActivity']['startTime'];
@@ -29,6 +37,7 @@ class DebugBridge {
         'subtype': 'battery',
         'data': globals.currentDevice['currentActivity']['battery']
       });
+      sendKustomVariable(variableName: 'battery', variableValue: globals.currentDevice['currentActivity']['battery'].toString());
 
       switch(globals.currentDevice['currentActivity']['speedMode']){
         case 0: // 1-10 km/h
@@ -53,6 +62,7 @@ class DebugBridge {
           'source': 'bridge'
         }
       });
+      sendKustomVariable(variableName: 'speedKmh', variableValue: globals.currentDevice['currentActivity']['speedKmh'].toString());
     });
 
     _saveInBoxTimer = Timer.periodic(Duration(minutes: 1), (timer) => globals.saveInBox());
@@ -64,6 +74,7 @@ class DebugBridge {
     });
     globals.currentDevice['currentActivity']['state'] = 'connected';
     setWarningLight('bridgeDisconnected', false);
+    sendKustomVariable(variableName: 'state', variableValue: 'connected');
     logarte.log("Debug bridge: initialized");
   }
 
@@ -86,6 +97,7 @@ class DebugBridge {
       'data': speed
     });
     globals.currentDevice['currentActivity']['speedMode'] = speed;
+    sendKustomVariable(variableName: 'speedMode', variableValue: speed.toString());
   }
 
   Future<void> setLock(bool state) async {
@@ -95,6 +107,7 @@ class DebugBridge {
       'data': state
     });
     globals.currentDevice['currentActivity']['locked'] = state;
+    sendKustomVariable(variableName: 'locked', variableValue: state.toString());
   }
 
   Future<void> turnLight(bool state) async {
@@ -104,6 +117,7 @@ class DebugBridge {
       'data': state
     });
     globals.currentDevice['currentActivity']['light'] = state;
+    sendKustomVariable(variableName: 'light', variableValue: state.toString());
   }
 
   Future<void> setWarningLight(String name, bool state) async {

@@ -5,6 +5,7 @@ import 'package:escive/bridges/debug.dart';
 import 'package:escive/bridges/iscooter.dart';
 import 'package:escive/pages/music_player.dart';
 import 'package:escive/utils/geolocator.dart';
+import 'package:escive/utils/send_kustom_variable.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -188,6 +189,7 @@ void resetCurrentActivityData(){
     'data': 'none'
   });
   currentDevice['currentActivity']['state'] = 'none';
+  sendKustomVariable(variableName: 'state', variableValue: 'none');
 
   socket.add({
     'type': 'databridge',
@@ -195,6 +197,7 @@ void resetCurrentActivityData(){
     'data': 0
   });
   currentDevice['currentActivity']['speedMode'] = 0;
+  sendKustomVariable(variableName: 'speedMode', variableValue: '0');
 
   socket.add({
     'type': 'databridge',
@@ -202,6 +205,7 @@ void resetCurrentActivityData(){
     'data': false
   });
   currentDevice['currentActivity']['locked'] = false;
+  sendKustomVariable(variableName: 'locked', variableValue: 'false');
 
   socket.add({
     'type': 'databridge',
@@ -209,6 +213,7 @@ void resetCurrentActivityData(){
     'data': false
   });
   currentDevice['currentActivity']['light'] = false;
+  sendKustomVariable(variableName: 'light', variableValue: 'false');
 
   socket.add({
     'type': 'databridge',
@@ -216,6 +221,7 @@ void resetCurrentActivityData(){
     'data': 0
   });
   currentDevice['currentActivity']['battery'] = 0;
+  sendKustomVariable(variableName: 'battery', variableValue: '0');
 
   socket.add({
     'type': 'databridge',
@@ -226,6 +232,7 @@ void resetCurrentActivityData(){
     }
   });
   currentDevice['currentActivity']['speedKmh'] = 0;
+  sendKustomVariable(variableName: 'speedKmh', variableValue: '0');
 
   socket.add({
     'type': 'databridge',

@@ -16,7 +16,7 @@ import 'package:installed_apps/installed_apps.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 class MusicPlayerHelper {
-  static const platform = MethodChannel('music_status');
+  static const platform = MethodChannel('escive_native_bridge');
   Timer? _timer;
   Map currentDetails = {};
   int connectedCount = 0;

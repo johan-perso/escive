@@ -2,17 +2,24 @@ package fr.johanstick.escive
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
+import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import android.provider.Settings
-import android.content.Intent
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "music_status"
+    private val CHANNEL = "escive_native_bridge"
+
+    companion object { // https://docs.kustom.rocks/docs/developers/send_variables_broadcast/
+        const val KUSTOM_ACTION = "org.kustom.action.SEND_VAR"
+        const val KUSTOM_ACTION_EXT_NAME = "org.kustom.action.EXT_NAME"
+        const val KUSTOM_ACTION_VAR_NAME = "org.kustom.action.VAR_NAME"
+        const val KUSTOM_ACTION_VAR_VALUE = "org.kustom.action.VAR_VALUE"
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -25,7 +32,6 @@ class MainActivity: FlutterActivity() {
                         result.success(status)
                     }
                     "requestNotificationAccess" -> {
-                        // Should redirect to settings
                         result.success(true)
                     }
                     "isNotificationListenerEnabled" -> {
@@ -35,9 +41,30 @@ class MainActivity: FlutterActivity() {
                         openNotificationListenerSettings()
                         result.success(true)
                     }
+                    "sendKustomVariable" -> {
+                        val extName = call.argument<String>("extName")
+                        val varName = call.argument<String>("varName")
+                        val varValue = call.argument<String>("varValue")
+                        
+                        if (extName != null && varName != null && varValue != null) {
+                            sendKustomVariable(extName, varName, varValue)
+                            result.success("Sent to Kustom")
+                        } else {
+                            result.error("INVALID_ARGUMENTS", "Arguments extName, varName, and varValue are required", null)
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun sendKustomVariable(extName: String, varName: String, varValue: String) {
+        val intent = Intent(KUSTOM_ACTION).apply {
+            putExtra(KUSTOM_ACTION_EXT_NAME, extName)
+            putExtra(KUSTOM_ACTION_VAR_NAME, varName)
+            putExtra(KUSTOM_ACTION_VAR_VALUE, varValue)
+        }
+        sendBroadcast(intent)
     }
 
     private fun isNotificationListenerEnabled(): Boolean {

@@ -5,6 +5,7 @@ import 'package:escive/utils/get_app_version.dart';
 import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
+import 'package:escive/utils/send_kustom_variable.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:async';
@@ -214,6 +215,13 @@ class _MainAppState extends State<MainApp> {
     super.initState();
 
     _initializationFuture = refreshSettingsThenStates();
+
+    sendKustomVariable(variableName: 'state', variableValue: 'none');
+    sendKustomVariable(variableName: 'speedMode', variableValue: '0');
+    sendKustomVariable(variableName: 'locked', variableValue: 'false');
+    sendKustomVariable(variableName: 'light', variableValue: 'false');
+    sendKustomVariable(variableName: 'battery', variableValue: '0');
+    sendKustomVariable(variableName: 'speedKmh', variableValue: '0');
 
     batteryPlus.batteryLevel.then((int level) {
       logarte.log('Initial battery level: $level%');

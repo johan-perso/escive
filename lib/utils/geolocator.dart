@@ -1,5 +1,6 @@
 import 'package:escive/main.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/send_kustom_variable.dart';
 import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/widgets/warning_light.dart';
 
@@ -157,6 +158,7 @@ class PositionEmitter {
           });
           logarte.log('PositionEmitter: Speed is $filteredSpeedKmh km/h');
           logarte.log('PositionEmitter: Precision is ±${position.accuracy.toStringAsFixed(1)}m');
+          sendKustomVariable(variableName: 'speedKmh', variableValue: filteredSpeedKmh.round().toString());
         }
       },
       onError: (error) {

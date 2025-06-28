@@ -24,7 +24,9 @@ You can follow the commits on this repository to be up-to-date with the developm
 The app is not yet available for iOS, and will probably not be for a while. I put a priority on supporting Android to reduce development time, mainly because of the native features (widgets, Bluetooth...) that are more complex to implement and test.
 However, the app can be compiled and installed on an iPhone/iPad by first running a build using Xcode on a Mac, and then by using the command `flutter build ios`. Some features will be limited or not available, and others will not be as optimized as on Android.
 
-## Protocole
+## Automation
+
+### Protocol
 
 You can directly open the app on your phone from a URL starting with `escive://`. Depending on the URL, you can choose any predefined actions from the list below that will be done as soon as possible.
 
@@ -41,6 +43,30 @@ You can directly open the app on your phone from a URL starting with `escive://`
 | [controls/speed/1](escive://controls/speed/1)               | Set speed profile on the mode #2                                    |
 | [controls/speed/2](escive://controls/speed/2)               | Set speed profile on the mode #3                                    |
 | [controls/speed/3](escive://controls/speed/3)               | Set speed profile on the mode #4                                    |
+
+### [Kustom](https://docs.kustom.rocks/docs/reference/functions/br) Variables
+
+On Android, you can use eScive data in a custom homescreen widget or wallpaper with an app like like [KWGT](https://docs.kustom.rocks/#kwgt) or [KLWP](https://docs.kustom.rocks/#klwp) using the function "BR - Broadcast receiver". *Third-party app not affiliated with eScive*.
+
+Available variables:
+
+| Variable name          | Type       | Description                                                                         |
+| ---------------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `id`                   | String     | Random UUID assigned for the current device                                         |
+| `name`                 | String     | Name of the device, can be manually changed by the user                             |
+| `bluetoothName`        | String     | Name of the Bluetooth device, cannot be changed from the app by the user            |
+| `protocol`             | String     | Protocol used by the current device                                                 |
+| `state`                | String     | `none`, `connecting` or `connected` depending on the connection state               |
+| `battery`              | Number     | Between `0` and `100`, representing the battery level (in %)                        |
+| `speedMode`            | Number     | Between `0` and `3` (`0` = first speed profile, `1` = second speed profile)         |
+| `speedKmh`             | Number     | Represent the speed at the device is going (in km/h)                                |
+| `light`                | Boolean    | Indicate if the LED is on or off with `false` or `true`                             |
+| `locked`               | Boolean    | Indicate if the device is locked or unlocked with `false` or `true`                 |
+
+```ini
+$br(escive, speedMode)$
+# Show: 2
+```
 
 ## License
 

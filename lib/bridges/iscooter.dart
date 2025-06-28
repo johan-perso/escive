@@ -2,6 +2,7 @@ import 'package:escive/main.dart';
 import 'package:escive/utils/add_saved_device.dart';
 import 'package:escive/utils/check_bluetooth_permission.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/send_kustom_variable.dart';
 import 'package:escive/utils/show_snackbar.dart';
 
 import 'dart:convert';
@@ -240,12 +241,18 @@ class IscooterBridge {
     logarte.log("iScooter bridge: initializing...");
     this.context = context;
 
+    sendKustomVariable(variableName: 'id', variableValue: (globals.currentDevice['id'] ?? 'unknown').toString());
+    sendKustomVariable(variableName: 'name', variableValue: (globals.currentDevice['name'] ?? "general.defaultName".tr()).toString());
+    sendKustomVariable(variableName: 'bluetoothName', variableValue: (globals.currentDevice['bluetoothName'] ?? "general.defaultName".tr()).toString());
+    sendKustomVariable(variableName: 'protocol', variableValue: (globals.currentDevice['protocol'] ?? "unknown").toString());
+
     globals.socket.add({
       'type': 'databridge',
       'subtype': 'state',
       'data': 'connecting'
     });
     globals.currentDevice['currentActivity']['state'] = 'connecting';
+    sendKustomVariable(variableName: 'state', variableValue: 'connecting');
 
     globals.currentDevice['stats']['tripDistanceKm'] = 0; // should be done when disconnecting, but in case app was closed without proper dispose
 
@@ -457,6 +464,7 @@ class IscooterBridge {
             });
             globals.currentDevice['currentActivity']['state'] = 'connected';
             setWarningLight('bridgeDisconnected', false);
+            sendKustomVariable(variableName: 'state', variableValue: 'connected');
             logarte.log("iScooter bridge: connected successfully");
           } catch (e) {
             logarte.log("iScooter bridge: connection failed: $e");
@@ -668,6 +676,7 @@ class IscooterBridge {
           'subtype': 'battery',
           'data': globals.currentDevice['currentActivity']['battery']
         });
+        sendKustomVariable(variableName: 'battery', variableValue: speed.toString());
       }
 
       if(globals.currentDevice['currentActivity']['speedKmh'] != speed){ // Speed
@@ -680,6 +689,7 @@ class IscooterBridge {
             'source': 'bridge'
           }
         });
+        sendKustomVariable(variableName: 'speedKmh', variableValue: speed.toString());
       }
 
       if(globals.currentDevice['currentActivity']['speedMode'] != speedMode) setSpeedMode(speedMode, emitToDevice: false); // Speed profile
@@ -766,6 +776,7 @@ class IscooterBridge {
       'data': speed
     });
     globals.currentDevice['currentActivity']['speedMode'] = speed;
+    sendKustomVariable(variableName: 'speedMode', variableValue: speed.toString());
   }
 
   Future<void> setLock(bool state, { bool emitToDevice = true }) async {
@@ -778,6 +789,7 @@ class IscooterBridge {
       'data': state
     });
     globals.currentDevice['currentActivity']['locked'] = state;
+    sendKustomVariable(variableName: 'locked', variableValue: state.toString());
   }
 
   Future<void> turnLight(bool state, { bool emitToDevice = true }) async {
@@ -790,6 +802,7 @@ class IscooterBridge {
       'data': state
     });
     globals.currentDevice['currentActivity']['light'] = state;
+    sendKustomVariable(variableName: 'light', variableValue: state.toString());
   }
 
   Future<void> setWarningLight(String name, bool state) async {
