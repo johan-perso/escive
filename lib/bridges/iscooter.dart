@@ -676,7 +676,7 @@ class IscooterBridge {
           'subtype': 'battery',
           'data': globals.currentDevice['currentActivity']['battery']
         });
-        sendKustomVariable(variableName: 'battery', variableValue: speed.toString());
+        sendKustomVariable(variableName: 'battery', variableValue: battery.toString());
       }
 
       if(globals.currentDevice['currentActivity']['speedKmh'] != speed){ // Speed
