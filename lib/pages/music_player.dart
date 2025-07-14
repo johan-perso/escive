@@ -181,17 +181,285 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCover() {
+    return Container(
+      width: 220,
+      height: 220,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).cardTheme.color,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: GestureDetector(
+        onTap: () {
+          Haptic().light();
+          String action = globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 'pause' : 'play';
+          globals.musicPlayerHelper.control(action);
+        },
+        onDoubleTap: () {
+          Haptic().light();
+          Haptic().light();
+          globals.musicPlayerHelper.control('skipNext');
+        },
+        onLongPress: () {
+          Haptic().heavy();
+          globals.musicPlayerHelper.control('skipPrevious');
+        },
+        child: globals.musicPlayerHelper.currentDetails['artwork'] is Uint8List && globals.musicPlayerHelper.currentDetails['artwork'].isNotEmpty
+          ? ArtworkWidget()
+          : Icon(LucideIcons.music, size: 32, color: Colors.grey[500])
+      ),
+    );
+  }
+
+  Widget _buildMusicDetails() {
     String? source = globals.musicPlayerHelper.currentDetails['source'];
     String? title = globals.musicPlayerHelper.currentDetails['title'];
     String? artist = globals.musicPlayerHelper.currentDetails['artist'];
 
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Name of the song
+        Text(
+          title == null || title == 'N/A' ? "musicPlayer.idleTitle".tr() : title,
+          style: TextStyle(
+            fontFamily: 'Sora',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+
+        SizedBox(height: 2),
+
+        // Platform name + artist name
+        Row(
+          children: [
+            // Platform name (chip)
+            if (source != null && source != 'N/A' && _getSourceName().isNotEmpty) GestureDetector(
+              onTap: () async {
+                Haptic().light();
+                try {
+                  await InstalledApps.startApp(source);
+                  logarte.log("Opening app $source");
+                } catch (e) {
+                  logarte.log("An error occured while opening the app \"$source\" : $e");
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                margin: EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: _getSourceColor().withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _getSourceColor().withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  _getSourceName(),
+                  style: TextStyle(
+                    fontFamily: 'Sora',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: _getSourceColor(),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Artist name
+            Expanded(
+              child: Text(
+                artist == null || artist == 'N/A' ? "musicPlayer.idleSubtitle".tr() : artist,
+                style: TextStyle(
+                  fontFamily: 'Sora',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 16),
+
+        // Progress bar
+        Container(
+          constraints: BoxConstraints(maxWidth: 400),
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                value: _getProgressValue(),
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                minHeight: 3,
+                borderRadius: BorderRadius.circular(12),
+              ),
+
+              SizedBox(height: 8),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 4,
+                children: [
+                  Text(
+                    _formatTime(globals.musicPlayerHelper.currentDetails['progress'] ?? 0),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  Text(
+                    _formatTime(globals.musicPlayerHelper.currentDetails['progress'] ?? 0, showRemaining: true, totalDuration: globals.musicPlayerHelper.currentDetails['duration'] ?? 0),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMediaControls(String alignment) {
+    return Column(
+      children: [
+        // Basic controls
+        Row(
+          mainAxisAlignment: alignment == 'center' ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 54,
+              height: 54,
+              child: IconButton(
+                onPressed: () {
+                  Haptic().light();
+                  globals.musicPlayerHelper.control('skipPrevious');
+                },
+                icon: Icon(
+                  Platform.isIOS ? CupertinoIcons.backward_fill : LucideIcons.skipBack500,
+                  color: Colors.black87,
+                  size: 24,
+                ),
+              ),
+            ),
+
+            SizedBox(width: 20),
+
+            SizedBox(
+              width: 54,
+              height: 54,
+              child: IconButton(
+                onPressed: () {
+                  Haptic().light();
+                  String action = globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 'pause' : 'play';
+                  globals.musicPlayerHelper.control(action);
+                },
+                icon: Icon(
+                  globals.musicPlayerHelper.currentDetails['state'] == 'playing'
+                    ? Platform.isIOS ? CupertinoIcons.pause_fill : LucideIcons.pause
+                    : Platform.isIOS ? CupertinoIcons.play_fill : LucideIcons.play500,
+                  color: Colors.black87,
+                  size: Platform.isIOS ? 34 : globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 28 : 24,
+                ),
+              ),
+            ),
+
+            SizedBox(width: 20),
+
+            SizedBox(
+              width: 54,
+              height: 54,
+              child: IconButton(
+                onPressed: () {
+                  Haptic().light();
+                  globals.musicPlayerHelper.control('skipNext');
+                },
+                icon: Icon(
+                  Platform.isIOS ? CupertinoIcons.forward_fill : LucideIcons.skipForward500,
+                  color: Colors.black87,
+                  size: 24,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 2),
+
+        // Volume controls
+        Row(
+          mainAxisAlignment: alignment == 'center' ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 54,
+              height: 54,
+              child: IconButton(
+                onPressed: () {
+                  Haptic().light();
+                  globals.musicPlayerHelper.control('volumeDown');
+                },
+                icon: Icon(
+                  Platform.isIOS ? CupertinoIcons.volume_down : LucideIcons.volume1,
+                  color: Colors.black87,
+                  size: 24,
+                ),
+              ),
+            ),
+
+            SizedBox(width: alignment == 'center' ? 32 : 32 *3),
+
+            SizedBox(
+              width: 54,
+              height: 54,
+              child: IconButton(
+                onPressed: () {
+                  Haptic().light();
+                  globals.musicPlayerHelper.control('volumeUp');
+                },
+                icon: Icon(
+                  Platform.isIOS ? CupertinoIcons.volume_up : LucideIcons.volume2,
+                  color: Colors.black87,
+                  size: 24,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
         top: false,
         child: Container(
-          padding: const EdgeInsets.only(left: 18, right: 18, top: 14, bottom: 16),
+          padding: EdgeInsets.only(left: globals.isLandscape ? 32 : 18, right: globals.isLandscape ? 32 : 18, top: 14, bottom: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -208,265 +476,31 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
                 ),
               ),
 
-              // Cover
-              Container(
-                width: 220,
-                height: 220,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Theme.of(context).cardTheme.color,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: GestureDetector(
-                  onTap: () {
-                    Haptic().light();
-                    String action = globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 'pause' : 'play';
-                    globals.musicPlayerHelper.control(action);
-                  },
-                  onDoubleTap: () {
-                    Haptic().light();
-                    Haptic().light();
-                    globals.musicPlayerHelper.control('skipNext');
-                  },
-                  onLongPress: () {
-                    Haptic().heavy();
-                    globals.musicPlayerHelper.control('skipPrevious');
-                  },
-                  child: globals.musicPlayerHelper.currentDetails['artwork'] is Uint8List && globals.musicPlayerHelper.currentDetails['artwork'].isNotEmpty
-                    ? ArtworkWidget()
-                    : Icon(LucideIcons.music, size: 32, color: Colors.grey[500])
-                ),
-              ),
-
-              SizedBox(height: 32),
-
-              // Music details
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              globals.isLandscape
+              ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name of the song
-                  Text(
-                    title == null || title == 'N/A' ? "musicPlayer.idleTitle".tr() : title,
-                    style: TextStyle(
-                      fontFamily: 'Sora',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                  _buildCover(),
+                  const SizedBox(width: 28),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        _buildMusicDetails(),
+                        const SizedBox(height: 16),
+                        _buildMediaControls('start'),
+                      ],
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
-
-                  SizedBox(height: 2),
-
-                  // Platform name + artist name
-                  Row(
-                    children: [
-                      // Platform name (chip)
-                      if (source != null && source != 'N/A' && _getSourceName().isNotEmpty) GestureDetector(
-                        onTap: () async {
-                          Haptic().light();
-                          try {
-                            await InstalledApps.startApp(source);
-                            logarte.log("Opening app $source");
-                          } catch (e) {
-                            logarte.log("An error occured while opening the app \"$source\" : $e");
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: _getSourceColor().withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: _getSourceColor().withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            _getSourceName(),
-                            style: TextStyle(
-                              fontFamily: 'Sora',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: _getSourceColor(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      // Artist name
-                      Expanded(
-                        child: Text(
-                          artist == null || artist == 'N/A' ? "musicPlayer.idleSubtitle".tr() : artist,
-                          style: TextStyle(
-                            fontFamily: 'Sora',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-
+                ],
+              )
+              : Column(
+                children: [
+                  _buildCover(),
+                  SizedBox(height: 32),
+                  _buildMusicDetails(),
                   SizedBox(height: 16),
-
-                  // Progress bar
-                  Column(
-                    children: [
-                      LinearProgressIndicator(
-                        value: _getProgressValue(),
-                        backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
-                        minHeight: 3,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-
-                      SizedBox(height: 8),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        spacing: 4,
-                        children: [
-                          Text(
-                            _formatTime(globals.musicPlayerHelper.currentDetails['progress'] ?? 0),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-
-                          Text(
-                            _formatTime(globals.musicPlayerHelper.currentDetails['progress'] ?? 0, showRemaining: true, totalDuration: globals.musicPlayerHelper.currentDetails['duration'] ?? 0),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 16),
-
-              // Media controls
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 54,
-                    height: 54,
-                    child: IconButton(
-                      onPressed: () {
-                        Haptic().light();
-                        globals.musicPlayerHelper.control('skipPrevious');
-                      },
-                      icon: Icon(
-                        Platform.isIOS ? CupertinoIcons.backward_fill : LucideIcons.skipBack500,
-                        color: Colors.black87,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 20),
-
-                  SizedBox(
-                    width: 54,
-                    height: 54,
-                    child: IconButton(
-                      onPressed: () {
-                        Haptic().light();
-                        String action = globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 'pause' : 'play';
-                        globals.musicPlayerHelper.control(action);
-                      },
-                      icon: Icon(
-                        globals.musicPlayerHelper.currentDetails['state'] == 'playing'
-                          ? Platform.isIOS ? CupertinoIcons.pause_fill : LucideIcons.pause
-                          : Platform.isIOS ? CupertinoIcons.play_fill : LucideIcons.play500,
-                        color: Colors.black87,
-                        size: Platform.isIOS ? 34 : globals.musicPlayerHelper.currentDetails['state'] == 'playing' ? 28 : 24,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 20),
-
-                  SizedBox(
-                    width: 54,
-                    height: 54,
-                    child: IconButton(
-                      onPressed: () {
-                        Haptic().light();
-                        globals.musicPlayerHelper.control('skipNext');
-                      },
-                      icon: Icon(
-                        Platform.isIOS ? CupertinoIcons.forward_fill : LucideIcons.skipForward500,
-                        color: Colors.black87,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 2),
-
-              // Volume controls
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 54,
-                    height: 54,
-                    child: IconButton(
-                      onPressed: () {
-                        Haptic().light();
-                        globals.musicPlayerHelper.control('volumeDown');
-                      },
-                      icon: Icon(
-                        Platform.isIOS ? CupertinoIcons.volume_down : LucideIcons.volume1,
-                        color: Colors.black87,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 32),
-
-                  SizedBox(
-                    width: 54,
-                    height: 54,
-                    child: IconButton(
-                      onPressed: () {
-                        Haptic().light();
-                        globals.musicPlayerHelper.control('volumeUp');
-                      },
-                      icon: Icon(
-                        Platform.isIOS ? CupertinoIcons.volume_up : LucideIcons.volume2,
-                        color: Colors.black87,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ],
+                  _buildMediaControls('center'),
+                ]
               ),
             ],
           ),

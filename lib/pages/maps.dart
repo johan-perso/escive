@@ -1164,7 +1164,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
       child: SafeArea(
         top: false,
         child: Container(
-          padding: const EdgeInsets.only(left: 18, right: 18, top: 14, bottom: 16),
+          padding: EdgeInsets.only(left: globals.isLandscape ? 24 : 18, right: globals.isLandscape ? 24 : 18, top: 14, bottom: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
