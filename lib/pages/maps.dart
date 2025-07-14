@@ -773,7 +773,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
   }
 
   void resetCamera({ bool instant = false, double zoom = 12 }) async {
-    var currentPosition = await getCurrentPosition();
+    var currentPosition = await getCurrentPosition(null);
     this.currentPosition = currentPosition;
 
     if (instant) {
@@ -877,7 +877,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     if (_lastSearchQuery.trim() == query.trim()) return _lastSearchResults;
     _lastSearchQuery = query;
 
-    currentPosition ??= await getCurrentPosition();
+    currentPosition ??= await getCurrentPosition(flutter_geolocator.LocationAccuracy.low);
     if (!mounted) return [];
 
     if (dotenv.env['GEOAPIFY_API_KEY'] != null){

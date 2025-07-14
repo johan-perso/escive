@@ -20,6 +20,11 @@
             }
         }
     },
+    "weather": {
+        "notConfident": "Caution! It may rain",
+        "confident": "Caution! Rain excepted",
+        "text": "{confident} in {time} minutes"
+    },
     "general": {
         "unknownData": "Unknown data",
         "defaultName": "Unnamed device",

@@ -13,6 +13,7 @@ import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/utils/create_default_marker.dart';
 import 'package:escive/utils/globals.dart' as globals;
+import 'package:escive/utils/weather.dart';
 import 'package:escive/widgets/artwork.dart';
 import 'package:escive/widgets/battery_indicator.dart';
 import 'package:escive/widgets/speed_mode_selector.dart';
@@ -122,7 +123,7 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
   Future<Map> refreshPosition() async {
     flutter_geolocator.Position? currentPosition;
     try {
-      currentPosition = await getCurrentPosition();
+      currentPosition = await getCurrentPosition(null);
       this.currentPosition = currentPosition;
     } catch (e) {
       logarte.log("refreshPosition() from home: Error while getting current position: $e");
@@ -339,6 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Timer? _ledTimer;
   bool isLocked = false;
   late DateTime startTime;
+  late Timer _everyMinuteTimer;
   late Timer _everyDemiMinuteTimer;
   late Timer _everyQuarterMinuteTimer;
   StreamSubscription? _streamSubscription;
@@ -691,6 +693,9 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
+    _everyMinuteTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+      checkWeather();
+    });
     _everyDemiMinuteTimer = Timer.periodic(Duration(seconds: 30), (timer) {
       startTime = DateTime.fromMillisecondsSinceEpoch(globals.currentDevice['currentActivity']['startTime'] ?? 0);
       if(mounted) setState(() {});
@@ -746,6 +751,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    _everyMinuteTimer.cancel();
     _everyDemiMinuteTimer.cancel();
     _everyQuarterMinuteTimer.cancel();
     _deviceNameController.dispose();

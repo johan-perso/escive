@@ -452,6 +452,7 @@ class _MainAppState extends State<MainApp> {
         }
 
         return MaterialApp(
+          navigatorKey: globals.navigatorKey,
           navigatorObservers: [LogarteNavigatorObserver(logarte)],
           theme: themeData,
           localizationsDelegates: context.localizationDelegates,

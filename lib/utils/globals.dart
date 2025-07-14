@@ -17,10 +17,15 @@ import 'package:easy_localization/easy_localization.dart' as localization;
 
 MusicPlayerHelper musicPlayerHelper = MusicPlayerHelper();
 
+String lastWeatherCheckDate = "";
+String lastWeatherFetchDate = "";
+Map lastWeatherData = {};
+
 int userDeviceBatteryLevel = 100;
 bool userDeviceBatteryLow = false;
 PositionEmitter positionEmitter = PositionEmitter();
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 double screenWidth = 0;
 double screenHeight = 0;
 bool largeScreenW = screenWidth > 700;

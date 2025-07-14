@@ -23,6 +23,11 @@
             }
         }
     },
+    "weather": {
+        "notConfident": "Potentielle pluie prévue",
+        "confident": "Pluie prévue",
+        "text": "{confident} dans {time} minutes"
+    },
     "general": {
         "unknownData": "Donnée inconnue",
         "defaultName": "Sans nom",

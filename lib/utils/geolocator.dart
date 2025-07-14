@@ -24,11 +24,11 @@ Future<dynamic> checkLocationPermission() async {
   return true;
 }
 
-Future<Position> getCurrentPosition() async {
+Future<Position> getCurrentPosition(LocationAccuracy? locationAccuracy) async {
   try {
     return await Geolocator.getCurrentPosition(
       locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
+        accuracy: locationAccuracy ?? LocationAccuracy.high,
         timeLimit: Duration(seconds: 10),
       )
     );
@@ -122,7 +122,7 @@ class PositionEmitter {
     }
 
     try {
-      await getCurrentPosition();
+      await getCurrentPosition(null);
     } catch (e) {
       if (context != null && context.mounted) showSnackBar(context, "geolocator.cannotGetPosition".tr(namedArgs: {'error': e.toString()}));
       currentlyEmittingPositionRealTime = false;
