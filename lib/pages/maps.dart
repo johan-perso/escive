@@ -994,6 +994,170 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  Widget _buildSearchBar(BuildContext context){
+    return Column(
+      children: [
+        SearchAnchor(
+          searchController: searchController,
+          shrinkWrap: true,
+          isFullScreen: false,
+          keyboardType: TextInputType.streetAddress,
+          viewOnSubmitted: (value) {
+            searchController.closeView(value);
+            startNavigation(context, value);
+          },
+          viewOnChanged: (value) {
+            if (currentlyPinnedMarker != null && pointAnnotationManager != null) pointAnnotationManager?.delete(currentlyPinnedMarker!);
+          },
+          builder: (BuildContext context, SearchController controller) {
+            return SearchBar(
+              controller: controller,
+              padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16)),
+              onTapOutside: (value) => SystemChannels.textInput.invokeMethod('TextInput.hide'),
+              onSubmitted: (value) => startNavigation(context, value),
+              onChanged: (value) {
+                if (currentlyPinnedMarker != null && pointAnnotationManager != null) pointAnnotationManager?.delete(currentlyPinnedMarker!);
+              },
+              trailing: [
+                IconButton(
+                  icon: Icon(LucideIcons.arrowUpRight),
+                  color: Colors.grey[700],
+                  onPressed: () => startNavigation(context, controller.text),
+                )
+              ],
+              hintText: 'maps.searchHint'.tr(),
+              onTap: () => controller.openView(),
+            );
+          },
+          suggestionsBuilder: (BuildContext context, SearchController controller) async {
+            final places = await debouncedAutocompleteSearch(controller.text);
+            return places.map((place) => ListTile(
+              title: Text(place['title']),
+              subtitle: Text(place['subtitle']),
+              onTap: () {
+                String controllerNewText = '${place['title']}, ${place['subtitle']}';
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+                controller.closeView(controllerNewText);
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+                place['query'] = controller.text;
+                addToMapsHistory(place);
+
+                mapboxMap?.flyTo(
+                  CameraOptions(
+                    center: Point(coordinates: Position(place['longitude'], place['latitude'])),
+                    zoom: 15,
+                  ),
+                  MapAnimationOptions(
+                    duration: 1000,
+                    startDelay: 0
+                  )
+                );
+
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+                setCurrentlyPinnerMarker(place['longitude'], place['latitude']);
+                startNavigation(context, controllerNewText);
+              },
+            ));
+          },
+        ),
+
+        // Error message (invisible if not defined)
+        const SizedBox(height: 6),
+        AnimatedOpacity(
+          opacity: searchInputError == '' ? 0 : 1,
+          duration: Duration(milliseconds: 101),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              searchInputError,
+              style: TextStyle(color: Colors.red),
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ),
+      ]
+    );
+  }
+
+  Widget _buildShortcuts(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 12,
+      children: (globals.settings['favoritesPlaces'] ?? []).asMap().entries.map<Widget>((entry) => Expanded(
+        flex: 1,
+        child: _buildFavoriteContainer(
+          context,
+          name: entry.value['name'],
+          icon: entry.value['icon'],
+          index: entry.key,
+          longitude: entry.value['longitude'],
+          latitude: entry.value['latitude']
+        ),
+      )).toList(),
+    );
+  }
+
+  Widget _buildMap(){
+    return Container(
+      height: globals.screenHeight * 0.55,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(2, 3),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            // Map
+            GestureDetector(
+              onVerticalDragUpdate: (_) {}, // avoid collision with the sheet
+              child: MapWidget(
+                key: ValueKey("mapScreen"),
+                onMapCreated: _onMapCreated,
+                onStyleLoadedListener: _onStyleLoadedCallback,
+                cameraOptions: cameraOptions,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
+                },
+              )
+            ),
+
+            // Reset camera button
+            Positioned(
+              bottom: 4,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: FloatingActionButton(
+                  mini: true,
+                  heroTag: 'reset_camera',
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: Icon(Icons.my_location, color: Colors.white, size: 20),
+                  onPressed: () {
+                    Haptic().light();
+                    resetCamera(instant: false, zoom: 18);
+                  }
+                ),
+              ),
+            ),
+          ]
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -1017,166 +1181,38 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
                 ),
               ),
 
-              // Search bar
-              SearchAnchor(
-                searchController: searchController,
-                shrinkWrap: true,
-                isFullScreen: false,
-                keyboardType: TextInputType.streetAddress,
-                viewOnSubmitted: (value) {
-                  searchController.closeView(value);
-                  startNavigation(context, value);
-                },
-                viewOnChanged: (value) {
-                  if (currentlyPinnedMarker != null && pointAnnotationManager != null) pointAnnotationManager?.delete(currentlyPinnedMarker!);
-                },
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                    controller: controller,
-                    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16)),
-                    onTapOutside: (value) => SystemChannels.textInput.invokeMethod('TextInput.hide'),
-                    onSubmitted: (value) => startNavigation(context, value),
-                    onChanged: (value) {
-                      if (currentlyPinnedMarker != null && pointAnnotationManager != null) pointAnnotationManager?.delete(currentlyPinnedMarker!);
-                    },
-                    trailing: [
-                      IconButton(
-                        icon: Icon(LucideIcons.arrowUpRight),
-                        color: Colors.grey[700],
-                        onPressed: () => startNavigation(context, controller.text),
-                      )
-                    ],
-                    hintText: 'maps.searchHint'.tr(),
-                    onTap: () => controller.openView(),
-                  );
-                },
-                suggestionsBuilder: (BuildContext context, SearchController controller) async {
-                  final places = await debouncedAutocompleteSearch(controller.text);
-                  return places.map((place) => ListTile(
-                    title: Text(place['title']),
-                    subtitle: Text(place['subtitle']),
-                    onTap: () {
-                      String controllerNewText = '${place['title']}, ${place['subtitle']}';
-                      SystemChannels.textInput.invokeMethod('TextInput.hide');
-                      controller.closeView(controllerNewText);
-                      SystemChannels.textInput.invokeMethod('TextInput.hide');
-
-                      place['query'] = controller.text;
-                      addToMapsHistory(place);
-
-                      mapboxMap?.flyTo(
-                        CameraOptions(
-                          center: Point(coordinates: Position(place['longitude'], place['latitude'])),
-                          zoom: 15,
-                        ),
-                        MapAnimationOptions(
-                          duration: 1000,
-                          startDelay: 0
-                        )
-                      );
-
-                      SystemChannels.textInput.invokeMethod('TextInput.hide');
-                      setCurrentlyPinnerMarker(place['longitude'], place['latitude']);
-                      startNavigation(context, controllerNewText);
-                    },
-                  ));
-                },
-              ),
-
-              // Error message (invisible if not defined)
-              const SizedBox(height: 6),
-              AnimatedOpacity(
-                opacity: searchInputError == '' ? 0 : 1,
-                duration: Duration(milliseconds: 101),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: Text(
-                    searchInputError,
-                    style: TextStyle(color: Colors.red),
-                    textAlign: TextAlign.start,
+              globals.isLandscape
+              ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        _buildSearchBar(context),
+                        const SizedBox(height: 6),
+                        _buildShortcuts(),
+                      ]
+                    )
                   ),
-                ),
-              ),
 
-              const SizedBox(height: 8),
+                  const SizedBox(width: 28),
 
-              // Shortcuts to favorites places
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 12,
-                children: (globals.settings['favoritesPlaces'] ?? []).asMap().entries.map<Widget>((entry) => Expanded(
-                  flex: 1,
-                  child: _buildFavoriteContainer(
-                    context,
-                    name: entry.value['name'],
-                    icon: entry.value['icon'],
-                    index: entry.key,
-                    longitude: entry.value['longitude'],
-                    latitude: entry.value['latitude']
-                  ),
-                )).toList(),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Map
-              Container(
-                height: globals.screenHeight * 0.55,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardTheme.color,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: Offset(2, 3),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Stack(
-                    children: [
-                      // Map
-                      GestureDetector(
-                        onVerticalDragUpdate: (_) {}, // avoid collision with the sheet
-                        child: MapWidget(
-                          key: ValueKey("mapScreen"),
-                          onMapCreated: _onMapCreated,
-                          onStyleLoadedListener: _onStyleLoadedCallback,
-                          cameraOptions: cameraOptions,
-                          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                            Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
-                          },
-                        )
-                      ),
-
-                      // Reset camera button
-                      Positioned(
-                        bottom: 4,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: FloatingActionButton(
-                            mini: true,
-                            heroTag: 'reset_camera',
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: Icon(Icons.my_location, color: Colors.white, size: 20),
-                            onPressed: () {
-                              Haptic().light();
-                              resetCamera(instant: false, zoom: 18);
-                            }
-                          ),
-                        ),
-                      ),
-                    ]
-                  )
-                )
+                  Expanded(child: _buildMap()),
+                ],
               )
+              : Column(
+                children: [
+                   // Search bar
+                  _buildSearchBar(context),
+                  const SizedBox(height: 8),
+
+                  // Shortcuts to favorites places
+                  _buildShortcuts(),
+                  const SizedBox(height: 14),
+
+                  // Map
+                  _buildMap(),
+                ]),
             ],
           ),
         ),
