@@ -147,6 +147,24 @@
                 "title": "Forcer la luminosité de l'écran",
                 "subtitle": "Le niveau de luminosité de votre écran sera défini à 100%. Commencez à rouler pour activer cette fonctionnalité"
             },
+            "forceAutoRotation": {
+                "title": "Forcer la rotation automatique",
+                "subtitle": "Bloquer l'orientation de votre écran dans un sens spécifique",
+                "values": {
+                    "default": {
+                        "title": "Désactivé",
+                        "subtitle": "Les réglages de votre téléphone seront utilisés"
+                    },
+                    "auto": {
+                        "title": "Automatique",
+                        "subtitle": "L'orientation de votre écran suivra le sens physique de ce dernier"
+                    },
+                    "landscape": {
+                        "title": "Paysage",
+                        "subtitle": "L'orientation de l'écran sera en mode paysage"
+                    }
+                }
+            },
             "maxRenderedSpeedKmh": {
                 "title": "Limite de vitesse du compteur",
                 "subtitle": "Les aiguilles du compteur de vitesse ne dépasseront pas cette vitesse maximale",

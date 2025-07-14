@@ -104,6 +104,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   globals.setSettings('forceScreenBrightnessMax', value);
                 },
               ),
+
+              SettingsTile.select(
+                context: context,
+                title: 'settings.display.forceAutoRotation.title'.tr(),
+                subtitle: 'settings.display.forceAutoRotation.subtitle'.tr(),
+                value: globals.settings['forceAutoRotation'] ?? 'default',
+                values: [
+                  {
+                    "id": "default",
+                    "title": "settings.display.forceAutoRotation.values.default.title".tr(),
+                    "subtitle": "settings.display.forceAutoRotation.values.default.subtitle".tr(),
+                  },
+                  {
+                    "id": "auto",
+                    "title": "settings.display.forceAutoRotation.values.auto.title".tr(),
+                    "subtitle": "settings.display.forceAutoRotation.values.auto.subtitle".tr(),
+                  },
+                  {
+                    "id": "landscape",
+                    "title": "settings.display.forceAutoRotation.values.landscape.title".tr(),
+                    "subtitle": "settings.display.forceAutoRotation.values.landscape.subtitle".tr(),
+                  },
+                ],
+                onChanged: (String? value) async {
+                  Haptic().light();
+                  globals.setSettings('forceAutoRotation', value);
+
+                  if(value == 'default') {
+                    logarte.log("Stopping forcing auto-rotation due to user settings change");
+                    globals.orientationManager.stopForcingAutoRotate();
+                  } else if(value == 'auto') {
+                    logarte.log("Forcing auto-rotation 'auto' due to user settings change");
+                    globals.orientationManager.forceAutoRotate();
+                  } else if(value == 'landscape') {
+                    logarte.log("Forcing auto-rotation 'landscape' due to user settings change");
+                    globals.orientationManager.forceAutoRotate(onlyLandscape: true);
+                  }
+                },
+              ),
               SettingsTile.select(
                 context: context,
                 title: 'settings.display.maxRenderedSpeedKmh.title'.tr(),

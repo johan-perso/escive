@@ -6,6 +6,7 @@ import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/send_kustom_variable.dart';
+import 'package:escive/utils/system_rotations.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:async';
@@ -298,6 +299,10 @@ class _MainAppState extends State<MainApp> {
       globals.appIsInForeground = event == FGBGType.foreground;
       logarte.log('FGBG: Received event: ${globals.appIsInForeground ? 'foreground' : 'background'}');
     });
+
+    if(globals.settings['forceAutoRotation'] == 'auto' || globals.settings['forceAutoRotation'] == 'landscape') {
+      globals.orientationManager.forceAutoRotate(onlyLandscape: globals.settings['forceAutoRotation'] == 'landscape');
+    }
 
     initDeepLinks();
     debugPrint("TimeMesuring: main.dart: initState() finished his tasks, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");

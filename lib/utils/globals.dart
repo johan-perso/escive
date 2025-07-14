@@ -6,6 +6,7 @@ import 'package:escive/bridges/iscooter.dart';
 import 'package:escive/pages/music_player.dart';
 import 'package:escive/utils/geolocator.dart';
 import 'package:escive/utils/send_kustom_variable.dart';
+import 'package:escive/utils/system_rotations.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 MusicPlayerHelper musicPlayerHelper = MusicPlayerHelper();
+OrientationManager orientationManager = OrientationManager();
 
 String lastWeatherCheckDate = "";
 String lastWeatherFetchDate = "";
@@ -142,6 +144,7 @@ Future<void> refreshSettings() async {
     { "key": "maxRenderedSpeedKmh", "value": "25", "type": String },
     { "key": "keepScreenTurnedOn", "value": false, "type": bool },
     { "key": "forceScreenBrightnessMax", "value": false, "type": bool },
+    { "key": "forceAutoRotation", "value": 'default', "type": String },
     { "key": "enableDashboardWidgets", "value": false, "type": bool },
     { "key": "enableWeatherCheck", "value": false, "type": bool },
     { "key": "disableAutoBluetoothReconnection", "value": false, "type": bool },

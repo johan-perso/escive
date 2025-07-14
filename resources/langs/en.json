@@ -144,6 +144,24 @@
                 "title": "Force screen brightness",
                 "subtitle": "Your screen brightness level will be set at maximum. Start riding to enable"
             },
+            "forceAutoRotation": {
+                "title": "Force screen auto-rotation",
+                "subtitle": "Make sure your screen is always in the right orientation",
+                "values": {
+                    "default": {
+                        "title": "Disabled",
+                        "subtitle": "Orientation will be based on your phone settings"
+                    },
+                    "auto": {
+                        "title": "Auto",
+                        "subtitle": "Orientation will be based on your phone position"
+                    },
+                    "landscape": {
+                        "title": "Landscape",
+                        "subtitle": "Orientation will always be on landscape mode"
+                    }
+                }
+            },
             "maxRenderedSpeedKmh": {
                 "title": "Speedometer limit",
                 "subtitle": "The needles from the speedometer will not exceed this maximum speed",
