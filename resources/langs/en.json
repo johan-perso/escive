@@ -22,8 +22,8 @@
     },
     "weather": {
         "notConfident": "Caution! It may rain",
-        "confident": "Caution! Rain excepted",
-        "text": "{confident} in {time} minutes"
+        "confident": "Caution! Rain expected",
+        "text": "{confident} in {time} minutes."
     },
     "general": {
         "unknownData": "Unknown data",
@@ -193,11 +193,11 @@
                 "title": "Show your trips on the map",
                 "subtitle": "Your trips from the past 20 hours will be displayed on the map",
                 "usePositionMustBeEnabled": "Data precision must be enabled to enable this",
-                "widgetsMustBeEnabled": "Enable widgets to use the map widget"
+                "widgetsMustBeEnabled": "Enable integrated widgets to access the map"
             }
         },
-        "dashboard": {
-            "title": "DASHBOARD",
+        "integrations": {
+            "title": "INTEGRATIONS",
             "enableDashboardWidgets": {
                 "title": "Enable widgets",
                 "subtitle": "Additional panels will be displayed to provide easier access to essential infos like your music and a fullscreen map",
@@ -206,6 +206,11 @@
                     "dialogTitle": "Allow missing access",
                     "dialogContent": "To allow eScive to access the music you are listening to, you will need to authorize access to notifications from your phone settings."
                 }
+            },
+            "enableWeatherCheck": {
+                "title": "Enable weather alert",
+                "subtitle": "Only available in France. You will be warned if rain is expected in the next 30 minutes when driving",
+                "usePositionMustBeEnabled": "Data precision must be enabled to enable this"
             }
         },
         "dangerZone": {

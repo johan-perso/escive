@@ -1,5 +1,6 @@
 import 'package:escive/main.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
+import 'package:escive/utils/weather.dart';
 import 'package:escive/widgets/classic_app_bar.dart';
 import 'package:escive/widgets/settings_tile.dart';
 import 'package:escive/widgets/warning_light.dart';
@@ -241,6 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     // Disable options that depends on usePrecision
                     globals.setSettings('useSelfEstimatedSpeed', false);
                     globals.setSettings('logsPositionHistory', false);
+                    globals.setSettings('enableWeatherCheck', false);
                     if(globals.currentDevice.containsKey('stats')) globals.currentDevice['stats']['positionHistory'] = [];
                     globals.saveInBox();
                   }
@@ -293,17 +295,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
 
               SizedBox(height: 18),
-              SettingsSection(title: "settings.dashboard.title".tr()),
+              SettingsSection(title: "settings.integrations.title".tr()),
 
               SettingsTile.toggle(
                 context: context,
-                title: "settings.dashboard.enableDashboardWidgets.title".tr(),
-                subtitle: "settings.dashboard.enableDashboardWidgets.subtitle".tr(),
+                title: "settings.integrations.enableDashboardWidgets.title".tr(),
+                subtitle: "settings.integrations.enableDashboardWidgets.subtitle".tr(),
                 value: globals.settings['enableDashboardWidgets'] ?? false,
                 onChanged: (bool? value) async {
                   if(kIsWeb || !Platform.isAndroid) {
                     Haptic().warning();
-                    showSnackBar(context, "settings.dashboard.enableDashboardWidgets.platformCompatibility".tr(), icon: 'warning');
+                    showSnackBar(context, "settings.integrations.enableDashboardWidgets.platformCompatibility".tr(), icon: 'warning');
                     return;
                   }
 
@@ -312,8 +314,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     if(context.mounted) {
                       return actionsDialog(
                         context,
-                        title: "settings.dashboard.enableDashboardWidgets.permissionMissing.dialogTitle".tr(),
-                        content: "settings.dashboard.enableDashboardWidgets.permissionMissing.dialogContent".tr(),
+                        title: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogTitle".tr(),
+                        content: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogContent".tr(),
                         haptic: 'light',
                         actions: [
                           TextButton(
@@ -342,6 +344,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   globals.setSettings('enableDashboardWidgets', value);
 
                   if(context.mounted) askRestartApp(context);
+                },
+              ),
+
+              SettingsTile.toggle(
+                context: context,
+                title: "settings.integrations.enableWeatherCheck.title".tr(),
+                subtitle: "settings.integrations.enableWeatherCheck.subtitle".tr(),
+                value: globals.settings['enableWeatherCheck'] ?? false,
+                onChanged: (bool? value) async {
+                  if(value == true && globals.settings['usePosition'] == 'never') {
+                    Haptic().warning();
+                    showSnackBar(context, "settings.integrations.enableWeatherCheck.usePositionMustBeEnabled".tr(), icon: 'warning');
+                    redefinePositionWarn();
+                    return;
+                  }
+
+                  Haptic().light();
+                  globals.setSettings('enableWeatherCheck', value);
+                  if(value == true) checkWeather();
                 },
               ),
 

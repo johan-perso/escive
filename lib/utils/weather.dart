@@ -10,7 +10,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 void checkWeather() async {
-  // Avoid showing notifications too often
+  // Check if we need to check the weather data
+  if(globals.settings['enableWeatherCheck'] != true) return logarte.log("Weather: not checking weather data because the feature is disabled in settings");
   if(globals.positionEmitter.currentlyEmittingPositionRealTime != true) return logarte.log("Weather: not checking weather data because position emitter is not active");
   if(globals.lastWeatherCheckDate.isNotEmpty && DateTime.now().difference(DateTime.parse(globals.lastWeatherCheckDate)).inMinutes < 5) return logarte.log("Weather: not checking weather data because last check was less than 5 minutes ago");
   logarte.log("Weather: checking weather data...");
@@ -48,6 +49,9 @@ void checkWeather() async {
       globals.lastWeatherCheckDate = DateTime.now().toIso8601String(); // doesn't update the last fetch date too
       return logarte.log("Weather: error fetching weather data: $e");
     }
+  } else {
+    logarte.log("Weather: last fetch was less than 20 minutes ago, using cached data");
+    globals.lastWeatherCheckDate = DateTime.now().toIso8601String();
   }
 
   // Check if the fetched datas are valid
@@ -57,7 +61,7 @@ void checkWeather() async {
   // if(globals.lastWeatherData['properties'].containsKey('rain_product_available') && globals.lastWeatherData['properties']['rain_product_available'] != 1) return logarte.log("Weather: rain data are not available for the current position"); // outdated??
 
   bool notConfident = globals.lastWeatherData['properties'].containsKey('confidence') && globals.lastWeatherData['properties']['confidence'] > 1.5; // 0 = very confident, 3 = not confident at all
-  int minutesUntilRain = -1; // -1 = no rain excepted, 0 = currently raining, >0 = minutes until it start to rain
+  int minutesUntilRain = -1; // -1 = no rain expected, 0 = currently raining, >0 = minutes until it start to rain
 
   final List<dynamic> forecast = globals.lastWeatherData['properties']['forecast'];
   final DateTime now = DateTime.now().toUtc();

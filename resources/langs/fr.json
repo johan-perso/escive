@@ -24,9 +24,9 @@
         }
     },
     "weather": {
-        "notConfident": "Potentielle pluie prévue",
-        "confident": "Pluie prévue",
-        "text": "{confident} dans {time} minutes"
+        "notConfident": "Restez vigilant, pluie potentielle prévue",
+        "confident": "Restez vigilant, pluie prévue",
+        "text": "{confident} dans {time} min !"
     },
     "general": {
         "unknownData": "Donnée inconnue",
@@ -196,11 +196,11 @@
                 "title": "Afficher vos parcours sur la carte",
                 "subtitle": "Votre position sera utilisée pour afficher vos trajets des 20 dernières heures",
                 "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité",
-                "widgetsMustBeEnabled": "Les widgets du tableau de bord doivent être activés pour utiliser cette fonctionnalité"
+                "widgetsMustBeEnabled": "Les widgets intégrés doivent être activés pour utiliser cette fonctionnalité"
             }
         },
-        "dashboard": {
-            "title": "TABLEAU DE BORD",
+        "integrations": {
+            "title": "INTÉGRATIONS",
             "enableDashboardWidgets": {
                 "title": "Activer les widgets",
                 "subtitle": "Des encadrés supplémentaires seront affichés pour vous permettre une meilleure vue d'ensemble",
@@ -209,6 +209,11 @@
                     "dialogTitle": "Autoriser l'accès manquant",
                     "dialogContent": "Pour permettre à eScive d'accéder aux musiques que vous écoutez, vous devrez autoriser l'accès aux notifications depuis les paramètres de votre téléphone."
                 }
+            },
+            "enableWeatherCheck": {
+                "title": "Activer les alertes Météo France",
+                "subtitle": "Vous serez prévenu si de la pluie est prévue pendant votre conduite",
+                "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité"
             }
         },
         "dangerZone": {

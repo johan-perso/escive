@@ -143,6 +143,7 @@ Future<void> refreshSettings() async {
     { "key": "keepScreenTurnedOn", "value": false, "type": bool },
     { "key": "forceScreenBrightnessMax", "value": false, "type": bool },
     { "key": "enableDashboardWidgets", "value": false, "type": bool },
+    { "key": "enableWeatherCheck", "value": false, "type": bool },
     { "key": "disableAutoBluetoothReconnection", "value": false, "type": bool },
     { "key": "showDebugTrackPoints", "value": false, "type": bool },
     { "key": "customUiLanguage", "value": '', "type": String },
