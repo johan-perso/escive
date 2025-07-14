@@ -417,8 +417,8 @@ class _MainAppState extends State<MainApp> {
             home: Scaffold(
               body: Center(
                 child: FutureBuilder(
-                  // Generally it doesn't even show for 100ms when restarting with Pheonix (without splash screen) (and completly not showing when starting app with splash screen)
-                  // The result is that we can see the splash screen for a few moments, before it even start to rotater
+                  // Generally it doesn't even show for 100ms when restarting with Phoenix (without splash screen) (and completly not showing when starting app with splash screen)
+                  // The result is that we can see the splash screen for a few moments, before it even start to rotate
                   // So, we will only show the spinner after an entire second
                   future: Future.delayed(Duration(seconds: 1), () => true),
                   builder: (context, delaySnapshot) {

@@ -114,7 +114,7 @@ String getRelativeTime(String locale, DateTime dateTime, String additional) {
     if (months == 1) {
       return '${prefix == 'depuis' ? prefix : ''}${'dateFormatter.lastMonth'.tr()} ${suffix == 'ago' ? suffix : ''}';
     }
-    return '$prefix$months ${'dateFormatter.month'.plural(months)} $suffix';
+    return '$prefix$months ${'dateFormatter.months'.plural(months)} $suffix';
   }
 
   // More than a year
