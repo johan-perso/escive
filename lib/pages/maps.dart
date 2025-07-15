@@ -10,6 +10,7 @@ import 'package:escive/widgets/settings_tile.dart';
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart' as flutter_geolocator;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_io/io.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
@@ -62,6 +66,7 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
   int? _animatingFavoriteIndex;
   late AnimationController _pressAnimationController;
   late Animation<double> _scaleAnimation;
+  final mapBoundaryKey = GlobalKey();
 
   List<List<Map>> createTrackSegments(List<Map> positions) {
     List<List<Map>> segments = [];
@@ -994,6 +999,50 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  Future<Uint8List?> _captureMapWithCustomText() async {
+    final snapshot = await mapboxMap!.snapshot();
+    final codec = await ui.instantiateImageCodec(snapshot);
+    final frame = await codec.getNextFrame();
+    final originalImage = frame.image;
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    canvas.drawImage(originalImage, Offset.zero, Paint());
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: 'eScive',
+        style: TextStyle(
+          fontSize: 50,
+          color: mounted ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.9) : Colors.blue[700]!,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Sora',
+          shadows: [
+            Shadow(
+              color: Colors.black,
+              offset: Offset(0, 0),
+              blurRadius: mounted ? 1 : 3,
+            ),
+          ],
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+    final textY = originalImage.height - textPainter.height - 20;
+    textPainter.paint(canvas, Offset(30, textY));
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(
+      originalImage.width,
+      originalImage.height,
+    );
+
+    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    return byteData?.buffer.asUint8List();
+  }
+
   Widget _buildSearchBar(BuildContext context){
     return Column(
       children: [
@@ -1116,43 +1165,72 @@ class _MapsScreenState extends State<MapsScreen> with SingleTickerProviderStateM
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            // Map
-            GestureDetector(
-              onVerticalDragUpdate: (_) {}, // avoid collision with the sheet
-              child: MapWidget(
-                key: ValueKey("mapScreen"),
-                onMapCreated: _onMapCreated,
-                onStyleLoadedListener: _onStyleLoadedCallback,
-                cameraOptions: cameraOptions,
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
-                },
-              )
-            ),
+      child: RepaintBoundary(
+        key: mapBoundaryKey,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            children: [
+              // Map
+              GestureDetector(
+                onVerticalDragUpdate: (_) {}, // avoid collision with the sheet
+                child: MapWidget(
+                  key: ValueKey("mapScreen"),
+                  onMapCreated: _onMapCreated,
+                  onStyleLoadedListener: _onStyleLoadedCallback,
+                  cameraOptions: cameraOptions,
+                  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                    Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
+                  },
+                )
+              ),
 
-            // Reset camera button
-            Positioned(
-              bottom: 4,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: FloatingActionButton(
-                  mini: true,
-                  heroTag: 'reset_camera',
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(Icons.my_location, color: Colors.white, size: 20),
-                  onPressed: () {
-                    Haptic().light();
-                    resetCamera(instant: false, zoom: 18);
-                  }
+              // Reset camera button / hidden share
+              Positioned(
+                bottom: 4,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: GestureDetector(
+                    onLongPress: () async {
+                      Haptic().light();
+                      logarte.log('ExportMap: capturing map image...');
+                      Uint8List? bytes = await _captureMapWithCustomText();
+                      logarte.log('ExportMap: captured map image, bytes length: ${bytes?.length ?? 0}');
+                      if (!mounted) return;
+
+                      if (bytes == null || bytes.isEmpty) {
+                        logarte.log('ExportMap: failed to capture map image, got zero bytes');
+                        if (mounted) setState(() { searchInputError = 'maps.cannotCaptureMapImage'.tr(); });
+                        return;
+                      }
+
+                      logarte.log('ExportMap: saving map image...');
+                      final directory = await getTemporaryDirectory();
+                      final file = File('${directory.path}/map_screenshot_${DateTime.now().millisecondsSinceEpoch}.png');
+                      await file.writeAsBytes(bytes);
+                      logarte.log('ExportMap: saved as ${file.path}');
+
+                      final shareResult = await SharePlus.instance.share(ShareParams(
+                        files: [ XFile(file.path) ],
+                      ));
+                      logarte.log('ExportMap: shared map image, result: $shareResult');
+                    },
+                    child: FloatingActionButton(
+                      mini: true,
+                      heroTag: 'reset_camera',
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Icon(Icons.my_location, color: Colors.white, size: 20),
+                      onPressed: () {
+                        Haptic().light();
+                        resetCamera(instant: false, zoom: 18);
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ]
+            ],
+          ),
         )
       )
     );

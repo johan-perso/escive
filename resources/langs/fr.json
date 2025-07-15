@@ -4,6 +4,7 @@
         "noResultsFound": "Aucun résultat trouvé",
         "cannotOpenNavigation": "Aucune app de navigation ne peut être ouverte, installez une app comme Google Maps pour continuer",
         "cannotReverseGeocode": "Impossible de récupérer l'adresse de l'emplacement épinglé",
+        "cannotCaptureMapImage": "Impossible de capturer la carte, veuillez réessayer",
         "favorite": {
             "notDefined": "Ajouter un favori ici",
             "noPinnedPoint": "Toucher un point de la carte pour définir une épingle à son emplacement, et essayez à nouveau",

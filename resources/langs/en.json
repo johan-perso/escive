@@ -4,6 +4,7 @@
         "noResultsFound": "No results found",
         "cannotOpenNavigation": "No navigation app can be opened, you need to install one (e.g. Google Maps) to continue",
         "cannotReverseGeocode": "Unable to get the address of the pinned location",
+        "cannotCaptureMapImage": "Unable to capture the map, please try again",
         "favorite": {
             "notDefined": "Empty favorite slot",
             "noPinnedPoint": "Tap somewhere on the map to place a pin, and try to save this slot again",
