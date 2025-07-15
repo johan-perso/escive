@@ -101,7 +101,21 @@
     },
     "changelog": {
         "titlePrefix": "What's new in ",
-        "heightMinUnrespected": "Your screen height is too low to display the latest update summary"
+        "heightMinUnrespected": "Your screen height is too low to display the latest update summary",
+        "features": {
+            "shareTrips": {
+                "title": "Share your trips",
+                "description": "Use the map widget to share your trips with your friends. Long press the relocate button to access this feature."
+            },
+            "weatherAlert": {
+                "title": "Weather alert in France",
+                "description": "eScive will now alert you if rain is suddently expected in your area before the next hour. Look in the settings to enable this feature."
+            },
+            "landscapeMode": {
+                "title": "Landscape mode",
+                "description": "Some aspects of the app have been improved to work better in landscape mode. Check the settings to lock the screen orientation."
+            }
+        }
     },
     "protocols": {
         "iscooter": {
@@ -228,7 +242,7 @@
             },
             "enableWeatherCheck": {
                 "title": "Enable weather alert",
-                "subtitle": "Only available in France. You will be warned if rain is expected in the next 30 minutes when driving",
+                "subtitle": "Only available in France. You will be warned if rain is expected in the next hour when you're driving",
                 "usePositionMustBeEnabled": "Data precision must be enabled to enable this"
             }
         },

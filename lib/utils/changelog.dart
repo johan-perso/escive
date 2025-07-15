@@ -9,20 +9,28 @@ import 'package:cupertino_onboarding/cupertino_onboarding.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
-Map currentChangelog = { // example
-  "version": "0.1.0",
+Map currentChangelog = {
+  "version": "0.4.0",
   "features": [
     {
-      "title": "Music Widget",
-      "description": "You can now manage the music you're listening to, directly from eScive, without having to quit the app. Always take precautions when riding!",
-      "icon": Icon(LucideIcons.music4)
-    }
+      "title": "changelog.features.shareTrips.title",
+      "description": "changelog.features.shareTrips.description",
+      "icon": Icon(LucideIcons.mapPinned)
+    },
+    {
+      "title": "changelog.features.weatherAlert.title",
+      "description": "changelog.features.weatherAlert.description",
+      "icon": Icon(LucideIcons.cloudRain)
+    },
+    {
+      "title": "changelog.features.landscapeMode.title",
+      "description": "changelog.features.landscapeMode.description",
+      "icon": Icon(LucideIcons.proportions)
+    },
   ]
 };
 
 void showChangelogModal(BuildContext context) async {
-  return; // we're still in beta
-
   if(globals.screenHeight < 500) {
     showSnackBar(context, "changelog.heightMinUnrespected".tr(), icon: "warning");
     Haptic().warning();
@@ -110,8 +118,8 @@ class _CupertinoChangelogHelperState extends State<CupertinoChangelogHelper> wit
           features: ((currentChangelog['features'] ?? []) as List).map((feature) {
             return WhatsNewFeature(
               icon: feature['icon'] ?? Icon(LucideIcons.circleHelp),
-              title: Text(feature['title'] ?? "? Title"),
-              description: Text(feature['description'] ?? "? Description"),
+              title: Text(feature['title'] ?? "? Title").tr(),
+              description: Text(feature['description'] ?? "? Description").tr(),
             );
           }).toList(),
         ),

@@ -279,7 +279,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> with SingleTicker
                 ),
               ),
             ),
-            
+
             // Artist name
             Expanded(
               child: Text(

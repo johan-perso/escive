@@ -104,7 +104,21 @@
     },
     "changelog": {
         "titlePrefix": "Nouveautés d'",
-        "heightMinUnrespected": "La hauteur de votre écran est trop faible pour afficher le récap de la dernière mise à jour"
+        "heightMinUnrespected": "La hauteur de votre écran est trop faible pour afficher le récap de la dernière mise à jour",
+        "features": {
+            "shareTrips": {
+                "title": "Partagez vos trajets",
+                "description": "Utiliser la carte intégré à l'app pour partager vos trajets avec vos amis. Maintenez appuyé le bouton \"relocaliser\" pour y accéder."
+            },
+            "weatherAlert": {
+                "title": "Alertes Météo France",
+                "description": "eScive peut vous alerter si les conditions météo changent soudainement dans votre zone. Consultez les réglages pour activer l'option et en profiter."
+            },
+            "landscapeMode": {
+                "title": "Mode paysage",
+                "description": "Certains aspects de l'app ont été retravaillés pour mieux fonctionner en mode paysage. Vous pouvez aussi bloquer l'orientation de l'écran selon vos besoins."
+            }
+        }
     },
     "protocols": {
         "iscooter": {
@@ -231,7 +245,7 @@
             },
             "enableWeatherCheck": {
                 "title": "Activer les alertes Météo France",
-                "subtitle": "Vous serez prévenu si de la pluie est prévue pendant votre conduite",
+                "subtitle": "Vous serez prévenu si de la pluie est prévue au cours de la prochaine heure pendant votre conduite",
                 "usePositionMustBeEnabled": "La précision des données doit être activée pour utiliser cette fonctionnalité"
             }
         },

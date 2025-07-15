@@ -720,7 +720,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       showChangelogModal(context);
       globals.box.write('appVersion', value['version']);
-      globals.box.write('appBuild', value['buildNumber']);
+      globals.box.write('appBuild', value['build']);
 
       if(kIsWeb){
         actionsDialog(
