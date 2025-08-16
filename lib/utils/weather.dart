@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
+import 'package:logarte/logarte.dart';
 
 void checkWeather() async {
   // Check if we need to check the weather data
@@ -31,7 +32,22 @@ void checkWeather() async {
     // Fetch weather data
     try {
       globals.lastWeatherCheckDate = DateTime.now().toIso8601String(); // doesn't update the last fetch date for now
-      final response = await http.get(Uri.parse('https://webservice.meteofrance.com/v3/rain?lat=${currentPosition.latitude}&lon=${currentPosition.longitude}&token=__Wj7dVSTjV9YGu1guveLyDq0g7S7TfTjaHBTPTpO0kj8__'));
+      String stringifiedUrl = 'https://webservice.meteofrance.com/v3/rain?lat=${currentPosition.latitude}&lon=${currentPosition.longitude}&token=__Wj7dVSTjV9YGu1guveLyDq0g7S7TfTjaHBTPTpO0kj8__';
+      final response = await http.get(Uri.parse(stringifiedUrl));
+
+      logarte.network(
+        request: NetworkRequestLogarteEntry(
+          method: 'POST',
+          url: stringifiedUrl,
+          headers: {}
+        ),
+        response: NetworkResponseLogarteEntry(
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: response.body,
+        ),
+      );
+
       if (response.statusCode == 200) {
         final weatherData = response.body;
         logarte.log("Weather: data fetched successfully, parsing...");
