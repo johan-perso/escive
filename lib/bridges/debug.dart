@@ -11,6 +11,8 @@ late Timer _randomDataTimer;
 late Timer _saveInBoxTimer;
 
 class DebugBridge {
+  final Map<String, Timer> _setReadyStateTimers = {};
+
   void init(BuildContext context){
     logarte.log("Debug bridge: initializing...");
 
@@ -76,6 +78,19 @@ class DebugBridge {
     setWarningLight('bridgeDisconnected', false);
     sendKustomVariable(variableName: 'state', variableValue: 'connected');
     logarte.log("Debug bridge: initialized");
+
+    _setReadyState('speed');
+    _setReadyState('lock');
+    _setReadyState('light');
+  }
+
+  void _setReadyState(String state) {
+    if(globals.bridgeReadyStates[state] == true) return;
+    if(_setReadyStateTimers[state] != null && _setReadyStateTimers[state]!.isActive) return;
+
+    _setReadyStateTimers[state] = Timer(Duration(milliseconds: 200), () {
+      globals.bridgeReadyStates[state] = true;
+    });
   }
 
   Future<bool> dispose() async {
@@ -83,6 +98,11 @@ class DebugBridge {
     _randomDataTimer.cancel();
     _saveInBoxTimer.cancel();
     globals.saveInBox();
+
+    if (_setReadyStateTimers.isNotEmpty) {
+      _setReadyStateTimers.forEach((key, timer) => timer.cancel());
+      _setReadyStateTimers.clear();
+    }
 
     globals.resetCurrentActivityData();
 
