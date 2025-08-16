@@ -172,8 +172,14 @@
                         "subtitle": "Orientation will be based on your phone position"
                     },
                     "landscape": {
-                        "title": "Landscape",
+                        "title": "Landscape (both sides)",
                         "subtitle": "Orientation will always be on landscape mode"
+                    },
+                    "landscapeLeft": {
+                        "title": "Landscape (left)"
+                    },
+                    "landscapeRight": {
+                        "title": "Landscape (right)"
                     }
                 }
             },

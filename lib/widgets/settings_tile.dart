@@ -22,6 +22,9 @@ void showSelectModal({
 
       return Material(
         child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
           padding: const EdgeInsets.only(left: 12, right: 18, top: 14, bottom: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -45,33 +48,37 @@ void showSelectModal({
 
               const SizedBox(height: 16),
 
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: values.length,
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 26),
-                itemBuilder: (context, index) {
-                  String subtitle = values[index]['subtitle'] ?? '';
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: values.length,
+                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.only(bottom: 26),
+                  itemBuilder: (context, index) {
+                    String subtitle = values[index]['subtitle'] ?? '';
 
-                  return ListTile(
-                    title: Text(values[index]['title']),
-                    subtitle: subtitle == '' ? null : Text(subtitle),
-                    contentPadding: isRadio ? const EdgeInsets.all(0) : const EdgeInsets.only(left: 14),
-                    onTap: () {
-                      Haptic().light();
-                      onChanged(index);
-                      Navigator.pop(context);
-                    },
-                    leading: !isRadio ? null : Radio(
-                      value: index,
-                      groupValue: currentValue,
-                      onChanged: (value) {
+                    return ListTile(
+                      title: Text(values[index]['title']),
+                      subtitle: subtitle == '' ? null : Text(subtitle),
+                      contentPadding: isRadio ? const EdgeInsets.all(0) : const EdgeInsets.only(left: 14),
+                      onTap: () {
+                        Haptic().light();
                         onChanged(index);
                         Navigator.pop(context);
                       },
-                    ),
-                  );
-                },
+                      leading: !isRadio ? null : RadioGroup(
+                        groupValue: currentValue,
+                        onChanged: (value) {
+                          onChanged(index);
+                          Navigator.pop(context);
+                        },
+                        child: Radio(
+                          value: index,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

@@ -1,0 +1,37 @@
+{
+  "name": "mapbox_maps_flutter",
+  "version": "2.9.0",
+  "summary": "Mapbox Maps SDK Flutter Plugin.",
+  "description": "An officially developed solution from Mapbox that enables use of our latest Maps SDK product.",
+  "homepage": "https://pub.dev/packages/mapbox_maps_flutter",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Mapbox": "mobile@mapbox.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "mapbox_maps_flutter/Sources/mapbox_maps_flutter/Classes/**/*",
+  "dependencies": {
+    "Flutter": [
+
+    ],
+    "MapboxMaps": [
+      "11.13.0"
+    ],
+    "Turf": [
+      "4.0.0"
+    ]
+  },
+  "platforms": {
+    "ios": "14.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.8",
+  "swift_version": "5.8"
+}

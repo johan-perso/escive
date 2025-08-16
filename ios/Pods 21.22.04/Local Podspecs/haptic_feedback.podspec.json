@@ -1,0 +1,31 @@
+{
+  "name": "haptic_feedback",
+  "version": "0.5.1",
+  "summary": "A Flutter plugin for haptic feedback.",
+  "description": "Haptic Feedback.",
+  "homepage": "https://github.com/nohli/haptic_feedback",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Joachim Nohl": "pub@achim.io"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "dependencies": {
+    "Flutter": [
+
+    ]
+  },
+  "platforms": {
+    "ios": "11.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

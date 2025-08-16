@@ -1,0 +1,6 @@
+framework module haptic_feedback {
+  umbrella header "haptic_feedback-umbrella.h"
+
+  export *
+  module * { export * }
+}

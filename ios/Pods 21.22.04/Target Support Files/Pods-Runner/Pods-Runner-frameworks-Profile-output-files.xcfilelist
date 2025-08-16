@@ -1,0 +1,9 @@
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_blue_plus_darwin.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_native_splash.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/geolocator_apple.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/haptic_feedback.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info_plus.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/path_provider_foundation.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/screen_brightness_ios.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/url_launcher_ios.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/wakelock_plus.framework

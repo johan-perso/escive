@@ -6,7 +6,6 @@ import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/send_kustom_variable.dart';
-import 'package:escive/utils/system_rotations.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:async';
@@ -135,7 +134,7 @@ class _MainAppState extends State<MainApp> {
       opticalSize: 56
     ),
     hintColor: Color(0xFFD3D3D7),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Color(0xFFF0F1F7),
       elevation: 0,
     ),
@@ -300,8 +299,8 @@ class _MainAppState extends State<MainApp> {
       logarte.log('FGBG: Received event: ${globals.appIsInForeground ? 'foreground' : 'background'}');
     });
 
-    if(globals.settings['forceAutoRotation'] == 'auto' || globals.settings['forceAutoRotation'] == 'landscape') {
-      globals.orientationManager.forceAutoRotate(onlyLandscape: globals.settings['forceAutoRotation'] == 'landscape');
+    if(['auto', 'landscape', 'landscapeLeft', 'landscapeRight'].contains(globals.settings['forceAutoRotation'])) {
+      globals.orientationManager.forceAutoRotate(accepted: globals.settings['forceAutoRotation']);
     }
 
     initDeepLinks();

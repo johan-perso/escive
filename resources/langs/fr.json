@@ -175,8 +175,14 @@
                         "subtitle": "L'orientation de votre écran suivra le sens physique de ce dernier"
                     },
                     "landscape": {
-                        "title": "Paysage",
+                        "title": "Paysage (deux côtés)",
                         "subtitle": "L'orientation de l'écran sera en mode paysage"
+                    },
+                    "landscapeLeft": {
+                        "title": "Paysage (gauche)"
+                    },
+                    "landscapeRight": {
+                        "title": "Paysage (droit)"
                     }
                 }
             },

@@ -4,10 +4,31 @@ import 'package:native_device_orientation/native_device_orientation.dart';
 
 class OrientationManager {
   StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
-  bool _onlyLandscape = false;
+  String _accepted = 'all';
 
-  void forceAutoRotate({ bool onlyLandscape = false }) {
-    _onlyLandscape = onlyLandscape;
+  List<DeviceOrientation> getAccepted(String accepted) {
+    if(accepted == 'landscape') {
+      return [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ];
+    } else if(accepted == 'landscapeLeft') {
+      return [DeviceOrientation.landscapeLeft];
+    } else if(accepted == 'landscapeRight') {
+      return [DeviceOrientation.landscapeRight];
+    } else {
+      return [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ];
+    }
+  }
+
+  void forceAutoRotate({ String accepted = 'all' }) {
+    if(accepted == 'auto') accepted = 'all';
+    _accepted = accepted;
 
     if (_orientationSubscription != null) _orientationSubscription!.cancel();
     _orientationSubscription = NativeDeviceOrientationCommunicator()
@@ -17,19 +38,7 @@ class OrientationManager {
         }
     );
 
-    if(onlyLandscape) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    } else {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    }
+    SystemChrome.setPreferredOrientations(getAccepted(_accepted));
   }
 
   void stopForcingAutoRotate() {
@@ -46,31 +55,19 @@ class OrientationManager {
 
     switch (orientation) {
       case NativeDeviceOrientation.portraitUp:
-        if (!_onlyLandscape) allowedOrientations = [DeviceOrientation.portraitUp];
+        if (_accepted == 'all') allowedOrientations = [DeviceOrientation.portraitUp];
         break;
       case NativeDeviceOrientation.portraitDown:
-        if (!_onlyLandscape) allowedOrientations = [DeviceOrientation.portraitDown];
+        if (_accepted == 'all') allowedOrientations = [DeviceOrientation.portraitDown];
         break;
       case NativeDeviceOrientation.landscapeLeft:
-        allowedOrientations = [DeviceOrientation.landscapeLeft];
+        if(_accepted == 'all' || _accepted == 'landscapeLeft') allowedOrientations = [DeviceOrientation.landscapeLeft];
         break;
       case NativeDeviceOrientation.landscapeRight:
-        allowedOrientations = [DeviceOrientation.landscapeRight];
+        if(_accepted == 'all' || _accepted == 'landscapeRight') allowedOrientations = [DeviceOrientation.landscapeRight];
         break;
       default:
-        if (_onlyLandscape) {
-          allowedOrientations = [
-            DeviceOrientation.landscapeLeft,
-            DeviceOrientation.landscapeRight,
-          ];
-        } else {
-          allowedOrientations = [
-            DeviceOrientation.portraitUp,
-            DeviceOrientation.portraitDown,
-            DeviceOrientation.landscapeLeft,
-            DeviceOrientation.landscapeRight,
-          ];
-        }
+        allowedOrientations = getAccepted(_accepted);
     }
 
     if (allowedOrientations.isNotEmpty) SystemChrome.setPreferredOrientations(allowedOrientations);

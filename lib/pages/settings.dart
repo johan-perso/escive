@@ -126,6 +126,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     "title": "settings.display.forceAutoRotation.values.landscape.title".tr(),
                     "subtitle": "settings.display.forceAutoRotation.values.landscape.subtitle".tr(),
                   },
+                  {
+                    "id": "landscapeLeft",
+                    "title": "settings.display.forceAutoRotation.values.landscapeLeft.title".tr(),
+                  },
+                  {
+                    "id": "landscapeRight",
+                    "title": "settings.display.forceAutoRotation.values.landscapeRight.title".tr(),
+                  },
                 ],
                 onChanged: (String? value) async {
                   Haptic().light();
@@ -137,9 +145,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   } else if(value == 'auto') {
                     logarte.log("Forcing auto-rotation 'auto' due to user settings change");
                     globals.orientationManager.forceAutoRotate();
-                  } else if(value == 'landscape') {
-                    logarte.log("Forcing auto-rotation 'landscape' due to user settings change");
-                    globals.orientationManager.forceAutoRotate(onlyLandscape: true);
+                  } else if(value == 'landscape' || value == 'landscapeLeft' || value == 'landscapeRight') {
+                    logarte.log("Forcing auto-rotation '$value' due to user settings change");
+                    globals.orientationManager.forceAutoRotate(accepted: value!);
                   }
                 },
               ),
