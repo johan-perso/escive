@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Use a pre-built Flutter image
-FROM ghcr.io/cirruslabs/flutter:3.29.0 AS build-env
+FROM ghcr.io/cirruslabs/flutter:3.35.0 AS build-env
 
 # Check Flutter is installed
 RUN flutter doctor -v
