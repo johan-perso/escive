@@ -10,7 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 Map currentChangelog = {
-  "version": "0.4.0",
+  "version": "1.0.0",
   "features": [
     {
       "title": "changelog.features.shareTrips.title",
