@@ -7,7 +7,8 @@ eScive est une application mobile qui vise à être un client tiers pour les tro
 Pour l'instant, le projet cible surtout les modèles "i10" de la marque iScooter, mais est codé d'une manière à permettre l'ajout d'autres modèles et d'autres marques dans le futur.
 La communication entre les appareils est basée sur le reverse engineering des paquets envoyés via les protocoles utilisant le BLE, et directement à partir du code source décompilé des apps officielles (mdrrr jme cache tlm pas).
 
-![Bannière eScive](https://r2.johanstick.fr/illustrationsdevs/escive/shots_fr_16_10.png)
+<img width="2880" height="1800" alt="16-10" src="https://github.com/user-attachments/assets/4ef06f6d-45b8-4964-a938-8b4e31572ab0" />
+
 
 ## Installation
 
