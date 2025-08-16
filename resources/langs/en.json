@@ -1,4 +1,15 @@
 {
+    "deeplinking": {
+        "genericError": "Something went wrong: {error}",
+        "lock": {
+            "on": "Scooter locked!",
+            "off": "Scooter unlocked!"
+        },
+        "light": {
+            "on": "Headlight turned on!",
+            "off": "Headlight turned off!"
+        }
+    },
     "maps": {
         "searchHint": "Search a place or type an address",
         "noResultsFound": "No results found",

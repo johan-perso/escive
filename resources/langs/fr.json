@@ -1,4 +1,15 @@
 {
+    "deeplinking": {
+        "genericError": "Une erreur est survenue : {error}",
+        "lock": {
+            "on": "Appareil verrouillé !",
+            "off": "Appareil déverrouillé !"
+        },
+        "light": {
+            "on": "Phare allumé !",
+            "off": "Phare éteint !"
+        }
+    },
     "maps": {
         "searchHint": "Rechercher un lieu, une adresse",
         "noResultsFound": "Aucun résultat trouvé",

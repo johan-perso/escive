@@ -6,6 +6,7 @@ import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/utils/refresh_advanced_stats.dart';
 import 'package:escive/utils/send_kustom_variable.dart';
+import 'package:escive/utils/show_snackbar.dart';
 import 'package:escive/widgets/warning_light.dart';
 
 import 'dart:async';
@@ -370,40 +371,60 @@ class _MainAppState extends State<MainApp> {
   }
 
   void switchControlLink(List pathSegments) async {
-    switch(pathSegments[1]) {
-      case 'lock':
-        try {
-          await waitForState('lock');
-          await globals.bridge.setLock(
+    try {
+      switch(pathSegments[1]) {
+        case 'lock':
+          bool newValue =
             pathSegments[2] == 'on' ? true :
             pathSegments[2] == 'off' ? false :
             pathSegments[2] == 'toggle' ? !(globals.currentDevice['currentActivity']?['locked'] ?? false) :
-            false
+            false;
+
+          await waitForState('lock');
+          await globals.bridge.setLock(newValue);
+
+          showSnackBar(
+            globals.navigatorKey.currentContext ?? context,
+            "deeplinking.lock.${newValue ? 'on' : 'off'}".tr(),
+            icon: "success"
           );
           Haptic().success();
-        } catch (e) { Haptic().error(); }
-        break;
-      case 'light':
-        try {
-          await waitForState('light');
-          await globals.bridge.turnLight(
+          break;
+        case 'light':
+          bool newValue =
             pathSegments[2] == 'on' ? true :
             pathSegments[2] == 'off' ? false :
             pathSegments[2] == 'toggle' ? !(globals.currentDevice['currentActivity']?['light'] ?? false) :
-            false
+            false;
+
+          await waitForState('light');
+          await globals.bridge.turnLight(newValue);
+
+          showSnackBar(
+            globals.navigatorKey.currentContext ?? context,
+            "deeplinking.light.${newValue ? 'on' : 'off'}".tr(), // TODO: faire les trad
+            icon: "success"
           );
           Haptic().success();
-        } catch (e) { Haptic().error(); }
-        break;
-      case 'speed':
-        await waitForState('speed');
-        try {
+          break;
+        case 'speed':
+          await waitForState('speed');
           await globals.bridge.setSpeedMode(int.parse(pathSegments[2]));
           Haptic().success();
-        } catch (e) { Haptic().error(); }
-        break;
-      default:
-        logarte.log("DeepLinking: No action associated with the position 1 of pathSegments: ${pathSegments[1]}");
+          break;
+        default:
+          String err = "DeepLinking: No action associated with the position 1 of pathSegments: ${pathSegments[1]}";
+          logarte.log(err);
+          throw Exception(err);
+      }
+    } catch (e) {
+      Haptic().error();
+
+      showSnackBar(
+        globals.navigatorKey.currentContext ?? context,
+        "deeplinking.genericError".tr(namedArgs: { "error": e.toString() }),
+        icon: "error"
+      );
     }
   }
 
