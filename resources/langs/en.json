@@ -150,7 +150,7 @@
         },
         "webPlatformWarn": {
             "dialogTitle": "You're trying eScive!",
-            "dialogContent": "Welcome to eScive, you're actually trying a demo version from your browser. You will encounter a limited number of features, and some major bugs will surely occur.\n\nRest assured, the mobile app is even better and even prettier, you can download it for free from the Google Play Store.\n\nKnown bugs are:\n• You need to retry connecting to your Bluetooth scooter at every start.\n• No widgets are available (fullscreen map and music control).\n• Unable to extend the advanced scooter controls from the home page using a mouse.\n• Some UIs may be rendered with some visuals problems.\n• Cannot change the language from the settings page."
+            "dialogContent": "Welcome to eScive, you're actually trying a demo version from your browser. You will encounter a limited number of features, and some major bugs will surely occur.\n\nRest assured, the mobile app is even better and even prettier, you can download it for free from GitHub at johanstick.fr/escive-en.\n\nKnown bugs are:\n• You need to retry connecting to your Bluetooth scooter at every start.\n• No widgets are available (fullscreen map and music control).\n• Unable to extend the advanced scooter controls from the home page using a mouse.\n• Some UIs may be rendered with some visuals problems.\n• Cannot change the language from the settings page."
         }
     },
     "settings": {

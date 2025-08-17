@@ -153,7 +153,7 @@
         },
         "webPlatformWarn": {
             "dialogTitle": "Bienvenue sur eScive !",
-            "dialogContent": "Vous êtes en train d'essayer une version de démonstration depuis votre navigateur : vous allez sûrement rencontrer un nombre important de problèmes et les fonctionnalités seront réduites.\n\nSoyez rassuré, l'appli pour Android est encore meilleure et encore plus belle, et vous pouvez la télécharger gratuitement depuis le Google Play Store.\n\nLes bugs actuellement connus sont :\n• Reconnexion obligatoire à votre appareil Bluetooth à chaque démarrage.\n• Aucun widget n'est disponible (cartographie et contrôle de la musique)\n• Impossible d'étendre les contrôles avancés de la page d'accueil avec une souris.\n• Certains aspects de l'interface peuvent être mal affichées."
+            "dialogContent": "Vous êtes en train d'essayer une version de démonstration depuis votre navigateur : vous allez sûrement rencontrer un nombre important de problèmes et les fonctionnalités seront réduites.\n\nSoyez rassuré, l'appli pour Android est encore meilleure et encore plus belle, et vous pouvez la télécharger gratuitement depuis GitHub à johanstick.fr/escive-fr.\n\nLes bugs actuellement connus sont :\n• Reconnexion obligatoire à votre appareil Bluetooth à chaque démarrage.\n• Aucun widget n'est disponible (cartographie et contrôle de la musique)\n• Impossible d'étendre les contrôles avancés de la page d'accueil avec une souris.\n• Certains aspects de l'interface peuvent être mal affichées."
         }
     },
     "settings": {
