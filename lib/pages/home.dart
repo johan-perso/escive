@@ -1045,22 +1045,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             contentType: "widget",
                             height: 75,
                             // animation: ledAnimating ? "ledShadow" : "",
-                            content: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 4),
-                              child: Platform.isIOS ? CupertinoSwitch(
-                                value: ledTurnedOn,
-                                onChanged: (value) {
-                                  Haptic().light();
-                                  globals.bridge.turnLight(value);
-                                },
-                              )
-                              : Switch(
-                                activeTrackColor: Theme.of(context).colorScheme.primary,
-                                value: ledTurnedOn,
-                                onChanged: (value) {
-                                  Haptic().light();
-                                  globals.bridge.turnLight(value);
-                                }
+                            content: GestureDetector(
+                              onTap: () {
+                                Haptic().light();
+                                globals.bridge.turnLight(!ledTurnedOn);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 4),
+                                child: Platform.isIOS ? CupertinoSwitch(
+                                  value: ledTurnedOn,
+                                  onChanged: (value) {
+                                    Haptic().light();
+                                    globals.bridge.turnLight(value);
+                                  },
+                                )
+                                : Switch(
+                                  activeTrackColor: Theme.of(context).colorScheme.primary,
+                                  value: ledTurnedOn,
+                                  onChanged: (value) {
+                                    Haptic().light();
+                                    globals.bridge.turnLight(value);
+                                  }
+                                ),
                               ),
                             ),
                           ),
