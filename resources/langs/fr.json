@@ -10,6 +10,12 @@
             "off": "Phare éteint !"
         }
     },
+    "quickActions": {
+        "controlsLockOn": "Verrouiller le véhicule",
+        "controlsLockOff": "Déverrouiller le véhicule",
+        "controlsLightToggle": "Basculer le phare",
+        "controlsSpeed4": "4ème vitesse"
+    },
     "maps": {
         "searchHint": "Rechercher un lieu, une adresse",
         "noResultsFound": "Aucun résultat trouvé",

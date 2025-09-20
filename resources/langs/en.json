@@ -10,6 +10,12 @@
             "off": "Headlight turned off!"
         }
     },
+    "quickActions": {
+        "controlsLockOn": "Lock vehicle",
+        "controlsLockOff": "Unlock vehicle",
+        "controlsLightToggle": "Toggle light",
+        "controlsSpeed4": "4th speed profile"
+    },
     "maps": {
         "searchHint": "Search a place or type an address",
         "noResultsFound": "No results found",

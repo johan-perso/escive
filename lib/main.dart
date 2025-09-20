@@ -25,6 +25,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 
 double webMaxWidth = 414;
@@ -305,6 +306,44 @@ class _MainAppState extends State<MainApp> {
     }
 
     initDeepLinks();
+
+    final QuickActions quickActions = const QuickActions();
+    quickActions.initialize((shortcutType) {
+      logarte.log('QuickActions: Received shortcut: $shortcutType');
+      switch(shortcutType) {
+        case 'controls_lock_on':
+          handleIncomingLink(Uri.parse('escive://controls/lock/on'));
+          break;
+        case 'controls_lock_off':
+          handleIncomingLink(Uri.parse('escive://controls/lock/off'));
+          break;
+        case 'controls_light_toggle':
+          handleIncomingLink(Uri.parse('escive://controls/light/toggle'));
+          break;
+        case 'controls_speed_4':
+          handleIncomingLink(Uri.parse('escive://controls/speed/4'));
+          break;
+        default:
+          String err = "QuickActions: No action associated with the shortcutType: $shortcutType";
+          logarte.log(err);
+          Haptic().error();
+          if(globals.navigatorKey.currentContext != null && context.mounted) {
+            showSnackBar(
+              globals.navigatorKey.currentContext ?? context,
+              "quickActions.genericError".tr(namedArgs: { "error": err }),
+              icon: "error"
+            );
+          }
+      }
+    });
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+      ShortcutItem(type: 'controls_lock_on', localizedTitle: 'quickActions.controlsLockOn'.tr()),
+      ShortcutItem(type: 'controls_lock_off', localizedTitle: 'quickActions.controlsLockOff'.tr()),
+      ShortcutItem(type: 'controls_light_toggle', localizedTitle: 'quickActions.controlsLightToggle'.tr()),
+      ShortcutItem(type: 'controls_speed_4', localizedTitle: 'quickActions.controlsSpeed4'.tr()),
+    ]);
+
     debugPrint("TimeMesuring: main.dart: initState() finished his tasks, elapsed: ${mesureStopwatch.elapsedMilliseconds} ms");
   }
 

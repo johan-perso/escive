@@ -37,6 +37,7 @@ dependencies:
   path_provider: ^2.1.5
   pattern_box: 0.5.4
   permission_handler: 12.0.0+1
+  quick_actions: ^1.1.0
   screen_brightness: 2.1.4
   share_plus: 11.0.0
   syncfusion_flutter_gauges: 29.1.38
