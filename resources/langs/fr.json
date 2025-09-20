@@ -254,7 +254,7 @@
             "enableDashboardWidgets": {
                 "title": "Activer les widgets",
                 "subtitle": "Des encadrés supplémentaires seront affichés pour vous permettre une meilleure vue d'ensemble",
-                "platformCompatibility": "Cette fonctionnalité n'est pour l'instant disponible que sur Android",
+                "platformCompatibility": "Cette fonctionnalité n'est pour l'instant disponible que sur Android et iOS",
                 "permissionMissing": {
                     "dialogTitle": "Autoriser l'accès manquant",
                     "dialogContent": "Pour permettre à eScive d'accéder aux musiques que vous écoutez, vous devrez autoriser l'accès aux notifications depuis les paramètres de votre téléphone."

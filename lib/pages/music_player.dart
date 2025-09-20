@@ -2,6 +2,7 @@ import 'package:escive/main.dart';
 import 'package:escive/utils/globals.dart' as globals;
 import 'package:escive/utils/haptic.dart';
 import 'package:escive/widgets/artwork.dart';
+import 'package:flutter/foundation.dart';
 
 import 'dart:convert';
 import 'dart:async';
@@ -115,6 +116,8 @@ class MusicPlayerHelper {
   }
 
   Future<String> init({ bool openSettingsForPermission = false }) async {
+    if(kIsWeb || !Platform.isAndroid) return "Music Player is only supported on Android devices";
+
     if(globals.settings['enableDashboardWidgets'] != true){
       logarte.log("Music player was called to initialize, but it's disabled in settings");
       return "";

@@ -251,7 +251,7 @@
             "enableDashboardWidgets": {
                 "title": "Enable widgets",
                 "subtitle": "Additional panels will be displayed to provide easier access to essential infos like your music and a fullscreen map",
-                "platformCompatibility": "This feature is currently only available on Android",
+                "platformCompatibility": "This feature is currently only available on Android and iOS",
                 "permissionMissing": {
                     "dialogTitle": "Allow missing access",
                     "dialogContent": "To allow eScive to access the music you are listening to, you will need to authorize access to notifications from your phone settings."

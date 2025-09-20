@@ -282,7 +282,8 @@ class _EsciveMapWidgetState extends State<EsciveMapWidget> {
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Container(
-                              width: double.infinity,
+                              width: Platform.isIOS ? null : double.infinity,
+                              padding: !Platform.isIOS ? null : EdgeInsets.symmetric(horizontal: 14),
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(25),
@@ -408,7 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (var device in globals.devices) {
       String stateText = '';
       DateTime lastConnection = DateTime.fromMillisecondsSinceEpoch(device['lastConnection'] ?? 0);
-      if(device['currentActivity']['state'] == 'none') stateText = device['lastConnection'] == 0 ? "currentActivity.state.neverConnected" : "currentActivity.state.connected".tr(namedArgs: {'since': getRelativeTime(context.locale.toString(), lastConnection, 'ago')});
+      if(device['currentActivity']['state'] == 'none') stateText = device['lastConnection'] == 0 ? "currentActivity.state.neverConnected".tr() : "currentActivity.state.connected".tr(namedArgs: {'since': getRelativeTime(context.locale.toString(), lastConnection, 'ago')});
       if(device['currentActivity']['state'] == 'connecting') stateText = "currentActivity.state.connecting".tr();
       if(device['currentActivity']['state'] == 'connected') stateText = "currentActivity.state.connected".tr(namedArgs: {'since': getRelativeTime(context.locale.toString(), startTime, 'since')});
 
@@ -1054,7 +1055,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
+                      !Platform.isAndroid ? SizedBox.shrink() : Expanded(
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.all(10),
@@ -1063,8 +1064,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Padding(
+                        child: Container(
                           padding: EdgeInsets.all(10),
+                          constraints: !Platform.isIOS ? null : BoxConstraints(
+                            minHeight: 150,
+                            maxHeight: 200,
+                          ),
                           child: EsciveMapWidget(key: _mapWidgetKey)
                         ),
                       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:universal_io/io.dart';
 
 class OrientationManager {
   StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
@@ -13,9 +14,9 @@ class OrientationManager {
         DeviceOrientation.landscapeRight,
       ];
     } else if(accepted == 'landscapeLeft') {
-      return [DeviceOrientation.landscapeLeft];
+      return Platform.isIOS ? [DeviceOrientation.landscapeRight] : [DeviceOrientation.landscapeLeft];
     } else if(accepted == 'landscapeRight') {
-      return [DeviceOrientation.landscapeRight];
+      return Platform.isIOS ? [DeviceOrientation.landscapeLeft] : [DeviceOrientation.landscapeRight];
     } else {
       return [
         DeviceOrientation.portraitUp,
@@ -61,10 +62,10 @@ class OrientationManager {
         if (_accepted == 'all') allowedOrientations = [DeviceOrientation.portraitDown];
         break;
       case NativeDeviceOrientation.landscapeLeft:
-        if(_accepted == 'all' || _accepted == 'landscapeLeft') allowedOrientations = [DeviceOrientation.landscapeLeft];
+        if(_accepted == 'all' || _accepted == 'landscapeLeft') allowedOrientations = Platform.isIOS ? [DeviceOrientation.landscapeRight] : [DeviceOrientation.landscapeLeft]; // ios is just, reversed??
         break;
       case NativeDeviceOrientation.landscapeRight:
-        if(_accepted == 'all' || _accepted == 'landscapeRight') allowedOrientations = [DeviceOrientation.landscapeRight];
+        if(_accepted == 'all' || _accepted == 'landscapeRight') allowedOrientations = Platform.isIOS ? [DeviceOrientation.landscapeLeft] : [DeviceOrientation.landscapeRight];
         break;
       default:
         allowedOrientations = getAccepted(_accepted);

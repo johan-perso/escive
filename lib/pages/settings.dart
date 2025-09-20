@@ -350,40 +350,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: "settings.integrations.enableDashboardWidgets.subtitle".tr(),
                 value: globals.settings['enableDashboardWidgets'] ?? false,
                 onChanged: (bool? value) async {
-                  if(kIsWeb || !Platform.isAndroid) {
+                  if(kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) {
                     Haptic().warning();
                     showSnackBar(context, "settings.integrations.enableDashboardWidgets.platformCompatibility".tr(), icon: 'warning');
                     return;
                   }
 
-                  bool gotPermission = await globals.musicPlayerHelper.checkPermissions(openSettings: false);
-                  if(!gotPermission) {
-                    if(context.mounted) {
-                      return actionsDialog(
-                        context,
-                        title: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogTitle".tr(),
-                        content: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogContent".tr(),
-                        haptic: 'light',
-                        actions: [
-                          TextButton(
-                            style: TextButton.styleFrom(foregroundColor: Colors.grey[800]),
-                            child: Text("general.cancel".tr()),
-                            onPressed: () {
-                              Haptic().light();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(foregroundColor: Colors.blue[500]),
-                            child: Text("general.allow".tr()),
-                            onPressed: () {
-                              Haptic().light();
-                              globals.musicPlayerHelper.checkPermissions(openSettings: true);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ]
-                      );
+                  if(Platform.isAndroid) {
+                    bool gotPermission = await globals.musicPlayerHelper.checkPermissions(openSettings: false);
+                    if(!gotPermission) {
+                      if(context.mounted) {
+                        return actionsDialog(
+                          context,
+                          title: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogTitle".tr(),
+                          content: "settings.integrations.enableDashboardWidgets.permissionMissing.dialogContent".tr(),
+                          haptic: 'light',
+                          actions: [
+                            TextButton(
+                              style: TextButton.styleFrom(foregroundColor: Colors.grey[800]),
+                              child: Text("general.cancel".tr()),
+                              onPressed: () {
+                                Haptic().light();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(foregroundColor: Colors.blue[500]),
+                              child: Text("general.allow".tr()),
+                              onPressed: () {
+                                Haptic().light();
+                                globals.musicPlayerHelper.checkPermissions(openSettings: true);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ]
+                        );
+                      }
                     }
                   }
 
