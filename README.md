@@ -15,14 +15,14 @@ Communications between devices are based on reverse engineering of packets sent 
 ### Android
 
 The app is not *officialy* available on the Play Store.  
-You can download it using the latest APK provided in the [releases](https://github.com/johan-perso/escive/releases) of this repository.
+You can download it using the latest APK provided in the latest [release](https://github.com/johan-perso/escive/releases/laetest) of this repository.
 
 > You can also join the [closed beta](https://johanstick.fr/escive-en-androidbeta) to receive updates via the Play Store. You will have to wait to be accepted, so it is recommended to download the APK to start using the app.
 
 ### iOS
 
-The app is not available for iOS, and will probably not be for a while. I prioritized supporting Android to reduce development time, mainly because of the native features (widgets, Bluetooth...) that are more complex to implement and test.
-However, the app can be compiled and installed on an iPhone by first running a build using Xcode on a Mac, and then by using the command `flutter build ios`. Some features will be limited or not available, and others will not be as optimized as on Android.
+The app is not available on the App Store, and will probably not be for a while because of the costs of publishing it (99$/year).  
+However, if you are willing to do some more complex manipulations, you can ["sideload"](https://read.johanstick.fr/sideload-ios/) it on your device from the IPA file provided in the latest [release](https://github.com/johan-perso/escive/releases/latest) of this repository.
 
 ## Automation
 

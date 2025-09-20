@@ -153,7 +153,12 @@ grep 'UsageDescription' | \
 sed 's/^ *//' | \
 sed 's/ = /|/' | \
 jq -R -s 'split("\n")[:-1] | map(split("|") | {(.[0]): .[1]}) | add')
+
 ENTITLEMENTS_JSON=$(plutil -convert json -o - ios/Runner/Runner.entitlements 2>/dev/null | jq 'keys | map(select(. | test("(application-identifier|team-identifier)") | not))')
+if [[ -z "$ENTITLEMENTS_JSON" ]]; then
+    ENTITLEMENTS_JSON='[]'
+fi
+
 APP_PERMISSIONS_JSON=$(echo '{}' | jq --argjson privacy "$PRIVACY_JSON" --argjson entitlements "$ENTITLEMENTS_JSON" '{
   appPermissions: {
     entitlements: $entitlements,
