@@ -191,7 +191,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                             const SizedBox(height: 12),
 
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 36.0),
                               child: Text(
                                 'onboarding.description'.tr(),
                                 textAlign: TextAlign.center,
