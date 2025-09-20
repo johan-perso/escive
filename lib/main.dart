@@ -402,7 +402,7 @@ class _MainAppState extends State<MainApp> {
 
           showSnackBar(
             globals.navigatorKey.currentContext ?? context,
-            "deeplinking.light.${newValue ? 'on' : 'off'}".tr(), // TODO: faire les trad
+            "deeplinking.light.${newValue ? 'on' : 'off'}".tr(),
             icon: "success"
           );
           Haptic().success();

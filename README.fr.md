@@ -33,9 +33,9 @@ Il est possible d'ouvrir l'app avec une action qui s'effectuera dès que possibl
 | Chemin                                                      | Description                                                         |
 | ----------------------------------------------------------- | ------------------------------------------------------------------- |
 | [app](escive://app)                                         | Ouvre l'app sans action                                             |
-| [controls/lock](escive://controls/lock)                     | Verrouille le véhicule actuellement associé                         |
-| [controls/unlock](escive://controls/unlock)                 | Déverrouille le véhicule actuellement associé                       |
-| [controls/toggle](escive://controls/toggle)                 | Verrouille ou déverrouille selon l'état actuel                      |
+| [controls/lock/on](escive://controls/lock/on)               | Verrouille le véhicule actuellement associé                         |
+| [controls/lock/off](escive://controls/lock/off)             | Déverrouille le véhicule actuellement associé                       |
+| [controls/lock/toggle](escive://controls/lock/toggle)       | Verrouille ou déverrouille selon l'état actuel                      |
 | [controls/light/on](escive://controls/light/on)             | Allume le phare                                                     |
 | [controls/light/off](escive://controls/light/off)           | Éteint le phare                                                     |
 | [controls/light/toggle](escive://controls/light/toggle)     | Bascule l'état du phare                                             |
