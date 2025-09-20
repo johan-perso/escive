@@ -97,6 +97,7 @@ flutter_native_splash:
   image: lib/assets/logo.png
   color: "#0ECFDC"
   branding: lib/assets/splash_branding.png
+  branding_bottom_padding: 24 # the default one is perfect on Android and non-borderless iPhones
   android_12:
     color: "#0ECFDC"
     icon_background_color: "#0ECFDC"
