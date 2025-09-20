@@ -347,6 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription? _streamSubscription;
   final GlobalKey<_EsciveMapWidgetState> _mapWidgetKey = GlobalKey<_EsciveMapWidgetState>();
   Map supportedProperties = globals.defaultSupportedProperties;
+  final ActionSliderController _actionSliderController = ActionSliderController();
 
   Widget buildBasicCard(BuildContext context, { String title = 'N/A', dynamic content = 'N/A', String? hint, String contentType = 'text', double? height, String animation = '', bool transparentBackground = false }) {
     return Column(
@@ -757,6 +758,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _everyQuarterMinuteTimer.cancel();
     _deviceNameController.dispose();
     globals.musicPlayerHelper.dispose();
+    _actionSliderController.dispose();
     super.dispose();
   }
 
@@ -954,37 +956,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Slide to Lock/Unlock
                 supportedProperties['lock'] != true ? SizedBox(height: 10) : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 48, vertical: 22),
-                  child: ActionSlider.standard(
-                    onTap: (controller, state, pos) {
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onDoubleTap: () async {
                       Haptic().light();
-                    },
-                    stateChangeCallback: (oldState, state, controller){
-                      // Haptic feedback when user drags the slider
-                      if(state.slidingStatus == SlidingStatus.dragged) Haptic().click();
-                    },
-                    sliderBehavior: SliderBehavior.stretch,
-                    reverseSlideAnimationCurve: Curves.easeInToLinear,
-                    style: SliderStyle(
-                      toggleColor: Colors.white,
-                      backgroundColor: Theme.of(context).cardTheme.color
-                    ),
-                    icon: Icon(isLocked ? LucideIcons.lockOpen : LucideIcons.lock, color: isLocked ? Colors.deepOrangeAccent : Theme.of(context).colorScheme.primary),
-                    direction: !isLocked ? TextDirection.ltr : TextDirection.rtl,
-                    child: Text(isLocked ? 'controls.unlock'.tr() : 'controls.lock'.tr(), style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600)),
-                    action: (controller) async {
-                      controller.loading(expanded: true);
+                      _actionSliderController.loading(expanded: true);
                       Haptic().click();
                       await Future.delayed(Duration(milliseconds: 250)); // Should always be more than 200ms (250ms is good), else we can see the the icon transitionning before being remplaced by the loading spinner
                       Haptic().click();
 
                       await globals.bridge.setLock(!isLocked);
 
-                      controller.success(expanded: true);
+                      _actionSliderController.success(expanded: true);
                       Haptic().click();
                       await Future.delayed(Duration(milliseconds: 800));
                       Haptic().light();
-                      controller.reset();
+                      _actionSliderController.reset();
                     },
+                    child: ActionSlider.standard(
+                      onTap: (controller, state, pos) {
+                        Haptic().light();
+                      },
+                      stateChangeCallback: (oldState, state, controller){
+                        // Haptic feedback when user drags the slider
+                        if(state.slidingStatus == SlidingStatus.dragged) Haptic().click();
+                      },
+                      controller: _actionSliderController,
+                      sliderBehavior: SliderBehavior.stretch,
+                      reverseSlideAnimationCurve: Curves.easeInToLinear,
+                      style: SliderStyle(
+                        toggleColor: Colors.white,
+                        backgroundColor: Theme.of(context).cardTheme.color
+                      ),
+                      icon: Icon(isLocked ? LucideIcons.lockOpen : LucideIcons.lock, color: isLocked ? Colors.deepOrangeAccent : Theme.of(context).colorScheme.primary),
+                      direction: !isLocked ? TextDirection.ltr : TextDirection.rtl,
+                      child: Text(isLocked ? 'controls.unlock'.tr() : 'controls.lock'.tr(), style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600)),
+                      action: (controller) async {
+                        controller.loading(expanded: true);
+                        Haptic().click();
+                        await Future.delayed(Duration(milliseconds: 250)); // Should always be more than 200ms (250ms is good), else we can see the the icon transitionning before being remplaced by the loading spinner
+                        Haptic().click();
+
+                        await globals.bridge.setLock(!isLocked);
+
+                        controller.success(expanded: true);
+                        Haptic().click();
+                        await Future.delayed(Duration(milliseconds: 800));
+                        Haptic().light();
+                        controller.reset();
+                      },
+                    ),
                   ),
                 ),
 
