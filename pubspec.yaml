@@ -1,7 +1,7 @@
 name: escive
 description: "A mobile app aiming to be a third-party client for e-scooters with Bluetooth functionality, allowing an alternative interface with more features."
 publish_to: 'none'
-version: 1.0.0+5
+version: 1.1.0+6
 
 environment:
   sdk: ^3.6.2
