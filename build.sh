@@ -2,11 +2,18 @@
 
 # Made to be executed on macOS (Github Actions runner or local machine)
 # Made by github.com/johan-perso /// johanstick.fr
-# For Flutter app. Build.sh v1.0.0 (2025-09-20)
+# For Flutter app. Build.sh v1.1.0 (2025-09-25)
 
 DATE=$(date +"%Y-%m-%d")
 PROJECT_UPPERCASE="eScive"
 PROJECT_LOWERCASE="escive"
+
+if [[ -f ".env" ]]; then
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        [[ "$line" =~ ^[[:space:]]*# ]] || [[ -z "$line" ]] && continue
+        [[ "$line" == *=* ]] && export "$line"
+    done < ".env"
+fi
 
 to_ipa() {
     if [ "$#" -lt 1 ]; then
@@ -137,7 +144,13 @@ echo ""
 # 1/3 Build iOS - IPA
 echo "================= 1/3 - iOS - IPA file"
 flutter build ios --release --no-codesign
+if [ $? -ne 0 ]; then
+    echo "❌ Build for iOS failed"
+    exit 1
+fi
+
 to_ipa build/ios/iphoneos/Runner.app
+rm build/ios/iphoneos/Runner.app
 if [ -f "Runner.ipa" ]; then
     mkdir -p build
     mv Runner.ipa build/$PROJECT_UPPERCASE-ios-$DATE-store.ipa
@@ -174,6 +187,10 @@ upload_json "$APP_PERMISSIONS_JSON" "api/altstoreJson?project=$PROJECT_LOWERCASE
 # 2/3 Build Android - APK
 echo "================= 2/3 - Android - APK file"
 flutter build apk --release
+if [ $? -ne 0 ]; then
+    echo "❌ Build for Android (APK) failed"
+    exit 1
+fi
 mv build/app/outputs/flutter-apk/app-release.apk build/
 rm -f build/$PROJECT_UPPERCASE-android-$DATE-store.apk
 mv build/app-release.apk build/$PROJECT_UPPERCASE-android-$DATE-store.apk
@@ -182,6 +199,10 @@ upload_file "build/$PROJECT_UPPERCASE-android-$DATE-store.apk" "$PROJECT_LOWERCA
 # 3/3 Build Android - AAB (for Play Store)
 echo "================= 3/3 - Android - AAB file"
 flutter build appbundle --release
+if [ $? -ne 0 ]; then
+    echo "❌ Build for Android (AAB) failed"
+    exit 1
+fi
 mv build/app/outputs/bundle/release/app-release.aab build/
 rm -f build/$PROJECT_UPPERCASE-android-$DATE-store.aab
 mv build/app-release.aab build/$PROJECT_UPPERCASE-android-$DATE-store.aab
